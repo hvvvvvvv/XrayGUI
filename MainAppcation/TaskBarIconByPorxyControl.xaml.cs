@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using WindowsProxy;
 using System.Windows.Controls.Ribbon;
 using ProxyNotifyWindow;
+using System.Security.Cryptography;
 
 namespace NetProxyController
 {
@@ -16,13 +17,14 @@ namespace NetProxyController
     {
         private AppConfigration Configration;
         private NotifyWindow NotifyWindow_;
-        private GlobalHotkey.GlobalHotkeyRegister hotkeyRegister = new();
+        private SettingWindow _SettingWindow = default!;
+        private bool _SetingComleted = true;
         public TaskBarIconByPorxyControl()
         {
             Configration = new(AppContext.BaseDirectory + "AppSetting.json");
+            Configration.HotkeyHappendEvent += OnHotkeyHandle;            
             DataContext = Configration;                     
             NotifyWindow_ = new(Configration.IsProxyEnable ? NotifyWindow.StatusEnableImage : NotifyWindow.StatusDisableImage);
-            hotkeyRegister.Add(Configration.ProxyHotkey,OnHotkeyHandle);
             UpdateIcon();
             InitializeComponent();            
         }
@@ -37,12 +39,9 @@ namespace NetProxyController
         }
         private void OnHotkeyHandle()
         {
-            if(!Configration.IsHotkeyPause)
-            {
-                Configration.IsProxyEnable = !Configration.IsProxyEnable;
-                NotifyWindow_.ShowNotify(Configration.IsProxyEnable ? NotifyWindow.StatusEnableImage : NotifyWindow.StatusDisableImage);
-                UpdateIcon();
-            }
+            Configration.IsProxyEnable = !Configration.IsProxyEnable;
+            NotifyWindow_.ShowNotify(Configration.IsProxyEnable ? NotifyWindow.StatusEnableImage : NotifyWindow.StatusDisableImage);
+            UpdateIcon();
         }
         public void Show() => Visibility = Visibility.Visible;
         public void UpdateIcon()
@@ -53,7 +52,16 @@ namespace NetProxyController
 
         private void OnAppSetingClick(object sender, RoutedEventArgs e)
         {
-            new SettingWindow(Configration).Show();
+            if(_SettingWindow != null && !_SettingWindow._SettingComleted)
+            {
+                _SettingWindow.WindowState = WindowState.Normal;
+                _SettingWindow.Activate();
+            }
+            else
+            {
+                _SettingWindow = new(Configration);
+                _SettingWindow.Show();
+            }
         }
     }
 }

@@ -63,7 +63,7 @@ namespace NetProxyController
             if (matchHelper($"(?i)^http://({pattern}):([0-9]+$)",out match))           {
                 ServerAddr = match.Groups[1].Value;
                 Protocol = ProxyType.Http;
-                ServerPort = match.Groups[2].Value;
+                ServerPort = match.Groups[match.Groups.Count - 1].Value;
             }
             else if(matchHelper($"(?i)^http://({pattern})$", out match))
             {
@@ -81,7 +81,7 @@ namespace NetProxyController
             {
                 ServerAddr = match.Groups[1].Value;
                 Protocol = ProxyType.Http;
-                ServerPort = match.Groups[2].Value;
+                ServerPort = match.Groups[match.Groups.Count - 1].Value;
             }
             else if (matchHelper($"(?i)^socks=({pattern})$", out match))
             {
@@ -93,11 +93,13 @@ namespace NetProxyController
             {
                 ServerAddr = match.Groups[1].Value;
                 Protocol = ProxyType.Socks;
-                ServerPort = match.Groups[2].Value;
+                ServerPort = match.Groups[match.Groups.Count - 1].Value;
             }
             else
             {
-                throw new ExceptionByServerInfoValidationFailed();
+                ServerAddr = "127.0.0.1";
+                ServerPort = "80";
+                Protocol = ProxyType.Http;
             }
         }
 

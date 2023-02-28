@@ -40,19 +40,23 @@ namespace NetProxyController
             set
             {
                 _Bypass = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Bypass)));
                 SaveToJsonFile();
             }
         }
 
         private Hotkey _ProxyHotkey;
+
+        public event Action? HotkeyHappendEvent;
         public Hotkey ProxyHotkey
         {
             get { return _ProxyHotkey; }
-            set { SaveToJsonFile(); }
-        }
-
-
+            set 
+            {
+                _ProxyHotkey = value;
+                if(IsHotkeyRegEnabled) ExcuteRegisterHotkey();
+                SaveToJsonFile();
+            }
+        }        
         private StartupService StartupService = new("NetProxyController");
         public bool IsAutoStart
         {
@@ -100,13 +104,8 @@ namespace NetProxyController
             set
             {
                 _IsProxyEnable = value;
-                if (value)
-                {                    
-                    proxyService.Server = ProxyUrl;
-                    proxyService.Bypass= Bypass;
-                    proxyService.Global();
-                }
-                else proxyService.Direct();
+                if (value) StartSystemPorxy();
+                else StopStartSystemPorxy();
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsProxyEnable)));
             }
         }
@@ -114,6 +113,7 @@ namespace NetProxyController
         public static Icon IconByProxyEnabled = Icon.FromHandle(Resource.ProxyEnable.GetHicon());
         public static Icon IconByProxyDisabled = Icon.FromHandle(Resource.ProxyDisable.GetHicon());
         private ProxyService proxyService = new();
+        private GlobalHotkeyRegister hotkeyRegister = new();
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public AppConfigration(string settingPath)
@@ -133,8 +133,16 @@ namespace NetProxyController
             {
                 LoadDefaultSeting();
             }
+            Reload();
         }
 
+        private void StartSystemPorxy()
+        {
+            proxyService.Server = _ProxyUrl;
+            proxyService.Bypass = _Bypass;
+            proxyService.Global();
+        }
+        private void StopStartSystemPorxy() => proxyService.Direct();
         private void LoadDefaultSeting()
         {
             var proxyStatus = proxyService.Query();
@@ -144,7 +152,20 @@ namespace NetProxyController
             IsHotkeyRegEnabled = true;
             SaveToJsonFile();
         }
-
+        private void ExcuteRegisterHotkey()
+        {
+            hotkeyRegister.RemoveAll();
+            if (_ProxyHotkey.Key != Key.None)
+            {
+                hotkeyRegister.Add(_ProxyHotkey, () =>
+                {
+                    if (!IsHotkeyPause)
+                    {
+                        HotkeyHappendEvent?.Invoke();
+                    }
+                });
+            }
+        }
         private void SaveToJsonFile()
         {
             var SettingJsonObj = new JsonObject()
@@ -171,6 +192,11 @@ namespace NetProxyController
             fs.Dispose();
         }
 
+        public void Reload()
+        {
+            if(_IsProxyEnable) StartSystemPorxy();
+            if(IsHotkeyRegEnabled) ExcuteRegisterHotkey();
+        }
 
         private static GlobalHotkeyRegister globalHotkeyRegister = new();
 

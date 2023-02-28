@@ -27,22 +27,28 @@ namespace NetProxyController
     public partial class SettingWindow : Window
     {
         private ProxyServerInfo ProxyServer;
+        private AppConfigration _appConfig;
+        public bool _SettingComleted { get; private set; } = false;
         public SettingWindow(AppConfigration appConfig)
-        {            
+        {
             InitializeComponent();
-            ProxyServer = new(appConfig.ProxyUrl);
+            _appConfig = appConfig;
+            ProxyServer = new ProxyServerInfo(_appConfig.ProxyUrl);
             TextBoxByServerAddr.Text = ProxyServer.ServerAddr;
             TextBoxByProxyPort.Text = ProxyServer.ServerPort;
             TextBoxByPassUrl.Text = appConfig.Bypass;
             RadioByHotkeyEnable.IsChecked = appConfig.IsHotkeyRegEnabled;
             RadioByHotkeyDisable.IsChecked = !appConfig.IsHotkeyRegEnabled;
             RadioByProtocolHttp.IsChecked = ProxyServer.Protocol == ProxyType.Http;
-            RadioByProtocolSocks.IsChecked = ProxyServer.Protocol == ProxyType.Socks;            
+            RadioByProtocolSocks.IsChecked = ProxyServer.Protocol == ProxyType.Socks;
+            viewData.GlobalHotkey = _appConfig.ProxyHotkey;
         }
 
         private void RadioByHotkeyEnable_Checked(object sender, RoutedEventArgs e)
         {
+            
             TextboxByHotkeySetting.IsEnabled= true;
+            
         }
 
         private void RadioByHotkeyDisable_Checked(object sender, RoutedEventArgs e)
@@ -88,6 +94,14 @@ namespace NetProxyController
                 TextBoxByServerAddr.Text = textValue;
                 return;
             }
+            ProxyServer.Protocol = RadioByProtocolHttp.IsChecked ?? true ? ProxyType.Http : ProxyType.Socks;
+            ProxyServer.ServerPort = TextBoxByProxyPort.Text;
+            ProxyServer.ServerAddr = TextBoxByServerAddr.Text;
+            _appConfig.ProxyHotkey = viewData.GlobalHotkey;
+            _appConfig.ProxyUrl = ProxyServer.ToString();
+            _appConfig.IsHotkeyRegEnabled = RadioByHotkeyEnable.IsChecked ?? false;
+            _appConfig.Bypass = TextBoxByPassUrl.Text;   
+            Close();
         }
        
         private readonly List<Key> assistKeys = new List<Key>()
@@ -110,6 +124,12 @@ namespace NetProxyController
                 }
                 viewData.GlobalHotkey = new Hotkey((KeyModifier)Keyboard.Modifiers, _key);
             }
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            _SettingComleted = true;
+            _appConfig.IsHotkeyPause = false;
         }
     }
 

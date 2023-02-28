@@ -9,6 +9,7 @@
         Background="#ebf3ff"
         ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen"
+        Closing="Window_Closing"
         Title="参数设置" Height="470" Width="380">
     <Window.Resources>
         <ResourceDictionary>
