@@ -1,0 +1,16 @@
+﻿<n:TaskbarIcon x:Class="NetProxyController.TaskBarIconByPorxyControl"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:n="clr-namespace:Hardcodet.Wpf.TaskbarNotification;assembly=Hardcodet.NotifyIcon.Wpf">
+      
+    <n:TaskbarIcon.ContextMenu>
+        <ContextMenu>
+            <MenuItem x:Name="IsProxyEnable" Header="开启代理" IsCheckable="True" IsChecked="{Binding IsProxyEnable,Mode=TwoWay}" Click="OnIsEnableProxyClick"/>
+            <MenuItem x:Name="AppSetting" Header="参数设置" Click="OnAppSetingClick"/>
+            <MenuItem x:Name="AutoStart" Header="开机启动" IsCheckable="True" IsChecked="{Binding IsAutoStart,Mode=TwoWay}"/>
+            <MenuItem x:Name="Quit" Header="退出" Click="OnQuitClick"/>
+        </ContextMenu>
+    </n:TaskbarIcon.ContextMenu>
+ </n:TaskbarIcon>

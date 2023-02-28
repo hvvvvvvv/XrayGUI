@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetProxyController", "MainAppcation\NetProxyController.csproj", "{4A6335AD-FC15-4412-8552-61036298CFB8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlobalHotkey", "GlobalHotkey\GlobalHotkey.csproj", "{4391F841-5D96-4E78-B744-1CB81E4DD122}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProxyNotifyWindow", "ProxyNotifyWindow\ProxyNotifyWindow.csproj", "{33602132-6AC1-4591-8EFE-5D8602C40DBD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4A6335AD-FC15-4412-8552-61036298CFB8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A6335AD-FC15-4412-8552-61036298CFB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A6335AD-FC15-4412-8552-61036298CFB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A6335AD-FC15-4412-8552-61036298CFB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4391F841-5D96-4E78-B744-1CB81E4DD122}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4391F841-5D96-4E78-B744-1CB81E4DD122}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4391F841-5D96-4E78-B744-1CB81E4DD122}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4391F841-5D96-4E78-B744-1CB81E4DD122}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33602132-6AC1-4591-8EFE-5D8602C40DBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33602132-6AC1-4591-8EFE-5D8602C40DBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33602132-6AC1-4591-8EFE-5D8602C40DBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33602132-6AC1-4591-8EFE-5D8602C40DBD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E6EC0ABA-79E9-472A-B95F-520444F3F482}
+	EndGlobalSection
+EndGlobal
