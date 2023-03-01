@@ -13,8 +13,10 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace ProxyNotifyWindow
 {
@@ -23,6 +25,7 @@ namespace ProxyNotifyWindow
     /// </summary>
     public partial class NotifyWindow : Window
     {
+        private Storyboard _Storyboard;
         private WindowDataContext Context;
         private readonly double WindowOpacity;
         private List<CancellationTokenSource> tasksToken = new();
@@ -32,14 +35,26 @@ namespace ProxyNotifyWindow
         {
             InitializeComponent();
             WindowOpacity = windowOpacity;
+            _Storyboard = new();
+            var ami = new DoubleAnimation()
+            {
+                From = WindowOpacity,
+                To = 0.3,
+                Duration = new Duration(TimeSpan.FromSeconds(1)),
+                FillBehavior = FillBehavior.Stop,                
+            };
+            ami.Completed += (s, e) => Visibility = Visibility.Hidden;
+            Storyboard.SetTargetProperty(ami, new PropertyPath("Opacity"));
+            Storyboard.SetTarget(ami, this);
+            _Storyboard.Children.Add(ami);
             Context = new(WindowOpacity,proxyStatus);
             DataContext = Context;           
         }
         public void ShowNotify()
         {
             var proxyStatus_ = Context.ProxyStatus == StatusDisableImage ? StatusEnableImage : StatusDisableImage;
-            ShowNotify(proxyStatus_);           
-            
+            ShowNotify(proxyStatus_);
+
         }
         public void ShowNotify(ImageSource proxyStatus)
         {
@@ -50,20 +65,18 @@ namespace ProxyNotifyWindow
             }
             tasksToken.Clear();
             tasksToken.Add(tokenSource);
-            Task.Run(() => { ShowWind(tokenSource.Token,proxyStatus); }, tokenSource.Token);
+            ShowWind(tokenSource.Token, proxyStatus);
         }
-        private void ShowWind(CancellationToken token,ImageSource proxyStatus_)
+        private async void ShowWind(CancellationToken token,ImageSource proxyStatus_)
         {
+            _Storyboard.Stop();
             Context.ProxyStatus = proxyStatus_;
             Context.Opacidy = WindowOpacity;
             try
             {
-                Task.Delay(1500).Wait(token);
-                while (Context.WindowVisibility == Visibility.Visible && !token.IsCancellationRequested)
-                {
-                    Context.Opacidy -= 0.05;
-                    Task.Delay(100).Wait(token);
-                }
+                await Task.Delay(1500,token);           
+                Dispatcher.Invoke(_Storyboard.Begin);
+
             }
             catch(Exception ex)
             {
@@ -148,7 +161,7 @@ namespace ProxyNotifyWindow
         private void OnOpacidyChanged()
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Opacidy"));
-            if (_Opacity < 0.3)
+            if (_Opacity <= 0.3)
             {
                 WindowVisibility = Visibility.Hidden;
             }
