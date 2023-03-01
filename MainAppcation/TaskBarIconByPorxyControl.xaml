@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:n="clr-namespace:Hardcodet.Wpf.TaskbarNotification;assembly=Hardcodet.NotifyIcon.Wpf">
     <n:TaskbarIcon.ContextMenu>
-        <ContextMenu Width="200">
+        <ContextMenu Width="150">
             <ContextMenu.Resources>
                 <ResourceDictionary>
                     <ResourceDictionary.MergedDictionaries>
