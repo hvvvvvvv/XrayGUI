@@ -32,6 +32,7 @@ namespace NetProxyController
         public SettingWindow(AppConfigration appConfig)
         {
             InitializeComponent();
+            Icon = ImageHelper.ChangeBitmapToImageSource(Resource.Setting);
             _appConfig = appConfig;
             ProxyServer = new ProxyServerInfo(_appConfig.ProxyUrl);
             TextBoxByServerAddr.Text = ProxyServer.ServerAddr;

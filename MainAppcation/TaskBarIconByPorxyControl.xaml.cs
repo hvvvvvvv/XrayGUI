@@ -18,7 +18,6 @@ namespace NetProxyController
         private AppConfigration Configration;
         private NotifyWindow NotifyWindow_;
         private SettingWindow _SettingWindow = default!;
-        private bool _SetingComleted = true;
         public TaskBarIconByPorxyControl()
         {
             Configration = new(AppContext.BaseDirectory + "AppSetting.json");
