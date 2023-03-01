@@ -26,23 +26,36 @@ namespace NetProxyController
     /// </summary>
     public partial class SettingWindow : Window
     {
-        private ProxyServerInfo ProxyServer;
+        private ProxyServerInfo ProxyServer = default!;
         private AppConfigration _appConfig;
-        public bool _SettingComleted { get; private set; } = false;
+        private bool _IsShowing = false;
         public SettingWindow(AppConfigration appConfig)
         {
             InitializeComponent();
             Icon = ImageHelper.ChangeBitmapToImageSource(Resource.Setting);
-            _appConfig = appConfig;
-            ProxyServer = new ProxyServerInfo(_appConfig.ProxyUrl);
-            TextBoxByServerAddr.Text = ProxyServer.ServerAddr;
-            TextBoxByProxyPort.Text = ProxyServer.ServerPort;
-            TextBoxByPassUrl.Text = appConfig.Bypass;
-            RadioByHotkeyEnable.IsChecked = appConfig.IsHotkeyRegEnabled;
-            RadioByHotkeyDisable.IsChecked = !appConfig.IsHotkeyRegEnabled;
-            RadioByProtocolHttp.IsChecked = ProxyServer.Protocol == ProxyType.Http;
-            RadioByProtocolSocks.IsChecked = ProxyServer.Protocol == ProxyType.Socks;
-            viewData.GlobalHotkey = _appConfig.ProxyHotkey;
+            _appConfig = appConfig;            
+        }
+
+        public new void Show()
+        {
+            if(!_IsShowing)
+            {
+                ProxyServer = new ProxyServerInfo(_appConfig.ProxyUrl);
+                TextBoxByServerAddr.Text = ProxyServer.ServerAddr;
+                TextBoxByProxyPort.Text = ProxyServer.ServerPort;
+                TextBoxByPassUrl.Text = _appConfig.Bypass;
+                RadioByHotkeyEnable.IsChecked = _appConfig.IsHotkeyRegEnabled;
+                RadioByHotkeyDisable.IsChecked = !_appConfig.IsHotkeyRegEnabled;
+                RadioByProtocolHttp.IsChecked = ProxyServer.Protocol == ProxyType.Http;
+                RadioByProtocolSocks.IsChecked = ProxyServer.Protocol == ProxyType.Socks;
+                viewData.GlobalHotkey = _appConfig.ProxyHotkey;
+                _IsShowing = true;
+                base.Show();             
+            }
+
+            WindowState = WindowState.Normal;
+            Activate();
+
         }
 
         private void RadioByHotkeyEnable_Checked(object sender, RoutedEventArgs e)
@@ -129,7 +142,9 @@ namespace NetProxyController
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            _SettingComleted = true;
+            e.Cancel = true;
+            Visibility = Visibility.Collapsed;
+            _IsShowing = false;
             _appConfig.IsHotkeyPause = false;
         }
     }

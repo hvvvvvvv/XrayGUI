@@ -17,12 +17,13 @@ namespace NetProxyController
     {
         private AppConfigration Configration;
         private NotifyWindow NotifyWindow_;
-        private SettingWindow _SettingWindow = default!;
+        private SettingWindow _SettingWindow;
         public TaskBarIconByPorxyControl()
         {
             Configration = new(AppContext.BaseDirectory + "AppSetting.json");
             Configration.HotkeyHappendEvent += OnHotkeyHandle;            
-            DataContext = Configration;                     
+            DataContext = Configration;
+            _SettingWindow = new(Configration);
             NotifyWindow_ = new(Configration.IsProxyEnable ? NotifyWindow.StatusEnableImage : NotifyWindow.StatusDisableImage);
             UpdateIcon();
             InitializeComponent();            
@@ -55,16 +56,7 @@ namespace NetProxyController
         }
         private void ShowSettingWindow()
         {
-            if (_SettingWindow != null && !_SettingWindow._SettingComleted)
-            {
-                _SettingWindow.WindowState = WindowState.Normal;
-                _SettingWindow.Activate();
-            }
-            else
-            {
-                _SettingWindow = new(Configration);
-                _SettingWindow.Show();
-            }
+            _SettingWindow.Show();
         }
 
         private void TaskbarIcon_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
