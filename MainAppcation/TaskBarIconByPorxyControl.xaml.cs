@@ -51,7 +51,11 @@ namespace NetProxyController
 
         private void OnAppSetingClick(object sender, RoutedEventArgs e)
         {
-            if(_SettingWindow != null && !_SettingWindow._SettingComleted)
+            ShowSettingWindow();
+        }
+        private void ShowSettingWindow()
+        {
+            if (_SettingWindow != null && !_SettingWindow._SettingComleted)
             {
                 _SettingWindow.WindowState = WindowState.Normal;
                 _SettingWindow.Activate();
@@ -61,6 +65,11 @@ namespace NetProxyController
                 _SettingWindow = new(Configration);
                 _SettingWindow.Show();
             }
+        }
+
+        private void TaskbarIcon_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            ShowSettingWindow();
         }
     }
 }
