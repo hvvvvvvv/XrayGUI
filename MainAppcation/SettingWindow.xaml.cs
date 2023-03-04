@@ -49,6 +49,7 @@ namespace NetProxyController
                 RadioByProtocolHttp.IsChecked = ProxyServer.Protocol == ProxyType.Http;
                 RadioByProtocolSocks.IsChecked = ProxyServer.Protocol == ProxyType.Socks;
                 viewData.GlobalHotkey = _appConfig.ProxyHotkey;
+                _appConfig.IsHotkeyPause = true;
                 _IsShowing = true;
                 base.Show();             
             }
@@ -145,6 +146,7 @@ namespace NetProxyController
             e.Cancel = true;
             Visibility = Visibility.Collapsed;
             _IsShowing = false;
+            _appConfig.IsHotkeyPause = false;
             _appConfig.IsHotkeyPause = false;
         }
     }
