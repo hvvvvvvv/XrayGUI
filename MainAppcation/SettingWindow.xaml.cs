@@ -115,7 +115,8 @@ namespace NetProxyController
             _appConfig.ProxyHotkey = viewData.GlobalHotkey;
             _appConfig.ProxyUrl = ProxyServer.ToString();
             _appConfig.IsHotkeyRegEnabled = RadioByHotkeyEnable.IsChecked ?? false;
-            _appConfig.Bypass = TextBoxByPassUrl.Text;   
+            _appConfig.Bypass = TextBoxByPassUrl.Text;
+            _appConfig.Reload();
             Close();
         }
        
