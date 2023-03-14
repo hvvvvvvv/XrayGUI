@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -18,6 +18,7 @@
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
     <PackageReference Include="RunAtStartup" Version="5.0.2" />
     <PackageReference Include="WindowsProxy" Version="6.0.0" />
+    <PackageReference Include="XrayCoreConfigModle" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
