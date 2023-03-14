@@ -29,7 +29,7 @@ namespace NetProxyController
         private ProxyServerInfo ProxyServer = default!;
         private AppConfigration _appConfig;
         private bool _IsShowing = false;
-        public SettingWindow(AppConfigration appConfig)
+        internal SettingWindow(AppConfigration appConfig)
         {
             InitializeComponent();
             Icon = ImageHelper.ChangeBitmapToImageSource(Resource.Setting);

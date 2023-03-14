@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using XrayCoreConfigModle;
+using Windows.Gaming.Preview.GamesEnumeration;
 
 namespace NetProxyController.Handler
 {
@@ -13,23 +14,16 @@ namespace NetProxyController.Handler
     {
         public MainConfiguration XrayConfig { get; set; }
         public bool Isrunning { get; private set; }
-        private string _coreAppPath;
         private Process _coreProcess { get; set; }
-        public XrayHanler(MainConfiguration xrayConfig, string appPath)
+        public XrayHanler(MainConfiguration xrayConfig)
         {
-            _coreProcess = new Process();
             XrayConfig = xrayConfig;
-            _coreAppPath = appPath;
+            _coreProcess = new Process();
             LoadConfig();
         }
         private void LoadConfig()
         {
-            if(File.Exists(_coreAppPath))
-            {
-                throw new FileNotFoundException();
-            }
-            string configPath = Path.Combine(Path.GetDirectoryName(_coreAppPath)!, "config.json");
-            JsonHandler.JsonSerializeToFile(XrayConfig, configPath);
+            JsonHandler.JsonSerializeToFile(XrayConfig, Modle.Global.XrayCoreConfigPath);
         }
         public void CoreStart()
         {
@@ -40,8 +34,8 @@ namespace NetProxyController.Handler
             }
             _coreProcess.StartInfo = new()
             {
-                FileName = _coreAppPath,
-                WorkingDirectory = Path.GetDirectoryName(_coreAppPath),
+                FileName = Modle.Global.XrayCoreApplictionPath,
+                Arguments = $"-t {Modle.Global.XrayCoreConfigPath}",
                 UseShellExecute = false,
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
@@ -57,7 +51,7 @@ namespace NetProxyController.Handler
             }            
         }
 
-        public void ReadLoad()
+        public void RedLoad()
         {
             _coreProcess.Close();
             _coreProcess.Dispose();

@@ -15,5 +15,7 @@ namespace NetProxyController.Modle
         public bool ProxyEnable { get; set; } = false;
 
         public ProxyModes ProxyMode { get; set; } = ProxyModes.System;
+
+        public bool EnableAutostart { get; set; } = false;
     }
 }
