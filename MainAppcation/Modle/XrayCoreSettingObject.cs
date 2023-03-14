@@ -7,10 +7,12 @@ using XrayCoreConfigModle;
 
 namespace NetProxyController.Modle
 {
-    internal class XrayCoreSetting
+    internal class XrayCoreSettingObject
     {
         public string ExePath { get; set; } = AppContext.BaseDirectory + @"bin\xray.exe";
         public List<OutboundServerItemObject>? OutBoundServers { get; set; }
         public RoutingObject? RoutingSetting { get; set; }
+
+
     }
 }
