@@ -46,31 +46,33 @@
                 <RowDefinition />
 
             </Grid.RowDefinitions>
-            <TextBlock Text="服务器地址：" Grid.Row="0" FontSize="18" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <TextBlock Text="端口号：" Grid.Row="1" FontSize="18" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <TextBlock Text="Http端口：" Grid.Row="0" FontSize="18" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <TextBlock Text="Sokcs端口：" Grid.Row="1" FontSize="18" HorizontalAlignment="Right" VerticalAlignment="Center"/>
             <TextBlock Text="协议：" Grid.Row="2" FontSize="18" HorizontalAlignment="Right" VerticalAlignment="Center"/>
             <TextBlock Text="全局热键开关：" Grid.Row="3" FontSize="18" HorizontalAlignment="Right" VerticalAlignment="Center"/>
             <TextBlock Text="热键设置：" Grid.Row="4" FontSize="18" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-            <hc:TextBox hc:InfoElement.ShowClearButton="True" x:Name="TextBoxByServerAddr"  
-                    hc:InfoElement.Necessary="True" Margin="12,0,80,0"  VerticalAlignment="Center"
-                    hc:InfoElement.Placeholder="IP或域名"                   
-                    Grid.Column="1" 
-                    Style="{StaticResource TextBoxPlusBaseStyle}">
+            <hc:TextBox hc:InfoElement.ShowClearButton="True" x:Name="TextBoxHttpPort"
+                        hc:InfoElement.Necessary="True" Margin="12,0,80,0"  VerticalAlignment="Center"
+                        hc:InfoElement.Placeholder="IP或域名"
+                        Grid.Column="1" 
+                        PreviewKeyDown="TextboxPortnumber_PreviewKeyDown"
+                        Style="{StaticResource TextBoxPlusBaseStyle}">
                 <TextBox.Text>
-                    <Binding x:Name="ServerAddrByBinding" Path="ServerAddr" UpdateSourceTrigger="Explicit">
+                    <Binding x:Name="HttpPortByBinding" Path="HttpPort" UpdateSourceTrigger="Explicit">
                         <Binding.ValidationRules>
-                            <local:IpAddrOrDnsNameValidationRule/>
+                            <local:PortNumberValidationRule/>
                         </Binding.ValidationRules>
                     </Binding>
                 </TextBox.Text>
             </hc:TextBox>
-            <hc:TextBox hc:InfoElement.ShowClearButton="True" x:Name="TextBoxByProxyPort"  
+            <hc:TextBox hc:InfoElement.ShowClearButton="True" x:Name="TextBoxSokcsPort"  
                     hc:InfoElement.Necessary="True" Margin="12,0,80,0"  VerticalAlignment="Center"
-                    hc:InfoElement.Placeholder="1-65535"                   
+                    hc:InfoElement.Placeholder="1-65535"
+                    PreviewKeyDown="TextboxPortnumber_PreviewKeyDown"
                     Grid.Column="1" Grid.Row="1"
                     Style="{StaticResource TextBoxPlusBaseStyle}">
                 <TextBox.Text>
-                    <Binding x:Name="PortBybinding" Path="PortNumber" UpdateSourceTrigger="Explicit">
+                    <Binding x:Name="SocksPortBybinding" Path="SocksPort" UpdateSourceTrigger="Explicit">
                         <Binding.ValidationRules>
                             <local:PortNumberValidationRule/>
                         </Binding.ValidationRules>
@@ -82,8 +84,12 @@
                     <ColumnDefinition/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
-                <RadioButton x:Name="RadioByProtocolSocks" Content="SOCKS" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15"/>
-                <RadioButton x:Name="RadioByProtocolHttp" Content="HTTP" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15" Grid.Column="1"/>
+                <RadioButton x:Name="RadioByProtocolSocks" Content="SOCKS" 
+                             HorizontalAlignment="Center" VerticalAlignment="Center" 
+                             FontSize="15" IsChecked="{Binding RadioSocksChecked,Mode=TwoWay}"/>
+                <RadioButton x:Name="RadioByProtocolHttp" Content="HTTP" 
+                             HorizontalAlignment="Center" VerticalAlignment="Center" 
+                             IsChecked="{Binding RadioHttpChecked, Mode=TwoWay}" FontSize="15" Grid.Column="1"/>
             </Grid>
             <Grid Grid.Row="3" Grid.Column="1" Margin="0,0,50,0">
                 <Grid.ColumnDefinitions>
@@ -92,10 +98,12 @@
                 </Grid.ColumnDefinitions>
                 <RadioButton Content="启用" HorizontalAlignment="Center" 
                              VerticalAlignment="Center" FontSize="15"
-                             x:Name="RadioByHotkeyEnable" Checked="RadioByHotkeyEnable_Checked"/>
+                             x:Name="RadioByHotkeyEnable"
+                             IsChecked="{Binding RadioHotkeyOn, Mode=TwoWay}"/>
                 <RadioButton Content="禁用" HorizontalAlignment="Center" 
                              VerticalAlignment="Center" FontSize="15" Grid.Column="1"
-                             x:Name="RadioByHotkeyDisable" Checked="RadioByHotkeyDisable_Checked"/>
+                             x:Name="RadioByHotkeyDisable" 
+                             IsChecked="{Binding RadioHotkeyOff, Mode=TwoWay}"/>
             </Grid>
             <hc:TextBox hc:InfoElement.ShowClearButton="True"  
                         x:Name="TextboxByHotkeySetting"
@@ -103,6 +111,7 @@
                         hc:InfoElement.Placeholder="录入按键"                   
                         Grid.Column="4" Grid.Row="4" FontSize="11"
                         Text="{Binding HotkeyStr, Mode=TwoWay}"
+                        IsEnabled="{Binding RadioHotkeyOn}"
                         PreviewKeyDown="TextboxByHotkeySetting_PreviewKeyDown"
                         Style="{StaticResource TextBoxPlusBaseStyle}">
             </hc:TextBox>
@@ -111,7 +120,7 @@
                    Text="以下条目开头的地址不经过代理服务器，多个条目使用';'分割"/>
         <hc:TextBox x:Name="TextBoxByPassUrl" TextWrapping="Wrap" Grid.Row="2" hc:InfoElement.ShowClearButton="True"
                     Style="{StaticResource TextBoxPlusBaseStyle}" VerticalContentAlignment="Top"
-                    Margin="15,0,15,0" FontSize="13"/> 
+                    Margin="15,0,15,0" FontSize="13" Text="{Binding SysProxyBypass, Mode=TwoWay}"/> 
         <Grid Grid.Row=" 3" Grid.ColumnSpan="1">
             <Button Style="{StaticResource ButtonInfo}" Width="180" 
                     Background="RoyalBlue" Content="保存"

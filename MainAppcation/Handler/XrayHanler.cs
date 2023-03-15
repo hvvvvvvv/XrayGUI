@@ -7,35 +7,24 @@ using System.Text;
 using System.Threading.Tasks;
 using XrayCoreConfigModle;
 using Windows.Gaming.Preview.GamesEnumeration;
+using NetProxyController.Modle;
+using XrayCoreConfigModle.Inbound;
+using Windows.System.Profile;
 
 namespace NetProxyController.Handler
 {
     internal class XrayHanler
     {
         public MainConfiguration XrayConfig { get; set; }
-        public bool Isrunning { get; private set; }
-        private Process _coreProcess { get; set; }
-        public XrayHanler(MainConfiguration xrayConfig)
+        public bool Isrunning { get; private set; } = false;
+        private Process _coreProcess;
+        private LocalPortObect _LocalPort;
+        private ProcessStartInfo _CoreProcessStartInfo
         {
-            XrayConfig = xrayConfig;
-            _coreProcess = new Process();
-            LoadConfig();
-        }
-        private void LoadConfig()
-        {
-            JsonHandler.JsonSerializeToFile(XrayConfig, Modle.Global.XrayCoreConfigPath);
-        }
-        public void CoreStart()
-        {
-            Isrunning = true;
-            if (!_coreProcess.HasExited)
+            get => new()
             {
-                return;
-            }
-            _coreProcess.StartInfo = new()
-            {
-                FileName = Modle.Global.XrayCoreApplictionPath,
-                Arguments = $"-t {Modle.Global.XrayCoreConfigPath}",
+                FileName = Global.XrayCoreApplictionPath,
+                Arguments = $"-c {Global.XrayCoreConfigPath}",
                 UseShellExecute = false,
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
@@ -43,38 +32,115 @@ namespace NetProxyController.Handler
                 StandardOutputEncoding = Encoding.UTF8,
                 StandardErrorEncoding = Encoding.UTF8,
             };
-            _coreProcess.Start();
+        }
             
-            if(!_coreProcess.WaitForExit(2000))
+        public XrayHanler(MainConfiguration xrayConfig,LocalPortObect localPort)
+        {
+            XrayConfig = xrayConfig;
+            _coreProcess = new Process();
+            _LocalPort = localPort;
+            LoadConfig();
+        }
+        private void LoadConfig()
+        {
+            _coreProcess.Exited += OnCoreProcessAccidentExted;
+            XrayConfig.inbounds = new List<InboundServerItemObject>
             {
-                throw new Exception($"XrayCore进程启动失败：{_coreProcess.StandardError.ReadToEnd()}");
-            }            
+                new()
+                {
+                    listen = Global.LoopBcakAddress,
+                    protocol = "http",
+                    port = _LocalPort.Http,
+                    tag = "http",
+                    settings = new HttpConfigurationObject()
+                    {
+                        allowTransparent = true
+                    }                    
+                },
+                new()
+                {
+                    listen = Global.LoopBcakAddress,
+                    protocol = "socks",
+                    port = _LocalPort.Scoks,
+                    tag = "scoks",
+                    settings =  new SocksConfigurationObject()
+                    {
+                        auth = "none",
+                        udp = true,
+                    },
+                    sniffing = new()
+                    {
+                        enabled = true,
+                        destOverride = new(){ "http", "tls" },
+                    }
+                }
+            };
+            File.WriteAllText(Global.XrayCoreConfigPath, JsonHandler.JsonSerializeToString(XrayConfig));
         }
 
-        public void RedLoad()
+        private void OnCoreProcessAccidentExted(object? sender, EventArgs e)
         {
+            _coreProcess.Refresh();
+            _coreProcess.EnableRaisingEvents = false;
+            _coreProcess.StartInfo = _CoreProcessStartInfo;
+            _coreProcess.Start();
+            
+            if(_coreProcess.WaitForExit(5000))
+            {
+                throw new Exception($"检测到XrayCore进程意外终止，并尝试重新启动失败{_coreProcess.StandardError.ReadToEnd()}");
+            }
+            else
+            {
+                _coreProcess.EnableRaisingEvents = true;
+                _coreProcess.Exited += OnCoreProcessAccidentExted;
+            }
+
+        }
+
+        public void CoreStart()
+        {
+            if (Isrunning) return;
+
+            _coreProcess.Refresh();
+            _coreProcess.EnableRaisingEvents = true;
+            _coreProcess.Exited += OnCoreProcessAccidentExted;
+            _coreProcess.StartInfo = _CoreProcessStartInfo;
+            _coreProcess.Start();
+            
+        }
+
+        public void ReLoad()
+        {
+            var _isRunning = Isrunning;
+            CoreStop();            
             _coreProcess.Close();
             _coreProcess.Dispose();
+            _coreProcess = new();
             LoadConfig();
-            if(Isrunning)
+            if(_isRunning)
             {
                 CoreStart();
             }
         }
 
-        public void Restart()
-        {
-            CoreStop();
-            CoreStart();
-        }
-
         public void CoreStop()
         {
-            if (!_coreProcess.HasExited)
+
+            if(Isrunning)
             {
-                _coreProcess.Kill();
+                _coreProcess.EnableRaisingEvents = false;
+                try
+                {
+                    _coreProcess.Kill();
+                }
+                catch(Exception ex)
+                {
+                    throw new Exception($"尝试终止XrayCore进程失败：{ex.Message}");
+                }
+                _coreProcess.EnableRaisingEvents = true;
+                Isrunning = false;
             }
-            Isrunning = false;
+            
         }
 
     }

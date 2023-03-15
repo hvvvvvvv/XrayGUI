@@ -28,6 +28,7 @@ namespace NetProxyController
         public HotkeySettingObject HotkeySetting => _Config.HotkeySetting;
         public SystemProxySettingObject SystemProxySetting => _Config.SystemProxySetting;
         public XrayCoreSettingObject XrayCoreSetting => _Config.XrayCoreSetting;
+        public LocalPortObect LocalPort => _Config.localPort;
         public bool ProxyEnable
         {
             get => _Config.ProxyEnable;
@@ -51,9 +52,10 @@ namespace NetProxyController
         {
             _Config = new();
             hotkeyHandler = new(HotkeySetting);
-            systemProyHanler = new(SystemProxySetting);
+            systemProyHanler = new(SystemProxySetting, LocalPort);
             autoStartHandler = new();
-            xrayHanler = new(JsonHandler.JsonDeserializeFromFile<MainConfiguration>(@"E:\Xray守护服务\Xray\config.json")!);
+            xrayHanler = new(JsonHandler.JsonDeserializeFromFile<MainConfiguration>(@"C:\Users\万超\Desktop\小飞机\xrayDeamon\Xray\config.json")!,
+                LocalPort);
             Init();
         }
 

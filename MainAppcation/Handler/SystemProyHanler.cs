@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetProxyController.Modle;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,24 +11,26 @@ namespace NetProxyController.Handler
     internal class SystemProyHanler
     {
         private ProxyService _ProxyService;
-        private Modle.SystemProxySettingObject _Setting = new();
-        private const string _serverHost= "127.0.0.1";
-        public SystemProyHanler(Modle.SystemProxySettingObject setting)
+        private SystemProxySettingObject _Setting = new();
+        private LocalPortObect LocalPort;
+        public SystemProyHanler(SystemProxySettingObject setting, LocalPortObect localPort)
         {
             _ProxyService = new();
             _Setting = setting;
+            LocalPort = localPort;
         }
 
         public void OnProxy()
         {
             string serverAddr = _Setting.UseProtocol switch
             {
-                Modle.SystemProtocol.Http => $"{_serverHost}:{_Setting.HttpPort}",
-                Modle.SystemProtocol.Socks => $"socks={_serverHost}:{_Setting.SocksPort}",
-                _ => throw new Exception($"{nameof(Modle.SystemProtocol)} cannot setting")
+                SystemProtocol.Http => $"{Global.LoopBcakAddress}:{LocalPort.Http}",
+                SystemProtocol.Socks => $"socks={Global.LoopBcakAddress}:{LocalPort.Scoks}",
+                _ => throw new Exception($"{nameof(SystemProtocol)} cannot setting")
             };
+            var customBypass = string.IsNullOrEmpty(_Setting.ByPassUrl) ? string.Empty : ";" + _Setting.ByPassUrl;
             _ProxyService.Server = serverAddr;
-            _ProxyService.Bypass = _Setting.ByPassUrl;
+            _ProxyService.Bypass = string.Join(';', ProxyService.LanIp) + customBypass;
             _ProxyService.Global();
         }
         public void OffProxy() => _ProxyService.Direct();

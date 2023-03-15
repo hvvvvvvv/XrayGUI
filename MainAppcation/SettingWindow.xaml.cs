@@ -17,7 +17,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using GlobalHotkey;
 using HandyControl.Themes;
-
+using NetProxyController.Modle;
+using Windows.Services.Store;
 
 namespace NetProxyController
 {
@@ -26,7 +27,6 @@ namespace NetProxyController
     /// </summary>
     public partial class SettingWindow : Window
     {
-        private ProxyServerInfo ProxyServer = default!;
         private AppConfigration _appConfig;
         private bool _IsShowing = false;
         internal SettingWindow(AppConfigration appConfig)
@@ -40,18 +40,17 @@ namespace NetProxyController
         {
             if(!_IsShowing)
             {
-                ProxyServer = new ProxyServerInfo(_appConfig.ProxyUrl);
-                TextBoxByServerAddr.Text = ProxyServer.ServerAddr;
-                TextBoxByProxyPort.Text = ProxyServer.ServerPort;
-                TextBoxByPassUrl.Text = _appConfig.Bypass;
-                RadioByHotkeyEnable.IsChecked = _appConfig.IsHotkeyRegEnabled;
-                RadioByHotkeyDisable.IsChecked = !_appConfig.IsHotkeyRegEnabled;
-                RadioByProtocolHttp.IsChecked = ProxyServer.Protocol == ProxyType.Http;
-                RadioByProtocolSocks.IsChecked = ProxyServer.Protocol == ProxyType.Socks;
-                viewData.GlobalHotkey = _appConfig.ProxyHotkey;
-                _appConfig.IsHotkeyPause = true;
+                viewData.HttpPort = _appConfig.LocalPort.Http;
+                viewData.SocksPort = _appConfig.LocalPort.Scoks;
+                viewData.SysProxyBypass = _appConfig.SystemProxySetting.ByPassUrl;
+                viewData.RadioHotkeyOn = _appConfig.HotkeySetting.Enable;
+                viewData.RadioHotkeyOff = !_appConfig.HotkeySetting.Enable;
+                viewData.RadioHttpChecked = _appConfig.SystemProxySetting.UseProtocol == SystemProtocol.Http;
+                viewData.RadioSocksChecked = _appConfig.SystemProxySetting.UseProtocol == SystemProtocol.Socks;
+                viewData.GlobalHotkey = _appConfig.HotkeySetting.Hotkey;
+                _appConfig.hotkeyHandler.IsPause = true;
                 _IsShowing = true;
-                base.Show();             
+                base.Show();
             }
 
             WindowState = WindowState.Normal;
@@ -59,64 +58,51 @@ namespace NetProxyController
 
         }
 
-        private void RadioByHotkeyEnable_Checked(object sender, RoutedEventArgs e)
-        {
-            
-            TextboxByHotkeySetting.IsEnabled= true;
-            
-        }
-
-        private void RadioByHotkeyDisable_Checked(object sender, RoutedEventArgs e)
-        {
-            TextboxByHotkeySetting.IsEnabled = false;
-        }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            if(PortBybinding.UpdateSourceTrigger == UpdateSourceTrigger.Explicit)
+            if(HttpPortByBinding.UpdateSourceTrigger == UpdateSourceTrigger.Explicit)
             {
-                TextBoxByProxyPort.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+                TextBoxHttpPort.GetBindingExpression(TextBox.TextProperty).UpdateSource();
             }
-            if (ServerAddrByBinding.UpdateSourceTrigger == UpdateSourceTrigger.Explicit)
+            if (SocksPortBybinding.UpdateSourceTrigger == UpdateSourceTrigger.Explicit)
             {
-                TextBoxByServerAddr.GetBindingExpression(TextBox.TextProperty).UpdateSource();
+                TextBoxSokcsPort.GetBindingExpression(TextBox.TextProperty).UpdateSource();
             }
-            if (Validation.GetErrors(TextBoxByProxyPort).Count > 0)
+            if (Validation.GetErrors(TextBoxHttpPort).Count > 0)
             {
-                string valueText = TextBoxByProxyPort.Text;
+                string valueText = TextBoxHttpPort.Text;
                 var binding = new Binding()
                 {
-                    Path = PortBybinding.Path,
-                    Mode = PortBybinding.Mode,
+                    Path = HttpPortByBinding.Path,
+                    Mode = HttpPortByBinding.Mode,
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                 };
-                foreach(var rules in PortBybinding.ValidationRules) binding.ValidationRules.Add(rules);
-                BindingOperations.SetBinding(TextBoxByProxyPort, TextBox.TextProperty, binding);
-                TextBoxByProxyPort.Text = valueText;
+                foreach(var rules in HttpPortByBinding.ValidationRules) binding.ValidationRules.Add(rules);
+                BindingOperations.SetBinding(TextBoxHttpPort, TextBox.TextProperty, binding);
+                TextBoxHttpPort.Text = valueText;
                 return;
             }
-            if(Validation.GetErrors(TextBoxByServerAddr).Count > 0)
+            if(Validation.GetErrors(TextBoxSokcsPort).Count > 0)
             {
-                string textValue = TextBoxByServerAddr.Text;
+                string textValue = TextBoxSokcsPort.Text;
                 var binding = new Binding()
                 {
-                    Path = ServerAddrByBinding.Path,
-                    Mode = ServerAddrByBinding.Mode,
+                    Path = SocksPortBybinding.Path,
+                    Mode = SocksPortBybinding.Mode,
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                 };
-                foreach(var rules in ServerAddrByBinding.ValidationRules) binding.ValidationRules.Add(rules);
-                BindingOperations.SetBinding(TextBoxByServerAddr, TextBox.TextProperty, binding);
-                TextBoxByServerAddr.Text = textValue;
+                foreach(var rules in SocksPortBybinding.ValidationRules) binding.ValidationRules.Add(rules);
+                BindingOperations.SetBinding(TextBoxSokcsPort, TextBox.TextProperty, binding);
+                TextBoxSokcsPort.Text = textValue;
                 return;
             }
-            ProxyServer.Protocol = RadioByProtocolHttp.IsChecked ?? true ? ProxyType.Http : ProxyType.Socks;
-            ProxyServer.ServerPort = TextBoxByProxyPort.Text;
-            ProxyServer.ServerAddr = TextBoxByServerAddr.Text;
-            _appConfig.ProxyHotkey = viewData.GlobalHotkey;
-            _appConfig.ProxyUrl = ProxyServer.ToString();
-            _appConfig.IsHotkeyRegEnabled = RadioByHotkeyEnable.IsChecked ?? false;
-            _appConfig.Bypass = TextBoxByPassUrl.Text;
-            _appConfig.Reload();
+            _appConfig.HotkeySetting.Hotkey = viewData.GlobalHotkey;
+            _appConfig.LocalPort.Http = viewData.HttpPort;
+            _appConfig.LocalPort.Scoks = viewData.SocksPort;
+            _appConfig.SystemProxySetting.UseProtocol = viewData.SystemProtocol;
+            _appConfig.SystemProxySetting.ByPassUrl = viewData.SysProxyBypass;
+            _appConfig.UpdateSetting();
             Close();
         }
        
@@ -142,13 +128,30 @@ namespace NetProxyController
             }
         }
 
+        private void TextboxPortnumber_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            var numberKey = new[]
+            {
+                Key.D0, Key.D1, Key.D2, Key.D3, Key.D4,
+                Key.D5, Key.D6, Key.D7, Key.D8, Key.D9,
+                Key.NumPad0, Key.NumPad1, Key.NumPad2,
+                Key.NumPad3, Key.NumPad4, Key.NumPad5, 
+                Key.NumPad6, Key.NumPad7, Key.NumPad8,
+                Key.NumPad9
+            };
+            if(Keyboard.Modifiers == ModifierKeys.None && numberKey.Contains(e.Key))
+            {
+                return;
+            }
+            e.Handled = true;
+        }
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
             Visibility = Visibility.Collapsed;
             _IsShowing = false;
-            _appConfig.IsHotkeyPause = false;
-            _appConfig.IsHotkeyPause = false;
+            _appConfig.hotkeyHandler.IsPause = false;
+           
         }
     }
 
@@ -167,27 +170,8 @@ namespace NetProxyController
             return new ValidationResult(false, "请输入正确的端口号");
         }
     }
-    public class IpAddrOrDnsNameValidationRule: ValidationRule
-    {
-        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
-        {
-            string dnsNamePattern = @"^[a-zA-Z][a-zA-Z0-9]+(\.[a-zA-Z0-9]+)*$";
-            string ipAddrPattern = @"^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$";
-            string input = value.ToString() ?? string.Empty;
-            if(Regex.IsMatch(input,ipAddrPattern) || Regex.IsMatch(input,dnsNamePattern))
-            {
-                return ValidationResult.ValidResult;
-            }
-            else
-            {
-                return new ValidationResult(false, "IP/域名格式不正确");
-            }
-
-        }
-    }
     public class SettingViewData : INotifyPropertyChanged
-    {
-        private string _portNumber = string.Empty;
+    {        
         private Hotkey _GlobalHotkey;
         public Hotkey GlobalHotkey
         {
@@ -195,7 +179,7 @@ namespace NetProxyController
             set
             {
                 _GlobalHotkey= value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HotkeyStr)));
+                OnPropertyChanged(nameof(HotkeyStr));
             }
         }
         public string HotkeyStr
@@ -220,34 +204,92 @@ namespace NetProxyController
             }
             set { }
         }
-        public string PortNumber
+
+
+        private int _socksPort;
+        public int SocksPort
         {
-            get { return _portNumber; }
+            get { return _socksPort; }
             set
             {
-                if (_portNumber != value)
+                if (_socksPort != value)
                 {
-                    _portNumber = value;
-                    OnPropertyChanged(nameof(PortNumber));
+                    _socksPort = value;
+                    OnPropertyChanged(nameof(SocksPort));
                 }
             }
         }
-        private string _ServerAddr = string.Empty;
-        public string ServerAddr
+
+
+        private int _httpPort;
+        public int HttpPort
         {
-            get { return _ServerAddr; }
+            get { return _httpPort; }
             set
             {
-                if(_ServerAddr != value)
+                if(_httpPort != value)
                 {
-                    _ServerAddr = value;
-                    OnPropertyChanged(nameof(ServerAddr));
+                    _httpPort = value;
+                    OnPropertyChanged(nameof(HttpPort));
                 }
+            }
+        }
+
+        public SystemProtocol SystemProtocol;
+
+        public bool RadioHttpChecked
+        {
+            get => SystemProtocol == SystemProtocol.Http;
+            set
+            {
+                if(value) SystemProtocol = SystemProtocol.Http;
+                OnPropertyChanged(nameof(RadioHttpChecked));
+            }
+        }
+        public bool RadioSocksChecked
+        {
+            get => SystemProtocol == SystemProtocol.Socks;
+            set
+            {
+                if(value) SystemProtocol = SystemProtocol.Socks;
+                OnPropertyChanged(nameof(RadioSocksChecked));
+            }
+        }
+
+        private bool _radioHotkeyOn;
+        public bool RadioHotkeyOn
+        {
+            get => _radioHotkeyOn;
+            set
+            {
+                _radioHotkeyOn = value;
+                OnPropertyChanged(nameof(RadioHotkeyOn));
+            }
+        }
+
+        private bool _radioHotkeyOff;
+        public bool RadioHotkeyOff
+        {
+            get => _radioHotkeyOff;
+            set
+            {
+                _radioHotkeyOff = value;
+                OnPropertyChanged(nameof(RadioHotkeyOff));
+            }
+        }
+
+        private string _sysProxyBypass = string.Empty;
+        public string SysProxyBypass
+        {
+            get => _sysProxyBypass;
+            set
+            {
+                _sysProxyBypass = value;
+                OnPropertyChanged(nameof(SysProxyBypass));
             }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
-
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

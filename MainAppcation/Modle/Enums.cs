@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace NetProxyController.Modle
 {
-    enum SystemProtocol
+    public enum SystemProtocol
     {
         Http = 1,
         Socks = 2
     }
-    enum ProxyModes
+    public enum ProxyModes
     {
         System = 1,
         Tun = 2
