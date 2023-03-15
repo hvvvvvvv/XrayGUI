@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
+using Vanara.PInvoke;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +11,8 @@ using Windows.Gaming.Preview.GamesEnumeration;
 using NetProxyController.Modle;
 using XrayCoreConfigModle.Inbound;
 using Windows.System.Profile;
+using HandyControl.Controls;
+using HandyControl.Data;
 
 namespace NetProxyController.Handler
 {
@@ -19,6 +22,7 @@ namespace NetProxyController.Handler
         public bool Isrunning { get; private set; } = false;
         private Process _coreProcess;
         private LocalPortObect _LocalPort;
+        private bool _ExitedEventPause = false;
         private ProcessStartInfo _CoreProcessStartInfo
         {
             get => new()
@@ -38,12 +42,13 @@ namespace NetProxyController.Handler
         {
             XrayConfig = xrayConfig;
             _coreProcess = new Process();
+            _coreProcess.EnableRaisingEvents = true;
+            _coreProcess.Exited += OnCoreProcessAccidentExted;
             _LocalPort = localPort;
             LoadConfig();
         }
         private void LoadConfig()
-        {
-            _coreProcess.Exited += OnCoreProcessAccidentExted;
+        {            
             XrayConfig.inbounds = new List<InboundServerItemObject>
             {
                 new()
@@ -75,24 +80,38 @@ namespace NetProxyController.Handler
                     }
                 }
             };
+            if(!Directory.Exists(Path.GetDirectoryName(Global.XrayCoreConfigPath)))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(Global.XrayCoreConfigPath)!);
+            }
             File.WriteAllText(Global.XrayCoreConfigPath, JsonHandler.JsonSerializeToString(XrayConfig));
+            if(!File.Exists(Global.XrayCoreApplictionPath))
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(Global.XrayCoreApplictionPath)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(Global.XrayCoreApplictionPath)!);
+                }
+                throw new Exception($"未找到XrayCore程序，请将{Path.GetFileName(Global.XrayCoreApplictionPath)}文件放在{Path.GetDirectoryName(Global.XrayCoreApplictionPath)}目录下");
+            }
         }
 
         private void OnCoreProcessAccidentExted(object? sender, EventArgs e)
         {
-            _coreProcess.Refresh();
+            if(_ExitedEventPause) return;
+
+            _coreProcess.Close();
             _coreProcess.EnableRaisingEvents = false;
             _coreProcess.StartInfo = _CoreProcessStartInfo;
             _coreProcess.Start();
-            
-            if(_coreProcess.WaitForExit(5000))
+            Kernel32.AssignProcessToJobObject(Global.ProcessJobs, _coreProcess);
+
+            if (_coreProcess.WaitForExit(5000))
             {
                 throw new Exception($"检测到XrayCore进程意外终止，并尝试重新启动失败{_coreProcess.StandardError.ReadToEnd()}");
             }
             else
             {
                 _coreProcess.EnableRaisingEvents = true;
-                _coreProcess.Exited += OnCoreProcessAccidentExted;
             }
 
         }
@@ -101,21 +120,18 @@ namespace NetProxyController.Handler
         {
             if (Isrunning) return;
 
-            _coreProcess.Refresh();
-            _coreProcess.EnableRaisingEvents = true;
-            _coreProcess.Exited += OnCoreProcessAccidentExted;
+            _coreProcess.Close();                     
             _coreProcess.StartInfo = _CoreProcessStartInfo;
             _coreProcess.Start();
-            
+            _ExitedEventPause = false;
+            Isrunning = true;
+            Kernel32.AssignProcessToJobObject(Global.ProcessJobs, _coreProcess);
         }
 
         public void ReLoad()
         {
             var _isRunning = Isrunning;
-            CoreStop();            
-            _coreProcess.Close();
-            _coreProcess.Dispose();
-            _coreProcess = new();
+            CoreStop();
             LoadConfig();
             if(_isRunning)
             {
@@ -128,16 +144,16 @@ namespace NetProxyController.Handler
 
             if(Isrunning)
             {
-                _coreProcess.EnableRaisingEvents = false;
+                _ExitedEventPause = true;
                 try
                 {
                     _coreProcess.Kill();
+                    _coreProcess.WaitForExit();
                 }
                 catch(Exception ex)
                 {
                     throw new Exception($"尝试终止XrayCore进程失败：{ex.Message}");
                 }
-                _coreProcess.EnableRaisingEvents = true;
                 Isrunning = false;
             }
             

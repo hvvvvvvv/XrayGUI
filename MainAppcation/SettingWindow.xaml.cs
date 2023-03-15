@@ -103,6 +103,7 @@ namespace NetProxyController
             _appConfig.SystemProxySetting.UseProtocol = viewData.SystemProtocol;
             _appConfig.SystemProxySetting.ByPassUrl = viewData.SysProxyBypass;
             _appConfig.UpdateSetting();
+            _appConfig.xrayHanler.ReLoad();
             Close();
         }
        
@@ -137,7 +138,7 @@ namespace NetProxyController
                 Key.NumPad0, Key.NumPad1, Key.NumPad2,
                 Key.NumPad3, Key.NumPad4, Key.NumPad5, 
                 Key.NumPad6, Key.NumPad7, Key.NumPad8,
-                Key.NumPad9
+                Key.NumPad9,Key.Back
             };
             if(Keyboard.Modifiers == ModifierKeys.None && numberKey.Contains(e.Key))
             {

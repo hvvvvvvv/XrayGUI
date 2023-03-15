@@ -17,6 +17,7 @@
     <PackageReference Include="HandyControl" Version="3.4.0" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
     <PackageReference Include="RunAtStartup" Version="5.0.2" />
+    <PackageReference Include="Vanara.PInvoke.Kernel32" Version="3.4.13" />
     <PackageReference Include="WindowsProxy" Version="6.0.0" />
     <PackageReference Include="XrayCoreConfigModle" Version="1.0.0" />
   </ItemGroup>

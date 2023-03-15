@@ -5,6 +5,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using Hardcodet.Wpf.TaskbarNotification;
 using ProxyNotifyWindow;
+using static Vanara.PInvoke.Kernel32;
 namespace NetProxyController
 {
     internal class Program
@@ -16,6 +17,7 @@ namespace NetProxyController
             {
                 ShutdownMode = ShutdownMode.OnExplicitShutdown
             };
+            SetProcessJobs();
             //var res1 = new ResourceDictionary();
             //var res2 = new ResourceDictionary();
             //res1.Source = new Uri("pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml");
@@ -25,7 +27,20 @@ namespace NetProxyController
             //app.Resources.MergedDictionaries.Add(res2);
             TaskBarIconByPorxyControl taskBar = new();
             taskBar.Show();
+            
             app.Run();
+        }
+        static void SetProcessJobs()
+        {
+            var setClass = JOBOBJECTINFOCLASS.JobObjectExtendedLimitInformation;
+            var jobInfo = new JOBOBJECT_EXTENDED_LIMIT_INFORMATION()
+            {
+                BasicLimitInformation = new()
+                {
+                    LimitFlags = JOBOBJECT_LIMIT_FLAGS.JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
+                }
+            };
+            SetInformationJobObject(Modle.Global.ProcessJobs, setClass, jobInfo);            
         }
     }
 }

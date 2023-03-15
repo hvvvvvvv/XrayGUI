@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Vanara.PInvoke;
 
 namespace NetProxyController.Modle
 {
@@ -13,5 +14,6 @@ namespace NetProxyController.Modle
         public static readonly string AppConfigPath = AppContext.BaseDirectory + @"\Config\AppCofing.json";
         public static readonly string XrayCoreConfigPath = AppContext.BaseDirectory + @"\Config\XrayCoreConfig.json";
         public static readonly string XrayCoreApplictionPath = AppContext.BaseDirectory + @"\bin\xray.exe";
+        public static readonly Kernel32.SafeHJOB ProcessJobs = Kernel32.CreateJobObject();
     }
 }

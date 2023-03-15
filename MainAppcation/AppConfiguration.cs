@@ -54,7 +54,7 @@ namespace NetProxyController
             hotkeyHandler = new(HotkeySetting);
             systemProyHanler = new(SystemProxySetting, LocalPort);
             autoStartHandler = new();
-            xrayHanler = new(JsonHandler.JsonDeserializeFromFile<MainConfiguration>(@"C:\Users\万超\Desktop\小飞机\xrayDeamon\Xray\config.json")!,
+            xrayHanler = new(JsonHandler.JsonDeserializeFromFile<MainConfiguration>(@"E:\Xray守护服务\Xray\config.json")!,
                 LocalPort);
             Init();
         }
