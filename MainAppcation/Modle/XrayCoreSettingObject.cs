@@ -9,10 +9,16 @@ namespace NetProxyController.Modle
 {
     internal class XrayCoreSettingObject
     {
-        public string ExePath { get; set; } = AppContext.BaseDirectory + @"bin\xray.exe";
-        public List<OutboundServerItemObject>? OutBoundServers { get; set; }
-        public RoutingObject? RoutingSetting { get; set; }
+        public List<OutboundServerItemObject> OutBoundServers { get; set; } = new();
+        public RouteMatchSettingObject RouteMatchSetting { get; set; } = new();
+        public List<XrayCoreConfigModle.Routing.RuleObject> RoutingRules{ get; set; } = new();
+        public string? DefaultOutBoundServerTag { get; set; }
 
+    }
+    internal class RouteMatchSettingObject
+    {
+        public string domainStrategy { get; set; } = "AsIs";
 
+        public string domainMatcher { get; set; } = "hybrid";
     }
 }

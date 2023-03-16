@@ -4,7 +4,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.ComponentModel;
 using Vanara.PInvoke;
-
+using System.Text.Json.Serialization;
 
 namespace GlobalHotkey
 {
@@ -88,7 +88,7 @@ namespace GlobalHotkey
             _app.Dispatcher.InvokeShutdown();
         }
     }
-
+   [JsonConverter(typeof(HotkeyConverter))]
     public struct Hotkey
     {
         public Hotkey(KeyModifier keyModifier, Key key)

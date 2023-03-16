@@ -10,7 +10,7 @@ namespace NetProxyController.Modle
 {
     internal class HotkeySettingObject
     {
-        public bool Enable { get; set; } =true;
+        public bool Enable { get; set; } = true;
         public Hotkey Hotkey { get; set; } = new(KeyModifier.Alt, Key.F);
     }
 }

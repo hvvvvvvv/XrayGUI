@@ -50,20 +50,32 @@ namespace NetProxyController
         public readonly Handler.AutoStartHandler autoStartHandler;
         public AppConfigration()
         {
-            _Config = new();
+            _Config = ReadConfig();
             hotkeyHandler = new(HotkeySetting);
             systemProyHanler = new(SystemProxySetting, LocalPort);
             autoStartHandler = new();
-            xrayHanler = new(JsonHandler.JsonDeserializeFromFile<MainConfiguration>(@"E:\Xray守护服务\Xray\config.json")!,
-                LocalPort);
-            Init();
+            xrayHanler = new(XrayCoreSetting, LocalPort);
+            //XrayCoreSetting.OutBoundServers = JsonHandler.JsonDeserializeFromFile<MainConfiguration>(
+            //    @"C:\Users\万超\Desktop\小飞机\xrayDeamon\Xray\config.json").outbounds;
+            UpdateSetting();
         }
 
-        private void Init()
+        private static ConfigObject ReadConfig()
         {
-            xrayHanler.CoreStart();
-            UpdateSetting();
-            
+            ConfigObject? config = default;
+            try
+            {
+                config = JsonHandler.JsonDeserializeFromFile<ConfigObject>(Global.AppConfigPath);
+            }
+            catch { }
+            if(config != default)
+            {
+                return config;
+            }
+            else
+            {
+                return new ConfigObject();
+            }
         }
 
         public void UpdateSetting()
@@ -72,8 +84,11 @@ namespace NetProxyController
             {
                 autoStartHandler.Enable = EnableAutostart;
             }
-            if (ProxyEnable) systemProyHanler.OnProxy();
-            else systemProyHanler.OffProxy();
+            if (ProxyEnable) 
+                systemProyHanler.OnProxy();
+            else 
+                systemProyHanler.OffProxy();
+            Save();
         }
 
         public void Save()
