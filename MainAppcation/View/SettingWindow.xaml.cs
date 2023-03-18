@@ -19,6 +19,7 @@ using GlobalHotkey;
 using HandyControl.Themes;
 using NetProxyController.Modle;
 using Windows.Services.Store;
+using XrayCoreConfigModle;
 
 namespace NetProxyController
 {
@@ -27,9 +28,9 @@ namespace NetProxyController
     /// </summary>
     public partial class SettingWindow : Window
     {
-        private AppConfigration _appConfig;
+        private MainConfigration _appConfig;
         private bool _IsShowing = false;
-        internal SettingWindow(AppConfigration appConfig)
+        internal SettingWindow(MainConfigration appConfig)
         {
             InitializeComponent();
             Icon = ImageHelper.ChangeBitmapToImageSource(Resource.Setting);

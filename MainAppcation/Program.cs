@@ -6,6 +6,8 @@ using System.Windows.Media;
 using Hardcodet.Wpf.TaskbarNotification;
 using ProxyNotifyWindow;
 using static Vanara.PInvoke.Kernel32;
+using NetProxyController.View;
+
 namespace NetProxyController
 {
     internal class Program
@@ -25,7 +27,7 @@ namespace NetProxyController
             //app.Resources = new ResourceDictionary();
             //app.Resources.MergedDictionaries.Add(res1);
             //app.Resources.MergedDictionaries.Add(res2);
-            TaskBarIconByPorxyControl taskBar = new();
+            NotifyIcon taskBar = new();
             taskBar.Show();
             
             app.Run();

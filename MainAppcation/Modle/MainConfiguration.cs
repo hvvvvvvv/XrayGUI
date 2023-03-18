@@ -16,14 +16,13 @@ using Microsoft.Win32;
 using System.Windows;
 using RunAtStartup;
 using XrayCoreConfigModle;
-using NetProxyController.Modle;
 using static System.Windows.Forms.Design.AxImporter;
 
-namespace NetProxyController
+namespace NetProxyController.Modle
 {
-    internal class AppConfigration
+    internal class MainConfigration
     {
-        
+
         private ConfigObject _Config;
         public HotkeySettingObject HotkeySetting => _Config.HotkeySetting;
         public SystemProxySettingObject SystemProxySetting => _Config.SystemProxySetting;
@@ -48,7 +47,7 @@ namespace NetProxyController
         public readonly Handler.SystemProyHanler systemProyHanler;
         public readonly Handler.XrayHanler xrayHanler;
         public readonly Handler.AutoStartHandler autoStartHandler;
-        public AppConfigration()
+        public MainConfigration()
         {
             _Config = ReadConfig();
             hotkeyHandler = new(HotkeySetting);
@@ -69,7 +68,7 @@ namespace NetProxyController
                 config = JsonHandler.JsonDeserializeFromFile<ConfigObject>(Global.AppConfigPath);
             }
             catch { }
-            if(config != default)
+            if (config != default)
             {
                 return config;
             }
@@ -81,13 +80,13 @@ namespace NetProxyController
 
         public void UpdateSetting()
         {
-            if(autoStartHandler.Enable != EnableAutostart)
+            if (autoStartHandler.Enable != EnableAutostart)
             {
                 autoStartHandler.Enable = EnableAutostart;
             }
-            if (ProxyEnable) 
+            if (ProxyEnable)
                 systemProyHanler.OnProxy();
-            else 
+            else
                 systemProyHanler.OffProxy();
             Save();
         }
@@ -101,7 +100,7 @@ namespace NetProxyController
             };
             string jsonContent = JsonSerializer.Serialize(_Config, options_);
             string path = Path.GetDirectoryName(Global.AppConfigPath)!;
-            if(!Directory.Exists(path))
+            if (!Directory.Exists(path))
             {
                 Directory.CreateDirectory(path);
             }

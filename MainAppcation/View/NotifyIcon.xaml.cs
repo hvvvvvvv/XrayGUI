@@ -11,20 +11,20 @@ using System.Windows.Controls.Ribbon;
 using ProxyNotifyWindow;
 using System.Security.Cryptography;
 using System.Drawing;
-using System.Reflection.PortableExecutable;
+using NetProxyController.Modle;
 
-namespace NetProxyController
+namespace NetProxyController.View
 {
-    public partial class  TaskBarIconByPorxyControl: TaskbarIcon
+    public partial class NotifyIcon : TaskbarIcon
     {
         public static Icon IconByProxyEnabled = Icon.FromHandle(Resource.ProxyEnable.GetHicon());
         public static Icon IconByProxyDisabled = Icon.FromHandle(Resource.ProxyDisable.GetHicon());
-        private AppConfigration Configration;
+        private MainConfigration Configration;
         private NotifyWindow NotifyWindow_;
         private SettingWindow _SettingWindow;
-        public TaskBarIconByPorxyControl()
+        public NotifyIcon()
         {
-            Configration = new();                      
+            Configration = new();
             _SettingWindow = new(Configration);
             NotifyWindow_ = new(Configration.ProxyEnable ? NotifyWindow.StatusEnableImage : NotifyWindow.StatusDisableImage);
             InitializeComponent();
@@ -34,11 +34,11 @@ namespace NetProxyController
         private void init()
         {
             Configration.hotkeyHandler.HotkeyHappenedCallback += OnHotkeyHandle;
-            Quit.Click += (s,e) => Application.Current.Shutdown(0);
+            Quit.Click += (s, e) => Application.Current.Shutdown(0);
             AppSetting.Click += (s, e) => ShowSettingWindow();
             TrayLeftMouseUp += (s, e) => ShowSettingWindow();
-            IsProxyEnable.Click += OnIsEnableProxyClick;            
-            AutoStart.Click += AutoStart_Click;           
+            IsProxyEnable.Click += OnIsEnableProxyClick;
+            AutoStart.Click += AutoStart_Click;
             UpdateView();
         }
         private void UpdateView()
@@ -46,7 +46,7 @@ namespace NetProxyController
             AutoStart.IsChecked = Configration.EnableAutostart;
             IsProxyEnable.IsChecked = Configration.ProxyEnable;
             ToolTipText = Configration.ProxyEnable ? "代理已开启" : "代理已关闭";
-            Icon = Configration.ProxyEnable ? IconByProxyEnabled : IconByProxyDisabled;            
+            Icon = Configration.ProxyEnable ? IconByProxyEnabled : IconByProxyDisabled;
         }
         private void OnIsEnableProxyClick(object sender, RoutedEventArgs e)
         {
@@ -58,7 +58,7 @@ namespace NetProxyController
         {
             Configration.ProxyEnable = !Configration.ProxyEnable;
             Configration.UpdateSetting();
-            NotifyWindow_.ShowNotify(Configration.ProxyEnable ? NotifyWindow.StatusEnableImage : NotifyWindow.StatusDisableImage);            
+            NotifyWindow_.ShowNotify(Configration.ProxyEnable ? NotifyWindow.StatusEnableImage : NotifyWindow.StatusDisableImage);
             UpdateView();
         }
         private void ShowSettingWindow()

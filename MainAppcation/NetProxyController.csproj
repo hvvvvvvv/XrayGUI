@@ -19,12 +19,12 @@
     <PackageReference Include="RunAtStartup" Version="5.0.2" />
     <PackageReference Include="Vanara.PInvoke.Kernel32" Version="3.4.13" />
     <PackageReference Include="WindowsProxy" Version="6.0.0" />
-    <PackageReference Include="XrayCoreConfigModle" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\GlobalHotkey\GlobalHotkey.csproj" />
     <ProjectReference Include="..\ProxyNotifyWindow\ProxyNotifyWindow.csproj" />
+    <ProjectReference Include="..\XrayCoreConfigModle\XrayCoreConfigModle.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,11 +52,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Tools\" />
-    <Folder Include="View\" />
   </ItemGroup>
 
 </Project>

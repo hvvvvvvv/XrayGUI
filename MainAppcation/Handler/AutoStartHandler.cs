@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Networking.Connectivity;
 
 namespace NetProxyController.Handler
 {
@@ -18,7 +19,13 @@ namespace NetProxyController.Handler
         public bool Enable
         {
             get => Check(Environment.ProcessPath!);
-            set => Set(Environment.ProcessPath!);
+            set
+            {
+                if (value)
+                    Set(Environment.ProcessPath!);
+                else
+                    Delete();
+            }
         }
         
 
