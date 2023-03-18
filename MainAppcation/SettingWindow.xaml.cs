@@ -104,6 +104,7 @@ namespace NetProxyController
             _appConfig.SystemProxySetting.ByPassUrl = viewData.SysProxyBypass;
             _appConfig.UpdateSetting();
             _appConfig.xrayHanler.ReLoad();
+            _appConfig.hotkeyHandler.Load();
             Close();
         }
        

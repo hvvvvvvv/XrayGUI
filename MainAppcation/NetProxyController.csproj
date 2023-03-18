@@ -54,4 +54,9 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Tools\" />
+    <Folder Include="View\" />
+  </ItemGroup>
+
 </Project>

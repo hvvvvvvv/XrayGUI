@@ -16,4 +16,12 @@ namespace NetProxyController.Modle
         System = 1,
         Tun = 2
     }
+    public enum OutboundProtocol
+    {
+        Vless = 1,
+        Vmess = 2,
+        Trojan = 3,
+        Scoks = 4,
+        ShadowSocks = 5,
+    }
 }

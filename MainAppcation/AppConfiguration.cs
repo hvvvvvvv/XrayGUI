@@ -58,6 +58,7 @@ namespace NetProxyController
             //XrayCoreSetting.OutBoundServers = JsonHandler.JsonDeserializeFromFile<MainConfiguration>(
             //    @"C:\Users\万超\Desktop\小飞机\xrayDeamon\Xray\config.json").outbounds;
             UpdateSetting();
+            xrayHanler.CoreStart();
         }
 
         private static ConfigObject ReadConfig()
