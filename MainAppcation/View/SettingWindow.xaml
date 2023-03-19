@@ -11,14 +11,14 @@
         WindowStartupLocation="CenterScreen"
         Closing="Window_Closing"
         Title="参数设置" Height="470" Width="380">
-    <Window.Resources>
+    <!--<Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </Window.Resources>
+    </Window.Resources>-->
     <Window.DataContext>
         <local:SettingViewData x:Name="viewData"/>
     </Window.DataContext>

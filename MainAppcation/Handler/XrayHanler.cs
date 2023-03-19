@@ -118,7 +118,7 @@ namespace NetProxyController.Handler
                 outbounds = XrayConfig.OutBoundServers,
                 routing = routing
             };
-            JsonHandler.JsonSerializeToFile(mainConfig, Global.XrayCoreConfigPath);       
+           JsonHandler.JsonSerializeToFile(mainConfig, Global.XrayCoreConfigPath);       
             
         }
 
@@ -126,7 +126,7 @@ namespace NetProxyController.Handler
         {
             if(_ExitedEventPause) return;
 
-            _ExitedEventPause = false;
+            _ExitedEventPause = true;
             _coreProcess.Close();           
             _coreProcess.StartInfo = _CoreProcessStartInfo;
             _coreProcess.Start();
@@ -134,11 +134,11 @@ namespace NetProxyController.Handler
 
             if (_coreProcess.WaitForExit(5000))
             {
-                throw new Exception($"检测到XrayCore进程意外终止，并尝试重新启动失败{_coreProcess.StandardError.ReadToEnd()}");
+                throw new Exception($"检测到XrayCore进程意外终止，并尝试重新启动失败{_coreProcess.StandardOutput.ReadToEnd()}");
             }
             else
             {
-                _ExitedEventPause = true;
+                _ExitedEventPause = false;
             }
 
         }
@@ -147,7 +147,7 @@ namespace NetProxyController.Handler
         {
             if (Isrunning) return;
 
-            _coreProcess.Close();                     
+            _coreProcess.Close();   
             _coreProcess.StartInfo = _CoreProcessStartInfo;
             _coreProcess.Start();
             _ExitedEventPause = false;

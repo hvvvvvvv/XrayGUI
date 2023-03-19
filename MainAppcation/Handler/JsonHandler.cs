@@ -33,9 +33,9 @@ namespace XrayCoreConfigModle
         }
         public static void JsonSerializeToFile(object obj, string path)
         {
-            JsonSerializeToFile(obj, path, Encoding.UTF8);
+            JsonSerializeToFile(obj, path, Encoding.Default);
         }
-        public static void JsonSerializeToFile(object obj, string path,Encoding encoding)
+        public static void JsonSerializeToFile(object obj, string path, Encoding encoding)
         {
             if(!Directory.Exists(Path.GetDirectoryName(path)))
             {
