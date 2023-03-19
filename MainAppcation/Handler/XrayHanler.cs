@@ -118,11 +118,7 @@ namespace NetProxyController.Handler
                 outbounds = XrayConfig.OutBoundServers,
                 routing = routing
             };
-            if(!Directory.Exists(Path.GetDirectoryName(Global.XrayCoreConfigPath)))
-            {
-                Directory.CreateDirectory(Path.GetDirectoryName(Global.XrayCoreConfigPath)!);
-            }
-            File.WriteAllText(Global.XrayCoreConfigPath, JsonHandler.JsonSerializeToString(mainConfig));
+            JsonHandler.JsonSerializeToFile(mainConfig, Global.XrayCoreConfigPath);       
             
         }
 
@@ -130,7 +126,7 @@ namespace NetProxyController.Handler
         {
             if(_ExitedEventPause) return;
 
-            _coreProcess.EnableRaisingEvents = false;
+            _ExitedEventPause = false;
             _coreProcess.Close();           
             _coreProcess.StartInfo = _CoreProcessStartInfo;
             _coreProcess.Start();
@@ -142,7 +138,7 @@ namespace NetProxyController.Handler
             }
             else
             {
-                _coreProcess.EnableRaisingEvents = true;
+                _ExitedEventPause = true;
             }
 
         }

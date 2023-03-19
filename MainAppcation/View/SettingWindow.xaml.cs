@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using GlobalHotkey;
+using NetProxyController.Tools;
 using HandyControl.Themes;
 using NetProxyController.Modle;
 using Windows.Services.Store;
@@ -32,8 +33,8 @@ namespace NetProxyController
         private bool _IsShowing = false;
         internal SettingWindow(MainConfigration appConfig)
         {
-            InitializeComponent();
-            Icon = ImageHelper.ChangeBitmapToImageSource(Resource.Setting);
+            InitializeComponent();           
+            Icon = ImageHelper.IconToImageSource(Resource.Setting);
             _appConfig = appConfig;            
         }
 

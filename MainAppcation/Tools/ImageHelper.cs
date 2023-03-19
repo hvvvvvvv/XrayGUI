@@ -8,8 +8,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows;
 using System.Runtime.InteropServices;
+using System.Windows.Interop;
 
-namespace NetProxyController
+namespace NetProxyController.Tools
 {
     internal class ImageHelper
     {
@@ -50,6 +51,38 @@ namespace NetProxyController
                 throw new System.ComponentModel.Win32Exception();
             }
             return wpfBitmap;
+        }
+
+        public static BitmapImage BitmapImageCreateBitmapImage(Bitmap bitmap)
+        {
+            IntPtr hBitmap = bitmap.GetHbitmap();
+            BitmapImage retval;
+            try
+            {
+                retval = (BitmapImage)Imaging.CreateBitmapSourceFromHBitmap(
+                    hBitmap,
+                    IntPtr.Zero,
+                    Int32Rect.Empty,
+                    BitmapSizeOptions.FromEmptyOptions());
+            }
+            finally
+            {
+                DeleteObject(hBitmap);
+            }
+            return retval;
+        }
+
+        public static ImageSource IconToImageSource(Icon icon)
+        {
+            Bitmap bitmap = icon.ToBitmap();
+
+            // 将 Bitmap 对象转换为 BitmapSource 对象
+            BitmapSource bitmapSource = Imaging.CreateBitmapSourceFromHBitmap(
+                bitmap.GetHbitmap(),
+                IntPtr.Zero,
+                Int32Rect.Empty,
+                BitmapSizeOptions.FromEmptyOptions());
+            return bitmapSource;
         }
     }
 }

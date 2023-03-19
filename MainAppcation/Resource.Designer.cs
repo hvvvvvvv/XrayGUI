@@ -61,32 +61,32 @@ namespace NetProxyController {
         }
         
         /// <summary>
-        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        ///   查找类似于 (图标) 的 System.Drawing.Icon 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap ProxyDisable {
+        internal static System.Drawing.Icon ProxyDisable {
             get {
                 object obj = ResourceManager.GetObject("ProxyDisable", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ((System.Drawing.Icon)(obj));
             }
         }
         
         /// <summary>
-        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        ///   查找类似于 (图标) 的 System.Drawing.Icon 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap ProxyEnable {
+        internal static System.Drawing.Icon ProxyEnable {
             get {
                 object obj = ResourceManager.GetObject("ProxyEnable", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ((System.Drawing.Icon)(obj));
             }
         }
         
         /// <summary>
-        ///   查找 System.Drawing.Bitmap 类型的本地化资源。
+        ///   查找类似于 (图标) 的 System.Drawing.Icon 类型的本地化资源。
         /// </summary>
-        internal static System.Drawing.Bitmap Setting {
+        internal static System.Drawing.Icon Setting {
             get {
                 object obj = ResourceManager.GetObject("Setting", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ((System.Drawing.Icon)(obj));
             }
         }
     }

@@ -10,10 +10,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="App.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Icon\ProxyDisable.ico" />
+    <None Remove="Icon\ProxyEnable.ico" />
+    <None Remove="Resources\ProxyDisable.ico" />
+    <None Remove="Resources\ProxyEnable.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="ApplicationIcon.ico" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
     <PackageReference Include="HandyControl" Version="3.4.0" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
     <PackageReference Include="RunAtStartup" Version="5.0.2" />
@@ -22,9 +34,26 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Page Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\GlobalHotkey\GlobalHotkey.csproj" />
     <ProjectReference Include="..\ProxyNotifyWindow\ProxyNotifyWindow.csproj" />
     <ProjectReference Include="..\XrayCoreConfigModle\XrayCoreConfigModle.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Icon\ProxyDisable.ico">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Icon\ProxyEnable.ico" />
+    <Resource Include="Resources\ProxyDisable.ico">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\ProxyEnable.ico" />
   </ItemGroup>
 
   <ItemGroup>
