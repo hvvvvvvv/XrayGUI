@@ -8,7 +8,7 @@ namespace NetProxyController.Modle
 {
     internal class SystemProxySettingObject
     {
-        public SystemProtocol? UseProtocol { get; set; } = SystemProtocol.Http;
+        public SystemProtocol UseProtocol { get; set; } = SystemProtocol.Http;
         public string ByPassUrl { get; set; } = string.Empty;
     }
     

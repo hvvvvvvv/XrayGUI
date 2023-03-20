@@ -5,6 +5,7 @@ using System.Windows.Interop;
 using System.ComponentModel;
 using Vanara.PInvoke;
 using System.Text.Json.Serialization;
+using System.Text;
 
 namespace GlobalHotkey
 {
@@ -99,6 +100,28 @@ namespace GlobalHotkey
 
         public KeyModifier KeyModifier { get; }
         public Key Key { get; }
+        public override string ToString()
+        {
+            if(KeyModifier == KeyModifier.None && Key == Key.None)
+            {
+                return string.Empty;
+            }
+            StringBuilder sb = new();
+            if((KeyModifier & KeyModifier.Ctrl) == KeyModifier.Ctrl)
+            {
+                sb.Append("Ctrl+");
+            }
+            if ((KeyModifier & KeyModifier.Shift) == KeyModifier.Shift)
+            {
+                sb.Append("Shift+");
+            }
+            if ((KeyModifier & KeyModifier.Alt) == KeyModifier.Alt)
+            {
+                sb.Append("Alt+");
+            }
+            sb.Append(Key == Key.None ? string.Empty : Key);
+            return sb.ToString();
+        }
     }
 
     [Flags]
