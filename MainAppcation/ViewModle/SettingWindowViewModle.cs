@@ -17,12 +17,25 @@ namespace NetProxyController.ViewModle
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
         private Dictionary<string, List<string>> _Errors;
         private Modle.MainConfigration _configration;
-        private int httpPort;
-        public string HttpPort
+        private bool saveBtnEnable = true;
+        public bool SaveBtnEnable 
         {
-            get => httpPort.ToString();
+            get => saveBtnEnable;
             set
             {
+                saveBtnEnable = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SaveBtnEnable)));
+            }
+        }
+        private int httpPort;
+        private string _httpHost;
+        private Action _closeWindow;
+        public string HttpPort
+        {
+            get => _httpHost;
+            set
+            {
+                _httpHost = value;
                 if(ValidationAndConvertPortNumber(nameof(HttpPort),value,out int _value))
                 {
                     httpPort = _value;
@@ -30,12 +43,14 @@ namespace NetProxyController.ViewModle
             }
         }
         private int socksPort;
+        private string _socksHost;
         public string SocksPort
         {
-            get => socksPort.ToString();
+            get => _socksHost;
             set
             {
-                if(ValidationAndConvertPortNumber(nameof(socksPort),value,out int _value))
+                _socksHost = value;
+                if(ValidationAndConvertPortNumber(nameof(SocksPort),value,out int _value))
                 {
                     socksPort = _value;
                 }
@@ -98,16 +113,20 @@ namespace NetProxyController.ViewModle
             get => Hotkey.ToString();
         }
         public RelayCommand SaveBtnCmd { get; set; }
-        public SettingWindowViewModle(Modle.MainConfigration configration)
+        public SettingWindowViewModle(Modle.MainConfigration configration, Action closeWindow)
         {
+            _closeWindow = closeWindow;
             _configration = configration;
             _Errors = new();
             proxyProtocol = _configration.SystemProxySetting.UseProtocol;
             hotKeyEnabled = _configration.HotkeySetting.Enable;
             sysProxyByPass = _configration.SystemProxySetting.ByPassUrl;
+            _httpHost = _configration.LocalPort.Http.ToString();
             httpPort = _configration.LocalPort.Http;
+            _socksHost = _configration.LocalPort.Scoks.ToString();
             socksPort = _configration.LocalPort.Scoks;
             hotKey = _configration.HotkeySetting.Hotkey;
+            ErrorsChanged += (s, e) => SaveBtnEnable = !HasErrors;
             SaveBtnCmd = new(SaveConfiguration, () => !HasErrors);
         }
         private bool ValidationAndConvertPortNumber(string propertyName, string value,out int convertVaue)
@@ -123,7 +142,7 @@ namespace NetProxyController.ViewModle
             }
             else
             {
-                _Errors[propertyName] = new() { "请输入正确的端口号(1-65535)" };
+                _Errors[propertyName] = new() { "请输入正确的端口号" };
             }
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
             return isSucess;
@@ -138,17 +157,19 @@ namespace NetProxyController.ViewModle
         }
         private void SaveConfiguration()
         {
-            var needRoadCore = socksPort != _configration.LocalPort.Scoks || httpPort != _configration.LocalPort.Http;
+            var needReloadCore = socksPort != _configration.LocalPort.Scoks || httpPort != _configration.LocalPort.Http;
             _configration.LocalPort.Scoks = socksPort;
             _configration.LocalPort.Http = httpPort;
             _configration.SystemProxySetting.UseProtocol = proxyProtocol;
             _configration.SystemProxySetting.ByPassUrl = sysProxyByPass;
             _configration.HotkeySetting.Hotkey = Hotkey;
-            if(needRoadCore)
+            if(needReloadCore)
             {
                 _configration.xrayHanler.ReLoad();
             }
+            _configration.hotkeyHandler.Load();
             _configration.UpdateSetting();
+            _closeWindow();
         }
     }
 }

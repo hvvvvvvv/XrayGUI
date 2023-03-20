@@ -16,6 +16,7 @@
   <ItemGroup>
     <None Remove="Icon\ProxyDisable.ico" />
     <None Remove="Icon\ProxyEnable.ico" />
+    <None Remove="Icon\Setting.ico" />
     <None Remove="Resources\ProxyDisable.ico" />
     <None Remove="Resources\ProxyEnable.ico" />
   </ItemGroup>
@@ -50,6 +51,7 @@
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Resource>
     <Resource Include="Icon\ProxyEnable.ico" />
+    <Resource Include="Icon\Setting.ico" />
     <Resource Include="Resources\ProxyDisable.ico">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>

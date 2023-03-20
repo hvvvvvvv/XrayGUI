@@ -24,7 +24,7 @@ namespace NetProxyController.ViewModle
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         private MainConfigration _configration;
-        private SettingWindow _settingWindow;
+        private SettingWindow _settingWindow = default!;
         private NotifyWindow _notifyWindow;
         private ImageSource _notifyWndImage => _configration.ProxyEnable ? NotifyWindow.StatusEnableImage : NotifyWindow.StatusDisableImage;      
    
@@ -58,7 +58,6 @@ namespace NetProxyController.ViewModle
         {
             _configration = configration;
             _configration.hotkeyHandler.HotkeyHappenedCallback += OnHotkeyEvenRaise;
-            _settingWindow = new(_configration);
             _notifyWindow = new(_notifyWndImage);
             QuitCmd = new RelayCommand(() => Application.Current.Shutdown(0));
             ShowSettingWndCmd = new(ShowSettingWindow);
@@ -84,7 +83,16 @@ namespace NetProxyController.ViewModle
         }
         private void ShowSettingWindow()
         {
-            _settingWindow.Show();
+            if(_settingWindow?.IsShowing ?? false)
+            {
+                _settingWindow.WindowState = WindowState.Normal;
+                _settingWindow.Activate();
+            }
+            else
+            {
+                _settingWindow = new(_configration);
+                _settingWindow.Show();
+            }
         }
         private void OnHotkeyEvenRaise()
         {

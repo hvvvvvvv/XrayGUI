@@ -22,6 +22,7 @@ using NetProxyController.Modle;
 using Windows.Services.Store;
 using XrayCoreConfigModle;
 using NetProxyController.ViewModle;
+using Windows.ApplicationModel.Store.LicenseManagement;
 
 namespace NetProxyController
 {
@@ -30,26 +31,21 @@ namespace NetProxyController
     /// </summary>
     public partial class SettingWindow : Window
     {
-        private MainConfigration _appConfig;
-        private bool _IsShowing = false;
+        public bool IsShowing = false;
         private SettingWindowViewModle viewModle;
         internal SettingWindow(MainConfigration appConfig)
         {
-            _appConfig = appConfig;
-            viewModle = new(_appConfig);
+            viewModle = new(appConfig, Close);
             DataContext = viewModle;
-            InitializeComponent();           
-            Icon = ImageHelper.IconToImageSource(Resource.Setting);
-            //_appConfig = appConfig;            
+            Closing += (s, e) => IsShowing = false;
+            InitializeComponent();
         }
-
         public new void Show()
         {
-            _IsShowing = true;
+            IsShowing = true;
             base.Show();
         }
-
-        private readonly List<Key> assistKeys = new List<Key>()
+        private static readonly List<Key> assistKeys = new List<Key>()
          {
               Key.LeftCtrl, Key.RightCtrl, Key.LeftAlt, Key.RightAlt,Key.LeftShift,Key.RightShift
          };
@@ -71,30 +67,22 @@ namespace NetProxyController
             }
         }
 
+        private static readonly List<Key> allowKeyByNumber = new()
+        {
+            Key.D0, Key.D1, Key.D2, Key.D3, Key.D4,
+            Key.D5, Key.D6, Key.D7, Key.D8, Key.D9,
+            Key.NumPad0, Key.NumPad1, Key.NumPad2,
+            Key.NumPad3, Key.NumPad4, Key.NumPad5,
+            Key.NumPad6, Key.NumPad7, Key.NumPad8,
+            Key.NumPad9,Key.Back,Key.Tab
+        };
         private void TextboxPortnumber_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            var numberKey = new[]
-            {
-                Key.D0, Key.D1, Key.D2, Key.D3, Key.D4,
-                Key.D5, Key.D6, Key.D7, Key.D8, Key.D9,
-                Key.NumPad0, Key.NumPad1, Key.NumPad2,
-                Key.NumPad3, Key.NumPad4, Key.NumPad5, 
-                Key.NumPad6, Key.NumPad7, Key.NumPad8,
-                Key.NumPad9,Key.Back
-            };
-            if(Keyboard.Modifiers == ModifierKeys.None && numberKey.Contains(e.Key))
+            if(Keyboard.Modifiers == ModifierKeys.None && allowKeyByNumber.Contains(e.Key))
             {
                 return;
             }
             e.Handled = true;
         }
-        private void Window_Closing(object sender, CancelEventArgs e)
-        {
-            e.Cancel = true;
-            Visibility = Visibility.Collapsed;
-            _IsShowing = false;
-            _appConfig.hotkeyHandler.IsPause = false;           
-        }
     }
-
 }
