@@ -38,7 +38,7 @@ namespace XrayCoreConfigModle.OutBound
         /// <summary>
         /// 需要填 "none"，不能留空。
         /// </summary>
-        public string? encryption { get; set; }
+        public string? encryption { get; set; } = "none";
         /// <summary>
         /// 流控模式，用于选择 XTLS 的算法。
         /// 目前出站协议中有以下流控模式可选：
