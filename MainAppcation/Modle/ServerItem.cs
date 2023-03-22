@@ -17,5 +17,6 @@ namespace NetProxyController.Modle
         public int Port { get; set; }
         public string Remarks { get; set; } = string.Empty;
         public int ProtocolInfoIndex { get; set; }
+        public int StreamInfoIndex { get; set; }
     }
 }
