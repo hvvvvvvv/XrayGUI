@@ -68,7 +68,7 @@ namespace NetProxyController
             Global.DBService.CreateTable<FeignHeader>();
 
             Global.DBService.CreateTable<TlsInfo>();
-            Global.DBService.CreateTable<RealityInfo>();
+            Global.DBService.CreateTable<RealityInfo>();            
         }
 	}
 }

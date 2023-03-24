@@ -22,6 +22,7 @@ namespace NetProxyController.View
         public ServerSettingWindow()
         {
             InitializeComponent();
+            fram.Navigate()
         }
     }
 }
