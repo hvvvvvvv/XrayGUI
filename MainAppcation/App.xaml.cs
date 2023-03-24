@@ -9,13 +9,13 @@ using static Vanara.PInvoke.Kernel32;
 using NetProxyController.View;
 using NetProxyController.Modle;
 using System.Threading;
+using NetProxyController.Modle.Server;
 using NetProxyController.Tools;
 
 namespace NetProxyController
 {
     public partial class App: Application
 	{
-
         protected override void OnStartup(StartupEventArgs e)
 		{
 			string Pname = EncodeHelper.GetMD5(Environment.ProcessPath!);
@@ -43,7 +43,32 @@ namespace NetProxyController
 					LimitFlags = JOBOBJECT_LIMIT_FLAGS.JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
 				}
 			};
-			SetInformationJobObject(Modle.Global.ProcessJobs, setClass, jobInfo);
-		}
+			SetInformationJobObject(Global.ProcessJobs, setClass, jobInfo);
+            InitDataBase();
+
+        }
+        static void InitDataBase()
+        {
+            Global.DBService.CreateTable<ServerItem>();
+
+            Global.DBService.CreateTable<SocksInfo>();
+            Global.DBService.CreateTable<TrojanInfo>();
+            Global.DBService.CreateTable<ShadowSocksInfo>();
+            Global.DBService.CreateTable<VmessInfo>();
+            Global.DBService.CreateTable<VlessInfo>();
+
+            Global.DBService.CreateTable<StreamInfo>();
+
+            Global.DBService.CreateTable<TcpInfo>();
+            Global.DBService.CreateTable<KcpInfo>();
+            Global.DBService.CreateTable<WebSocketInfo>();
+            Global.DBService.CreateTable<H2Info>();
+            Global.DBService.CreateTable<QuicInfo>();
+            Global.DBService.CreateTable<GrpcInfo>();
+            Global.DBService.CreateTable<FeignHeader>();
+
+            Global.DBService.CreateTable<TlsInfo>();
+            Global.DBService.CreateTable<RealityInfo>();
+        }
 	}
 }

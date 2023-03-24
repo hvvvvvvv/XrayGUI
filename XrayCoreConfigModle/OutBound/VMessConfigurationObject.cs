@@ -11,7 +11,14 @@ namespace XrayCoreConfigModle.OutBound
         /// <summary>
         /// 包含一组的服务端配置.
         /// </summary>
-        public List<VMessConfigurationObject>? vnext { get; set; }
+        public List<VMessServerObject>? vnext { get; set; }
+    }
+
+    public class VMessServerObject
+    {
+        public string? address { get; set; }
+        public int? port { get; set; }
+        public List<VMessUserObject>? users { get; set; }
     }
     public class VMessUserObject 
     {

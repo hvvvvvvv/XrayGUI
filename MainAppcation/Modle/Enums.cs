@@ -36,7 +36,7 @@ namespace NetProxyController.Modle
         Xtls_rprx_origin = 5,
         Xtls_rprx_origin_udp443 = 6
     }
-    public enum VmessSecurity
+    public enum SecurityMode
     {
         None = 0,
         Zero = 1,
@@ -61,9 +61,8 @@ namespace NetProxyController.Modle
         kcp = 1,
         ws = 2,
         http = 3,
-        domainsocket = 4,
-        quic = 5,
-        grpc = 6,
+        quic = 4,
+        grpc = 5,
     }
     public enum TransportSecurity
     {
@@ -72,9 +71,52 @@ namespace NetProxyController.Modle
         xtls = 2,
         reality = 3,
     }
+    public enum FeignType
+    {
+        none = 0,
+        http = 1,
+        srtp = 2,
+        utp = 3,
+        wechat_video = 4,
+        dtls = 5,
+        wireguard = 6,
+    }
+    public enum HttpRequestType
+    {
+        GET = 0,
+        HEAD  = 1,
+        POST = 2,
+        PUT = 3,
+        DELETE = 4,
+        CONNECT = 5,
+        OPTIONS = 6,
+        TRACE = 7,
+        PATCH = 8,
+    }
+    public enum TlsFingerPrint
+    {
+        none = 0,
+        chrome = 1,
+        firefox = 2,
+        safari = 3,
+        ios = 4,
+        android = 5,
+        edge = 6,
+        qq = 7,
+        random = 8,
+        randomized = 9
+    }
 
     internal static class EnumExtensions
     {
+        public static string GetStringValue(this FeignType value)
+        {
+            return value switch
+            {
+                FeignType.wechat_video => "wechat-video",
+                _ => value.ToString()
+            };
+        }
         public static string GetStringValue(this XtlsFlow value)
         {
             return value switch
@@ -88,14 +130,14 @@ namespace NetProxyController.Modle
                 _ => "none"
             };
         }
-        public static string GetStringValue(this VmessSecurity value)
+        public static string GetStringValue(this SecurityMode value)
         {
             return value switch
             {
-                VmessSecurity.None => "none",
-                VmessSecurity.Zero => "zero",
-                VmessSecurity.Aes_128_gcm => "aes-128-gcm",
-                VmessSecurity.Chacha20_poly1305 => "chacha20-poly1305",
+                SecurityMode.None => "none",
+                SecurityMode.Zero => "zero",
+                SecurityMode.Aes_128_gcm => "aes-128-gcm",
+                SecurityMode.Chacha20_poly1305 => "chacha20-poly1305",
                 _ => "auto"
             };
         }

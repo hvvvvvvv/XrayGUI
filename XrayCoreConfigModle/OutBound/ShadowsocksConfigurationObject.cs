@@ -38,7 +38,7 @@ namespace XrayCoreConfigModle.OutBound
         /// <summary>
         /// 当开启后，会启用udp over tcp。
         /// </summary>
-        public string? uot { get; set; }
+        public bool? uot { get; set; }
         /// <summary>
         /// 用户等级，连接会使用这个用户等级对应的 本地策略。
         /// </summary>
