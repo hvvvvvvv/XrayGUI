@@ -28,8 +28,10 @@ namespace NetProxyController
                 return;
             }
             SetProcessJobs();
-            NotifyIcon taskBar = new();
-            taskBar.Show();
+            //NotifyIcon taskBar = new();
+            //taskBar.Show();
+            //InitDataBase();
+            new ServerSettingWindow().Show();
             base.OnStartup(e);
         }
 
@@ -44,7 +46,7 @@ namespace NetProxyController
 				}
 			};
 			SetInformationJobObject(Global.ProcessJobs, setClass, jobInfo);
-            InitDataBase();
+           
 
         }
         static void InitDataBase()

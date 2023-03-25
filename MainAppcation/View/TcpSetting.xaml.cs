@@ -10,19 +10,19 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace NetProxyController.View
 {
     /// <summary>
-    /// ServerSettingWindow.xaml 的交互逻辑
+    /// TcpSetting.xaml 的交互逻辑
     /// </summary>
-    public partial class ServerSettingWindow : Window
+    public partial class TcpSetting : UserControl
     {
-        public ServerSettingWindow()
+        public TcpSetting()
         {
             InitializeComponent();
-            
         }
     }
 }

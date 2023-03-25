@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="NetProxyController.View.TcpSetting"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:local="clr-namespace:NetProxyController.View"
+             mc:Ignorable="d">
+    <GroupBox Header="Tls设置">
+        <StackPanel Width="400">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Http默认版本:"/>
+                <hc:TextBox Grid.Column="1"/>
+                <TextBlock Text="AcceptProxyProtocol:"
+                       Grid.Row="1"/>
+                <ToggleButton Grid.Column="1"
+                          Grid.Row="1"/>
+                <TextBlock Text="HTTP请求方法:"
+                       Grid.Row="2"/>
+                <hc:ComboBox Grid.Row="2"
+                      Grid.Column="1"/>
+                <TextBlock Text="请求路径:"
+                       Grid.Row="3"/>
+                <hc:TextBox Grid.Row="3"
+                     Grid.Column="1"/>
+                <TextBlock Text="自定义HTTP Header:"
+                       Grid.Row="4"/>
+                <ToggleButton Grid.Row="4"
+                          Grid.Column="1"/>
+            </Grid>
+            <DataGrid Background="Azure">
+                
+            </DataGrid>
+        </StackPanel>
+    </GroupBox>
+</UserControl>
