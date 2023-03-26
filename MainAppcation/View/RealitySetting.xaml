@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="NetProxyController.View.RealitySetting"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NetProxyController.View"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             mc:Ignorable="d">
+    <GroupBox Header="Reality设置">
+        <StackPanel Width="400">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="SNI(ServerName):"/>
+                <hc:TextBox Grid.Column="1"/>
+                <TextBlock Text="Tls指纹:"
+                           Grid.Row="1"/>
+                <hc:ComboBox Grid.Row="1"
+                             Grid.Column="1"/>
+                <TextBlock Text="ShortId:"
+                           Grid.Row="2"/>
+                <hc:TextBox Grid.Column="1"
+                            Grid.Row="2"/>
+                <TextBlock Text="PublicKey:"
+                           VerticalAlignment="Top"
+                           Grid.Row="3"/>
+                <hc:TextBox TextWrapping="Wrap"
+                            VerticalContentAlignment="Top"
+                            FontSize="10"
+                            Grid.Column="1"
+                            Grid.Row="3"
+                            Height="80"/>
+                <TextBlock Text="SpiderX:"
+                           Grid.Row="4"/>
+                <hc:TextBox Grid.Column="1"
+                            Grid.Row="4"/>
+            </Grid>
+        </StackPanel>
+    </GroupBox>
+</UserControl>

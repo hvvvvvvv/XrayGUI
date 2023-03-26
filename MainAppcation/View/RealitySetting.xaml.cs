@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,26 +16,13 @@ using System.Windows.Shapes;
 namespace NetProxyController.View
 {
     /// <summary>
-    /// TcpSetting.xaml 的交互逻辑
+    /// RealitySetting.xaml 的交互逻辑
     /// </summary>
-    public partial class TcpSetting : UserControl
+    public partial class RealitySetting : UserControl
     {
-        public TcpSetting()
+        public RealitySetting()
         {
             InitializeComponent();
         }
     }
-
-    public class MyData
-    {
-        public string Name { get; set; }
-        public int Age { get; set; }
-
-        public MyData(string name, int age)
-        {
-            Name = name;
-            Age = age;
-        }
-    }
-
 }

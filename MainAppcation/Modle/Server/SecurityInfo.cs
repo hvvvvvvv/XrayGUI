@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using NetProxyController.Modle;
 using SQLite;
 using XrayCoreConfigModle.ProtocolSetting;

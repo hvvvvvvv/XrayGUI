@@ -6,7 +6,20 @@
              xmlns:hc="https://handyorg.github.io/handycontrol"
              xmlns:local="clr-namespace:NetProxyController.View"
              mc:Ignorable="d">
-    <GroupBox Header="Tls设置">
+    <UserControl.Resources>
+        <GroupBox x:Key="HttpHeadersEdit">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+            </Grid>
+        </GroupBox>
+    </UserControl.Resources>
+    <GroupBox Header="Tcp设置">
         <StackPanel Width="400">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -26,7 +39,7 @@
                        Grid.Row="1"/>
                 <ToggleButton Grid.Column="1"
                           Grid.Row="1"/>
-                <TextBlock Text="HTTP请求方法:"
+                <TextBlock Text="Http请求方法:"
                        Grid.Row="2"/>
                 <hc:ComboBox Grid.Row="2"
                       Grid.Column="1"/>
@@ -34,14 +47,11 @@
                        Grid.Row="3"/>
                 <hc:TextBox Grid.Row="3"
                      Grid.Column="1"/>
-                <TextBlock Text="自定义HTTP Header:"
+                <TextBlock Text="Http地址伪装:"
                        Grid.Row="4"/>
-                <ToggleButton Grid.Row="4"
-                          Grid.Column="1"/>
+                <hc:TextBox Grid.Row="4"
+                              Grid.Column="1"/>
             </Grid>
-            <DataGrid Background="Azure">
-                
-            </DataGrid>
         </StackPanel>
     </GroupBox>
 </UserControl>

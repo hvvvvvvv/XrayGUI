@@ -9,98 +9,120 @@
         Background="#ebf3ff"
         Title="ServerSettingWindow" Height="700" Width="500">
 
-    <hc:ScrollViewer>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="20"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            <Grid.Resources>
-                <Style TargetType="GroupBox" BasedOn="{StaticResource GroupBoxTabBaseStyle}">
-                    <Setter Property="hc:TitleElement.Background" Value="#ebf3ff"/>
-                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
-                    <Setter Property="FontSize" Value="15"/>
-                    <Setter Property="Background" Value="#ebf3ff"/>
-                    <Setter Property="Width" Value="auto"/>
-                    <Setter Property="Margin" Value="5,0,5,0"/>
-                </Style>
-                <Style TargetType="hc:TextBox" BasedOn="{StaticResource TextBoxPlusBaseStyle}">
-                    <Setter Property="Margin" Value="20,5"/>
-                </Style>
-                <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockBaseStyle}">
-                    <Setter Property="FontSize" Value="16"/>
-                    <Setter Property="HorizontalAlignment" Value="Right"/>
-                    <Setter Property="Margin" Value="0,0,20,0"/>
-                </Style>
-                <Style TargetType="hc:ComboBox" BasedOn="{StaticResource ComboBoxPlusBaseStyle}">
-                    <Setter Property="Margin" Value="20,5"/>
-                    <Setter Property="VerticalAlignment" Value="Center"/>
-                </Style>
-                <Style TargetType="ToggleButton" BasedOn="{StaticResource ToggleButtonSwitch}">
-                    <Setter Property="Margin" Value="0,0,100,0"/>
-                </Style>
-            </Grid.Resources>
-            <StackPanel Grid.Row="0">
-                <GroupBox Header="服务器" 
+    <StackPanel>
+        <hc:ScrollViewer Height="600">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Grid.Resources>
+                    <Style TargetType="GroupBox" BasedOn="{StaticResource GroupBoxTabBaseStyle}">
+                        <Setter Property="hc:TitleElement.Background" Value="#ebf3ff"/>
+                        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                        <Setter Property="FontSize" Value="15"/>
+                        <Setter Property="Background" Value="#ebf3ff"/>
+                        <Setter Property="Width" Value="auto"/>
+                        <Setter Property="Margin" Value="5,0,5,0"/>
+                    </Style>
+                    <Style TargetType="hc:TextBox" BasedOn="{StaticResource TextBoxPlusBaseStyle}">
+                        <Setter Property="Margin" Value="20,5"/>
+                    </Style>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockBaseStyle}">
+                        <Setter Property="FontSize" Value="16"/>
+                        <Setter Property="HorizontalAlignment" Value="Right"/>
+                        <Setter Property="Margin" Value="0,0,20,0"/>
+                    </Style>
+                    <Style TargetType="hc:ComboBox" BasedOn="{StaticResource ComboBoxPlusBaseStyle}">
+                        <Setter Property="Margin" Value="20,5"/>
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+                    <Style TargetType="ToggleButton" BasedOn="{StaticResource ToggleButtonSwitch}">
+                        <Setter Property="Margin" Value="0,0,120,0"/>
+                    </Style>
+                </Grid.Resources>
+                <StackPanel Grid.Row="0">
+                    <GroupBox Header="服务器" 
                       Grid.Row="0">
-                    <Grid Height="auto" Width="400">
-                        <Grid.RowDefinitions>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                            <RowDefinition/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="自定义名称"/>
-                        
-                        <hc:TextBox Grid.Column="1"/>
-                        
-                        <TextBlock Text="地址(Address):"
+                        <Grid Height="auto" Width="400">
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="自定义名称:"/>
+
+                            <hc:TextBox Grid.Column="1"/>
+
+                            <TextBlock Text="地址(Address):"
                                Grid.Row="1"/>
-                        
-                        <hc:TextBox Grid.Column="1"
+
+                            <hc:TextBox Grid.Column="1"
                                 Grid.Row="1"/>
-                        
-                        <TextBlock Grid.Row="2"
+
+                            <TextBlock Grid.Row="2"
                                Text="端口(Port):"/>
-                        
-                        <hc:TextBox Grid.Column="1"
+
+                            <hc:TextBox Grid.Column="1"
                                 Grid.Row="2"/>
-                        
-                        <TextBlock Text="通讯协议(Protocol):"
+
+                            <TextBlock Text="代理协议(Protocol):"
                            Grid.Row="3"/>
-                        
-                        <hc:ComboBox Grid.Row="3"
+
+                            <hc:ComboBox Grid.Row="3"
                              Grid.Column="1"/>
-                        
-                        <TextBlock Text="传输协议(Network):"
+
+                            <TextBlock Text="传输协议(Network):"
                            Grid.Row="4"/>
-                        
-                        <hc:ComboBox Grid.Column="1"
+
+                            <hc:ComboBox Grid.Column="1"
                              Grid.Row="4"/>
-                        
-                        <TextBlock Text="安全策略(Security):"
+
+                            <TextBlock Text="安全策略(Security):"
                            Grid.Row="5"/>
-                        
-                        <hc:ComboBox Grid.Column="1"
+
+                            <hc:ComboBox Grid.Column="1"
                              Grid.Row="5"/>
-                    </Grid>
-                </GroupBox>
-            </StackPanel>
-            <StackPanel Grid.Row="2">
-                <ContentControl>
-                    <local:TcpSetting/>
-                </ContentControl>
-            </StackPanel>
-        </Grid>
-    </hc:ScrollViewer>
+                        </Grid>
+                    </GroupBox>
+                </StackPanel>
+                <StackPanel Grid.Row="2">
+                    <ContentControl>
+                        <local:VlessVerifyInfo/>
+                    </ContentControl>
+                </StackPanel>
+                <StackPanel Grid.Row="4">
+                    <ContentControl>
+                        <local:TcpSetting/>
+                    </ContentControl>
+                </StackPanel>
+                <StackPanel Grid.Row="6">
+                    <ContentControl>
+                        <local:RealitySetting/>
+                    </ContentControl>
+                </StackPanel>
+
+            </Grid>
+        </hc:ScrollViewer>
+        <Button Style="{StaticResource ButtonSuccess}"
+                Background="#98aebf"
+                BorderBrush="Beige"
+                Content="保存设置"
+                Width="200"
+                Margin="0,15"
+                />
+    </StackPanel>
     
 </Window>
