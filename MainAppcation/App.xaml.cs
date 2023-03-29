@@ -11,6 +11,8 @@ using NetProxyController.Modle;
 using System.Threading;
 using NetProxyController.Modle.Server;
 using NetProxyController.Tools;
+using XrayCoreConfigModle;
+using XrayCoreConfigModle.Inbound;
 
 namespace NetProxyController
 {
@@ -45,8 +47,7 @@ namespace NetProxyController
 					LimitFlags = JOBOBJECT_LIMIT_FLAGS.JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE
 				}
 			};
-			SetInformationJobObject(Global.ProcessJobs, setClass, jobInfo);
-           
+			SetInformationJobObject(Global.ProcessJobs, setClass, jobInfo);          
 
         }
         static void InitDataBase()

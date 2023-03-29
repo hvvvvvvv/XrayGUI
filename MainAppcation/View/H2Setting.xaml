@@ -1,0 +1,44 @@
+﻿<UserControl x:Class="NetProxyController.View.H2Setting"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:local="clr-namespace:NetProxyController.View"
+             mc:Ignorable="d">
+    <GroupBox Header="H2设置">
+        <StackPanel Width="400">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="域名列表(','分割):"/>
+                <hc:TextBox Grid.Column="1"/>
+                <TextBlock Text="Path:"
+                           Grid.Row="1"/>
+                <hc:TextBox Grid.Column="1"
+                            Grid.Row="1"/>
+                <TextBlock Text="ReadIdleTimeout:"
+                           Grid.Row="2"/>
+                <hc:TextBox Grid.Column="1"
+                            Grid.Row="2"/>
+                <TextBlock Text="HealthCheckTimeout:"
+                           Grid.Row="3"/>
+                <hc:TextBox Grid.Column="1"
+                            Grid.Row="3"/>
+                <TextBlock Text="请求方法:"
+                           Grid.Row="4"/>
+                <hc:ComboBox Grid.Column="1"
+                             Grid.Row="4"/>
+            </Grid>
+        </StackPanel>
+    </GroupBox>
+</UserControl>

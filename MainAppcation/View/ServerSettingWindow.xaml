@@ -5,10 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:local="clr-namespace:NetProxyController.View"
+        xmlns:vm="clr-namespace:NetProxyController.ViewModle"
         mc:Ignorable="d"
         Background="#ebf3ff"
         Title="ServerSettingWindow" Height="700" Width="500">
-
+    <Window.DataContext>
+        <vm:ServerSettingViewModle/>
+    </Window.DataContext>
     <StackPanel>
         <hc:ScrollViewer Height="600">
             <Grid>
@@ -79,29 +82,33 @@
                                 Grid.Row="2"/>
 
                             <TextBlock Text="代理协议(Protocol):"
-                           Grid.Row="3"/>
+                                       Grid.Row="3"/>
 
                             <hc:ComboBox Grid.Row="3"
-                             Grid.Column="1"/>
+                                Grid.Column="1"
+                                ItemsSource="{Binding ProxyProtocolValues}"
+                                SelectedItem="{Binding SelectedProtocol}"/>
 
                             <TextBlock Text="传输协议(Network):"
-                           Grid.Row="4"/>
+                                       Grid.Row="4"/>
 
                             <hc:ComboBox Grid.Column="1"
-                             Grid.Row="4"/>
+                                         Grid.Row="4"
+                                         ItemsSource="{Binding TransportProtocolValues}"
+                                         SelectedItem="{Binding TransportProtocolSelectedValue}"/>
 
                             <TextBlock Text="安全策略(Security):"
                            Grid.Row="5"/>
 
                             <hc:ComboBox Grid.Column="1"
-                             Grid.Row="5"/>
+                                         Grid.Row="5"
+                                         ItemsSource="{Binding SecurityValues}"
+                                         SelectedItem="{Binding SecuritySelectedValue}"/>
                         </Grid>
                     </GroupBox>
                 </StackPanel>
                 <StackPanel Grid.Row="2">
-                    <ContentControl>
-                        <local:VlessVerifyInfo/>
-                    </ContentControl>
+                    <ContentControl Content="{Binding ProxyUserSettingView}"/>
                 </StackPanel>
                 <StackPanel Grid.Row="4">
                     <ContentControl>
@@ -110,7 +117,7 @@
                 </StackPanel>
                 <StackPanel Grid.Row="6">
                     <ContentControl>
-                        <local:RealitySetting/>
+                        <local:KcpSetting/>
                     </ContentControl>
                 </StackPanel>
 

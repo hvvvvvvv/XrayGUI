@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NetProxyController.View"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
              mc:Ignorable="d">
     <GroupBox Header="Kcp设置">
         <StackPanel Width="400">
@@ -23,7 +24,40 @@
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                
+                <TextBlock Text="MTU:"/>
+                <hc:TextBox Grid.Column="1"/>
+                <TextBlock Text="TTI:"
+                           Grid.Row="1"/>
+                <hc:TextBox Grid.Row="1"
+                            Grid.Column="1"/>
+                <TextBlock Text="上行链路容量(MB/S):"
+                           Grid.Row="2"/>
+                <hc:TextBox Grid.Column="1"
+                            Grid.Row="2"/>
+                <TextBlock Text="下行链路容量(MB/S):"
+                         Grid.Row="3"/>
+                <hc:TextBox Grid.Column="1"
+                            Grid.Row="3"/>
+                <TextBlock Text="读取缓冲区大小(MB/S):"
+                           Grid.Row="4"/>
+                <hc:TextBox Grid.Column="1"
+                            Grid.Row="4"/>
+                <TextBlock Text="写入缓冲区大小(MB/S):"
+                           Grid.Row="5"/>
+                <hc:TextBox Grid.Column="1"
+                            Grid.Row="5"/>
+                <TextBlock Text="拥塞控制:"
+                           Grid.Row="6"/>
+                <ToggleButton Grid.Column="1"
+                              Grid.Row="6"/>
+                <TextBlock Text="混淆密码(Seed)"
+                           Grid.Row="7"/>
+                <hc:TextBox Grid.Column="1"
+                            Grid.Row="7"/>
+                <TextBlock Text="伪装类型:"
+                           Grid.Row="8"/>
+                <hc:ComboBox Grid.Column="1"
+                             Grid.Row="8"/>
             </Grid>
         </StackPanel>
     </GroupBox>

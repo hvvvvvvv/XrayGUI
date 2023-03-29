@@ -1,0 +1,34 @@
+﻿<UserControl x:Class="NetProxyController.View.VmessVerifyInfo"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NetProxyController.View"
+             xmlns:hc="https://handyorg.github.io/handycontrol"
+             mc:Ignorable="d">
+    <GroupBox Header="Vmess验证">
+        <StackPanel Width="400">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="ID(UUID):"/>
+                <hc:TextBox Grid.Column="1"/>
+                <TextBlock Text="AlterId:"
+                           Grid.Row="1"/>
+                <hc:TextBox Grid.Column="1"
+                            Grid.Row="1"/>
+                <TextBlock Text="加密方式:"
+                           Grid.Row="2"/>
+                <hc:ComboBox Grid.Column="1"
+                             Grid.Row="2"/>
+            </Grid>
+        </StackPanel>
+    </GroupBox>
+</UserControl>
