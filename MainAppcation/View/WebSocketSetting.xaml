@@ -5,7 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NetProxyController.View"
              xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:vm="clr-namespace:NetProxyController.ViewModle"
              mc:Ignorable="d">
+    <UserControl.DataContext>
+        <vm:WebSocksSettingViewModle/>
+    </UserControl.DataContext>
     <GroupBox Header="WebSocket设置">
         <StackPanel Width="400">
             <Grid>
@@ -15,15 +19,12 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition/>
-                    <RowDefinition/>
                 </Grid.RowDefinitions>
-                <TextBlock Text="AcceptProxyProtocol:"/>
-                <hc:TextBox Grid.Column="1"/>
-                <TextBlock Text="Path:"
-                           Grid.Row="1"/>
-                <hc:TextBox Grid.Row="1"
-                            Grid.Column="1"/>
+                <TextBlock Text="Path:"/>
+                <hc:TextBox Grid.Column="1"
+                     Text="{Binding Path}"/>
             </Grid>
         </StackPanel>
     </GroupBox>
 </UserControl>
+

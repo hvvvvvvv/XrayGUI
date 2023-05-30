@@ -13,8 +13,8 @@ namespace NetProxyController.Modle.Server
         [PrimaryKey]
         [AutoIncrement]
         public int Index { get; set; }
-        public string? User { get; set; }
-        public string? Pass { get; set; }
+        public string User { get; set; } = string.Empty;
+        public string Pass { get; set; } = string.Empty;
         public int? Level { get; set; }
 
         public override OutboundConfigurationObject ToOutboundConfigurationObject(string addr, int port)
@@ -31,8 +31,8 @@ namespace NetProxyController.Modle.Server
                         {
                             new ScoksUserObject()
                             {
-                                user = User,
-                                pass = Pass,
+                                user = string.IsNullOrEmpty(User) ? null : User,
+                                pass = string.IsNullOrEmpty(Pass) ? null : Pass,
                                 level = Level
                             }
                         }

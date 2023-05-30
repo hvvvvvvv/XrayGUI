@@ -4,8 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NetProxyController.View"
+             xmlns:vm="clr-namespace:NetProxyController.ViewModle"
              xmlns:hc="https://handyorg.github.io/handycontrol"
              mc:Ignorable="d">
+    <UserControl.DataContext>
+        <vm:KcpSettingViewModle/>
+    </UserControl.DataContext>
     <GroupBox Header="Kcp设置">
         <StackPanel Width="400">
             <Grid>
@@ -25,39 +29,49 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <TextBlock Text="MTU:"/>
-                <hc:TextBox Grid.Column="1"/>
+                <hc:TextBox Grid.Column="1"
+                            Text="{Binding Mtu}"/>
                 <TextBlock Text="TTI:"
                            Grid.Row="1"/>
                 <hc:TextBox Grid.Row="1"
-                            Grid.Column="1"/>
+                            Grid.Column="1"
+                            Text="{Binding TTI}"/>
                 <TextBlock Text="上行链路容量(MB/S):"
                            Grid.Row="2"/>
                 <hc:TextBox Grid.Column="1"
-                            Grid.Row="2"/>
+                            Grid.Row="2"
+                            Text="{Binding UplinkCapacity}"/>
                 <TextBlock Text="下行链路容量(MB/S):"
                          Grid.Row="3"/>
                 <hc:TextBox Grid.Column="1"
-                            Grid.Row="3"/>
+                            Grid.Row="3"
+                            Text="{Binding DownlinkCapacity}"/>
                 <TextBlock Text="读取缓冲区大小(MB/S):"
                            Grid.Row="4"/>
                 <hc:TextBox Grid.Column="1"
-                            Grid.Row="4"/>
+                            Grid.Row="4"
+                            Text="{Binding ReadBufferSize}"/>
                 <TextBlock Text="写入缓冲区大小(MB/S):"
                            Grid.Row="5"/>
                 <hc:TextBox Grid.Column="1"
-                            Grid.Row="5"/>
+                            Grid.Row="5"
+                            Text="{Binding WriteBufferSize}"/>
                 <TextBlock Text="拥塞控制:"
                            Grid.Row="6"/>
                 <ToggleButton Grid.Column="1"
-                              Grid.Row="6"/>
+                              Grid.Row="6"
+                              IsChecked="{Binding Congestion}"/>
                 <TextBlock Text="混淆密码(Seed)"
                            Grid.Row="7"/>
                 <hc:TextBox Grid.Column="1"
-                            Grid.Row="7"/>
+                            Grid.Row="7"
+                            Text="{Binding Seed}"/>
                 <TextBlock Text="伪装类型:"
                            Grid.Row="8"/>
                 <hc:ComboBox Grid.Column="1"
-                             Grid.Row="8"/>
+                             Grid.Row="8"
+                             ItemsSource="{Binding FeignValues}"
+                             SelectedItem="{Binding FeignSelectedValue}"/>
             </Grid>
         </StackPanel>
     </GroupBox>

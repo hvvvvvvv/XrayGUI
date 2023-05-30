@@ -13,9 +13,9 @@ namespace NetProxyController.Modle.Server
         [PrimaryKey]
         [AutoIncrement]
         public int Index { get; set; }
-        public string? Email { get; set; }
+        public string Email { get; set; } = string.Empty;
         public SS_Ecrept Method { get; set; }
-        public string? Password { get; set; }
+        public string Password { get; set; } = string.Empty;
         public bool Uot { get; set; }
         public int? Level { get; set; }
 
@@ -31,7 +31,7 @@ namespace NetProxyController.Modle.Server
                         port = port,
                         password = Password,
                         uot = Uot,
-                        email = Email,
+                        email = string.IsNullOrEmpty(Email) ? null : Email,
                         level = Level,
                         method = Method.GetStringValue()
                     }

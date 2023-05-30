@@ -5,7 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:NetProxyController.View"
              xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:vm="clr-namespace:NetProxyController.ViewModle"
              mc:Ignorable="d">
+    <UserControl.DataContext>
+        <vm:VmessVeridyInfoViewModle/>
+    </UserControl.DataContext>
     <GroupBox Header="Vmess验证">
         <StackPanel Width="400">
             <Grid>
@@ -19,15 +23,19 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
                 <TextBlock Text="ID(UUID):"/>
-                <hc:TextBox Grid.Column="1"/>
+                <hc:TextBox Grid.Column="1"
+                            Text="{Binding Id}"/>
                 <TextBlock Text="AlterId:"
                            Grid.Row="1"/>
                 <hc:TextBox Grid.Column="1"
-                            Grid.Row="1"/>
+                            Grid.Row="1"
+                            Text="{Binding AlterId}"/>
                 <TextBlock Text="加密方式:"
                            Grid.Row="2"/>
                 <hc:ComboBox Grid.Column="1"
-                             Grid.Row="2"/>
+                             Grid.Row="2"
+                             ItemsSource="{Binding SecurityModeValues}"
+                             SelectedItem="{Binding SecurityModeSelectedValue}"/>
             </Grid>
         </StackPanel>
     </GroupBox>

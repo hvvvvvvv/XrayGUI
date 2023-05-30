@@ -4,8 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:hc="https://handyorg.github.io/handycontrol"
+             xmlns:vm="clr-namespace:NetProxyController.ViewModle"
              xmlns:local="clr-namespace:NetProxyController.View"
              mc:Ignorable="d">
+    <UserControl.DataContext>
+        <vm:TcpSettingViewModle/>
+    </UserControl.DataContext>
     <UserControl.Resources>
         <GroupBox x:Key="HttpHeadersEdit">
             <Grid>
@@ -28,29 +32,35 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition/>
-                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="HTTP请求伪装:"/>
+                <ToggleButton Grid.Column="1"
+                              IsChecked="{Binding FeignEanbled}"/>
+            </Grid>
+            <Grid IsEnabled="{Binding FeignEanbled, Mode=TwoWay}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <TextBlock Text="Http默认版本:"/>
-                <hc:TextBox Grid.Column="1"/>
-                <TextBlock Text="AcceptProxyProtocol:"
-                       Grid.Row="1"/>
-                <ToggleButton Grid.Column="1"
-                          Grid.Row="1"/>
-                <TextBlock Text="Http请求方法:"
-                       Grid.Row="2"/>
-                <hc:ComboBox Grid.Row="2"
-                      Grid.Column="1"/>
+                <TextBlock Text="Http请求方法:"/>
+                <hc:ComboBox ItemsSource="{Binding MethodValues}" 
+                             SelectedItem="{Binding MethodSelectedValue}"
+                             Grid.Column="1"/>
                 <TextBlock Text="请求路径:"
-                       Grid.Row="3"/>
-                <hc:TextBox Grid.Row="3"
-                     Grid.Column="1"/>
-                <TextBlock Text="Http地址伪装:"
-                       Grid.Row="4"/>
-                <hc:TextBox Grid.Row="4"
-                              Grid.Column="1"/>
+                       Grid.Row="1"/>
+                <hc:TextBox Grid.Row="1"
+                            Grid.Column="1"
+                            Text="{Binding Path}"/>
+                <TextBlock Text="Http默认版本:"
+                           Grid.Row="2"/>
+                <hc:TextBox Grid.Column="1"
+                            Grid.Row="2"
+                            Text="{Binding Version}"/>
             </Grid>
         </StackPanel>
     </GroupBox>

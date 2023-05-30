@@ -22,9 +22,6 @@ namespace NetProxyController.Modle.Server
         public HttpRequestType Method { get; set; } = HttpRequestType.GET;
         public string Path { get; set; } = "/";
         public string? HeaderId { get; set; }
-        public string Accept_Encoding { get; set; } = "gzip, deflate";
-        public string Connection { get; set; } = "keep-alive";
-        public string Pragma { get; set; } = "no-cache";
         public TcpObject ToTcpObject()
         {
             List<FeignHeader> headers = Global.DBService.Table<FeignHeader>().Where(i => i.Id == HeaderId).ToList();
@@ -68,7 +65,7 @@ namespace NetProxyController.Modle.Server
         public int ReadBufferSize { get; set; } = 2;
         public int WriteBufferSize { get; set; } = 2;
         public bool Congestion { get; set; } = false;
-        public string? Seed { get; set; }
+        public string Seed { get; set; } = string.Empty;
         public FeignType Feign { get; set; }
 
         public KcpObject ToKcpObject()
@@ -82,7 +79,7 @@ namespace NetProxyController.Modle.Server
                 readBufferSize = ReadBufferSize,
                 writeBufferSize = WriteBufferSize,
                 congestion = Congestion,
-                seed = Seed,
+                seed = string.IsNullOrEmpty(Seed) ? null : Seed,
                 header = new()
                 {
                     type = Feign.GetStringValue()
@@ -107,7 +104,7 @@ namespace NetProxyController.Modle.Server
             {
                 acceptProxyProtocol = AcceptProxyProtocol,
                 path = Path,
-                headers = httpHeaders
+                headers = HeaderId is null ? null : httpHeaders
             };
         }
     }
@@ -133,12 +130,12 @@ namespace NetProxyController.Modle.Server
             }
             return new()
             {
-                host = Hosts.Split(',').ToList(),
+                host = string.IsNullOrEmpty(Hosts) ? null : Hosts.Split(',').ToList(),
                 path = Path,
                 read_idle_timeout = ReadIdleTimeout <= 0 ? null : ReadIdleTimeout,
                 health_check_timeout = HealthCheckTimeout,
                 method = Method.ToString(),
-                headers = httpHeaders
+                headers = HeaderId is null ? null : httpHeaders,
             };
         }
     }
@@ -155,7 +152,7 @@ namespace NetProxyController.Modle.Server
             return new()
             {
                 security = Security.ToString(),
-                key = Key,
+                key = string.IsNullOrEmpty(Key) ? null : Key,
                 header = new()
                 {
                     type = Feign.GetStringValue()
