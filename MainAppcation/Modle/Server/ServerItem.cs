@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using XrayCoreConfigModle;
+using NetProxyController.Modle;
 
 namespace NetProxyController.Modle.Server
 {
@@ -17,26 +19,74 @@ namespace NetProxyController.Modle.Server
         public string Address { get; set; } = string.Empty;
         public int Port { get; set; }
         public string Remarks { get; set; } = string.Empty;
-        public int ProtocolInfoIndex { get; set; }
-        public int StreamInfoIndex { get; set; }
+        private string protocolInfoContent = string.Empty;
+        public string ProtocolInfoContent
+        {
+            get => protocolInfoContent;
+            set
+            {
+                if(string.IsNullOrEmpty(protocolInfoContent))
+                {
+                    protocolInfoContent = value;
+                    try
+                    {
+                        protocolInfoObj = Protocol switch
+                        {
+                            OutboundProtocol.socks => JsonSerializer.Deserialize<SocksInfo>(protocolInfoContent),
+                            OutboundProtocol.vless => JsonSerializer.Deserialize<VlessInfo>(protocolInfoContent),
+                            OutboundProtocol.vmess => JsonSerializer.Deserialize<VmessInfo>(protocolInfoContent),
+                            OutboundProtocol.trojan => JsonSerializer.Deserialize<TrojanInfo>(protocolInfoContent),
+                            OutboundProtocol.shadowsocks => JsonSerializer.Deserialize<ShadowSocksInfo>(protocolInfoContent),
+                            _ => null
+                        };
+                    }
+                    catch { }
+                }
+            }
+        }
+        public OutBoundConfiguration? GetProtocolInfoObj() => protocolInfoObj;
+        public void SetProtocolInfoObj(OutBoundConfiguration obj) => protocolInfoObj = obj;
+        private OutBoundConfiguration? protocolInfoObj;
+
+        private StreamInfo? streamInfoObj;
+        private string streamInfoContent = string.Empty;
+        public string StreamInfoContent
+        {
+            get => streamInfoContent;
+            set
+            { 
+                if(string.IsNullOrEmpty(streamInfoContent))
+                {
+                    streamInfoContent = value;
+                    try
+                    {
+                        streamInfoObj = JsonSerializer.Deserialize<StreamInfo>(streamInfoContent);
+                    }
+                    catch { }
+                }
+            }
+        }
+        public StreamInfo GetStreamInfo() => streamInfoObj ?? new();
+        public void SetStreamInfo(StreamInfo obj) => streamInfoObj = obj;
         public OutboundServerItemObject ToOutboundServerItemObject()
         {
-            OutBoundConfiguration? outBoundServerConf = Protocol switch
-            {
-                OutboundProtocol.socks => Global.DBService.Find<SocksInfo>(ProtocolInfoIndex),
-                OutboundProtocol.trojan => Global.DBService.Find<TrojanInfo>(ProtocolInfoIndex),
-                OutboundProtocol.shadowsocks => Global.DBService.Find<ShadowSocksInfo>(ProtocolInfoIndex),
-                OutboundProtocol.vmess => Global.DBService.Find<VmessInfo>(ProtocolInfoIndex),
-                OutboundProtocol.vless => Global.DBService.Find<VlessInfo>(ProtocolInfoIndex),
-                _ => null
-            };
             return new()
             {
                 protocol = Protocol.ToString(),
                 tag = Index.ToString(),
-                settings = outBoundServerConf?.ToOutboundConfigurationObject(Address, Port),
-                streamSettings = Global.DBService.Find<StreamInfo>(StreamInfoIndex)?.ToStreamSettingsObject(),
+                settings = protocolInfoObj?.ToOutboundConfigurationObject(Address, Port),
+                streamSettings = streamInfoObj?.ToStreamSettingsObject(),
             };
+        }
+        public void SaveToDataBase()
+        {
+            
+            Global.DBService.InsertOrReplace(this);
+        }
+
+        public static List<ServerItem> GetItemsFromDataBase()
+        {
+            return Global.DBService.Table<ServerItem>().ToList();
         }
     }
 }

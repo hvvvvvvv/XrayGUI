@@ -11,9 +11,6 @@ namespace NetProxyController.Modle.Server
 {
     internal class TlsInfo
     {
-        [PrimaryKey]
-        [AutoIncrement]
-        public int Index { get; set; }
         public string ServerName { get; set; } = string.Empty;
         public TlsFingerPrint FingerPrint { get; set; }
         public bool AllowInsecure { get; set; }
@@ -29,9 +26,6 @@ namespace NetProxyController.Modle.Server
     }
     internal class RealityInfo
     {
-        [PrimaryKey]
-        [AutoIncrement]
-        public int Index { get; set; }
         public string ServerName { get; set; } = string.Empty;
         public TlsFingerPrint FingerPrint { get; set; }
         public string ShortId { get; set; } = string.Empty;

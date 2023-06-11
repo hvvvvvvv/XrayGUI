@@ -13,23 +13,15 @@ namespace NetProxyController.Modle.Server
 {
     internal class TcpInfo
     {
-        [PrimaryKey]
-        [AutoIncrement]
-        public int Index { get; set; }
         public bool AcceptProxyProtocol { get; set; } = false;
         public FeignType Feign { get; set; }
         public string Version { get; set; } = "1.1";
         public HttpRequestType Method { get; set; } = HttpRequestType.GET;
         public string Path { get; set; } = "/";
         public string? HeaderId { get; set; }
+        public Dictionary<string,List<string>>? Headers { get; set; }
         public TcpObject ToTcpObject()
         {
-            List<FeignHeader> headers = Global.DBService.Table<FeignHeader>().Where(i => i.Id == HeaderId).ToList();
-            var requestHeaders = new Dictionary<string, List<string>>();
-            foreach(var head in headers)
-            {
-                requestHeaders.Add(head.HeaderKey, head.HeaderValue.Split(',').ToList());
-            }
             HeaderObject? _Header = Feign switch
             {
                 FeignType.http => new HttpHeaderObject()
@@ -39,7 +31,7 @@ namespace NetProxyController.Modle.Server
                         version = Version,
                         path = Path.Split(',').ToList(),
                         method = Method.ToString(),
-                        headers = requestHeaders
+                        headers = Headers
                     }
                 },
                 FeignType.none => new NoneHeaderObject(),
@@ -51,13 +43,9 @@ namespace NetProxyController.Modle.Server
                 header = _Header,
             };
         }
-
     }
     internal class KcpInfo
     {
-        [PrimaryKey]
-        [AutoIncrement]
-        public  int Index { get; set; }
         public int Mtu { get; set; } = 1350;
         public int TTI { get; set; } = 20;
         public int UplinkCapacity { get; set; } = 5;
@@ -89,45 +77,30 @@ namespace NetProxyController.Modle.Server
     }
     internal class WebSocketInfo
     {
-        [PrimaryKey]
-        [AutoIncrement]
-        public int Index { get; set; }
         public bool AcceptProxyProtocol { get; set; } = false;
         public string Path { get; set; } = "/";
-        public string? HeaderId { get; set; }
+        Dictionary<string,string>? Headers { get; set; }
         public WebSocketObject ToWebSocketObject()
         {
-            var headers = Global.DBService.Table<FeignHeader>().Where(i => i.Id == HeaderId).ToList();
-            var httpHeaders = new Dictionary<string, string>();
-            headers.ForEach(i => httpHeaders.Add(i.HeaderKey, i.HeaderValue));
             return new()
             {
                 acceptProxyProtocol = AcceptProxyProtocol,
                 path = Path,
-                headers = HeaderId is null ? null : httpHeaders
+                headers = Headers
             };
         }
     }
 
     internal class H2Info
     {
-        [PrimaryKey]
-        [AutoIncrement]
-        public int Index { get; set; }
         public string Hosts { get; set; } = string.Empty;
         public string Path { get; set; } = "/";
         public int ReadIdleTimeout { get; set; } = 0;
         public int HealthCheckTimeout { get; set; } = 15;
         public HttpRequestType Method { get; set; } = HttpRequestType.PUT;
-        string? HeaderId { get; set; }
+        Dictionary<string,List<string>>? Headers { get; set; }
         public HttpObject ToHttpObject()
         {
-            var headers = Global.DBService.Table<FeignHeader>().Where(i => i.Id == HeaderId).ToList();
-            var httpHeaders = new Dictionary<string, List<string>>();
-            foreach(var head in headers)
-            {
-                httpHeaders.Add(head.HeaderKey, head.HeaderValue.Split(',').ToList());
-            }
             return new()
             {
                 host = string.IsNullOrEmpty(Hosts) ? null : Hosts.Split(',').ToList(),
@@ -135,15 +108,12 @@ namespace NetProxyController.Modle.Server
                 read_idle_timeout = ReadIdleTimeout <= 0 ? null : ReadIdleTimeout,
                 health_check_timeout = HealthCheckTimeout,
                 method = Method.ToString(),
-                headers = HeaderId is null ? null : httpHeaders,
+                headers = Headers
             };
         }
     }
     internal class QuicInfo
     {
-        [PrimaryKey]
-        [AutoIncrement]
-        public int Index { get; set; }
         public SecurityMode Security { get; set; } = SecurityMode.None;
         public string Key { get; set; } = string.Empty;
         public FeignType Feign { get; set; }
@@ -162,9 +132,6 @@ namespace NetProxyController.Modle.Server
     }
     internal class GrpcInfo
     {
-        [PrimaryKey]
-        [AutoIncrement]
-        public int Index { get; set; }
         public string ServiceName { get; set; } = string.Empty;
         public int IdleTimeout { get; set; } = 0;
         public int HealthCheckTimeout { get; set; } = 20;
@@ -181,14 +148,5 @@ namespace NetProxyController.Modle.Server
                 initial_windows_size = InitialWindowsSize
             };
         }
-    }
-    internal class FeignHeader
-    {
-        [PrimaryKey]
-        [AutoIncrement]
-        public int Index { get; set; }
-        public string HeaderKey { get; set; } = string.Empty;
-        public string HeaderValue { get; set; } = string.Empty;
-        public string? Id { get; set; }
     }
 }

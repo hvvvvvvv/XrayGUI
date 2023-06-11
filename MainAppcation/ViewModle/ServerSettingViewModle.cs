@@ -18,9 +18,11 @@ namespace NetProxyController.ViewModle
         private Dictionary<TransportType, UserControl> transportSettingView;
         private Dictionary<TransportSecurity, UserControl?> securitySettingView;
         private ServerItem Server;
+        private StreamInfo StreaminfoObj;
         public ServerSettingViewModle()
         {
             Server = new();
+            StreaminfoObj = new();
             VerifyInfoView = new()
             {
                 {OutboundProtocol.trojan, new TrojanVerifyInfo() },
