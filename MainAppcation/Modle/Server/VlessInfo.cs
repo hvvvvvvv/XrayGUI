@@ -11,9 +11,6 @@ namespace NetProxyController.Modle.Server
 
     internal class VlessInfo: OutBoundConfiguration
     {
-        [PrimaryKey]
-        [AutoIncrement]
-        public int Index { get; set; }
         public string Id { get; set; } = string.Empty;
         public XtlsFlow Flow { get; set; }
         public int? Level { get; set; }

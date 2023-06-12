@@ -80,7 +80,8 @@ namespace NetProxyController.Modle.Server
         }
         public void SaveToDataBase()
         {
-            
+            protocolInfoContent = protocolInfoObj is null ? string.Empty : JsonSerializer.Serialize(protocolInfoObj);
+            streamInfoContent = streamInfoObj is null ? string.Empty : JsonSerializer.Serialize(streamInfoObj);
             Global.DBService.InsertOrReplace(this);
         }
 

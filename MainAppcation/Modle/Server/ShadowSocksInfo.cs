@@ -10,9 +10,6 @@ namespace NetProxyController.Modle.Server
 {
     internal class ShadowSocksInfo: OutBoundConfiguration
     {
-        [PrimaryKey]
-        [AutoIncrement]
-        public int Index { get; set; }
         public string Email { get; set; } = string.Empty;
         public SS_Ecrept Method { get; set; }
         public string Password { get; set; } = string.Empty;

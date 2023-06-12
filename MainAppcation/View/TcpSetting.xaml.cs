@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetProxyController.Modle.Server;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -24,19 +25,7 @@ namespace NetProxyController.View
         public TcpSetting()
         {
             InitializeComponent();
-        }
-    }
-
-    public class MyData
-    {
-        public string Name { get; set; }
-        public int Age { get; set; }
-
-        public MyData(string name, int age)
-        {
-            Name = name;
-            Age = age;
-        }
+        }            
     }
 
 }

@@ -10,9 +10,6 @@ namespace NetProxyController.Modle.Server
 {
     internal class SocksInfo: OutBoundConfiguration
     {
-        [PrimaryKey]
-        [AutoIncrement]
-        public int Index { get; set; }
         public string User { get; set; } = string.Empty;
         public string Pass { get; set; } = string.Empty;
         public int? Level { get; set; }

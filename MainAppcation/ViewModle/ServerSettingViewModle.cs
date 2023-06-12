@@ -19,10 +19,10 @@ namespace NetProxyController.ViewModle
         private Dictionary<TransportSecurity, UserControl?> securitySettingView;
         private ServerItem Server;
         private StreamInfo StreaminfoObj;
-        public ServerSettingViewModle()
+        public ServerSettingViewModle(ServerItem server)
         {
-            Server = new();
-            StreaminfoObj = new();
+            Server = server;
+            StreaminfoObj = Server.GetStreamInfo();
             VerifyInfoView = new()
             {
                 {OutboundProtocol.trojan, new TrojanVerifyInfo() },
@@ -33,51 +33,52 @@ namespace NetProxyController.ViewModle
             };
             transportSettingView = new()
             {
-                {TransportType.tcp, new TcpSetting()},
-                {TransportType.kcp, new KcpSetting()},
-                {TransportType.quic, new QuicSetting()},
-                {TransportType.http, new H2Setting()},
-                {TransportType.grpc, new GrpcSetting()},
-                {TransportType.ws, new WebSocketSetting()}
+                {TransportType.tcp, new TcpSetting(){ DataContext = new TcpSettingViewModle(StreaminfoObj.TcpTransport) }},
+                {TransportType.kcp, new KcpSetting(){ DataContext = new KcpSettingViewModle(StreaminfoObj.KcpTransport) }},
+                {TransportType.quic, new QuicSetting(){ DataContext = new QuicSettingViewModle(StreaminfoObj.QuicTransport) }},
+                {TransportType.http, new H2Setting(){ DataContext = new H2SettingViewModle(StreaminfoObj.H2Transport) }},
+                {TransportType.grpc, new GrpcSetting(){ DataContext = new GrpcSettingViewModle(StreaminfoObj.GrpcTranport) }},
+                {TransportType.ws, new WebSocketSetting(){ DataContext = new WebSocksSettingViewModle(StreaminfoObj.WsTransport) }}
             };
             securitySettingView = new()
             {
-                {TransportSecurity.tls, new TlsSetting()},
-                {TransportSecurity.xtls, new TlsSetting()},
-                {TransportSecurity.reality, new RealitySetting()},
+                {TransportSecurity.tls, new TlsSetting(){ DataContext = new TlsSettingViewModle(StreaminfoObj.TlsPolicy)}},
+                {TransportSecurity.xtls, new TlsSetting(){ DataContext = new TlsSettingViewModle(StreaminfoObj.XTlsPolicy) }},
+                {TransportSecurity.reality, new RealitySetting(){ DataContext = new RealityInfoSettingViewModle(StreaminfoObj.RealityPolicy) }},
                 {TransportSecurity.none, null}
             };
+        }
+        public ServerSettingViewModle() : this(new ServerItem())
+        {
 
         }
         public IEnumerable<OutboundProtocol> ProxyProtocolValues { get; private set; } = Enum.GetValues(typeof(OutboundProtocol)).Cast<OutboundProtocol>();
         public IEnumerable<TransportType> TransportProtocolValues {get; private set; } = Enum.GetValues<TransportType>().Cast<TransportType>();
-        private TransportType transportProtocolSelectedValue;
         public TransportType TransportProtocolSelectedValue
         {
-            get => transportProtocolSelectedValue;
+            get => StreaminfoObj.Transport;
             set
             {
-                transportProtocolSelectedValue = value;
+                StreaminfoObj.Transport = value;
                 OnpropertyChannged(nameof(TransportProtocolSelectedValue));
                 OnpropertyChannged(nameof(TransportSettingView));
             }
         }
 
         public IEnumerable<TransportSecurity> SecurityValues { get; private set; } = Enum.GetValues<TransportSecurity>().Cast<TransportSecurity>();
-        private TransportSecurity securitySelectedValue;
         public TransportSecurity SecuritySelectedValue
         {
-            get => securitySelectedValue;
+            get => StreaminfoObj.Security;
             set
             {
-                securitySelectedValue = value;
+                StreaminfoObj.Security = value;
                 OnpropertyChannged(nameof(SecuritySelectedValue));
                 OnpropertyChannged(nameof(SecuritySettingView));
             }
         }
         public UserControl? ProxyUserSettingView
         {
-            get => VerifyInfoView[selectedProtocol];
+            get => VerifyInfoView[SelectedProtocol];
         }
         public UserControl? TransportSettingView
         {
@@ -85,15 +86,14 @@ namespace NetProxyController.ViewModle
         }
         public UserControl? SecuritySettingView
         {
-            get => securitySettingView[securitySelectedValue];
+            get => securitySettingView[SecuritySelectedValue];
         }
-        private OutboundProtocol selectedProtocol;
         public OutboundProtocol SelectedProtocol
         {
-            get => selectedProtocol;
+            get => Server.Protocol;
             set
             {
-                selectedProtocol = value;
+                Server.Protocol = value;
                 OnpropertyChannged(nameof(SelectedProtocol));
                 OnpropertyChannged(nameof(ProxyUserSettingView));
             }

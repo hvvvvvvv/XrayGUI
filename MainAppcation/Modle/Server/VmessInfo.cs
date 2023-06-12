@@ -10,9 +10,6 @@ namespace NetProxyController.Modle.Server
 {
     internal class VmessInfo: OutBoundConfiguration
     {
-        [PrimaryKey]
-        [AutoIncrement]
-        public int Index { get; set; }
         public string Id { get; set; } = string.Empty;
         public int AlterId { get; set; } = 0;
         public SecurityMode Security { get; set; } = SecurityMode.Auto;
