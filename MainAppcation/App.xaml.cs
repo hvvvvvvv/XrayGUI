@@ -33,7 +33,8 @@ namespace NetProxyController
             //NotifyIcon taskBar = new();
             //taskBar.Show();
             //InitDataBase();
-            new ServerSettingWindow().Show();
+            Global.DBService.CreateTable<ServerItem>();
+            new ServerSettingWindow(Global.DBService.Get<ServerItem>(0)).Show();
             base.OnStartup(e);
         }
 

@@ -9,12 +9,15 @@ using NetProxyController.View;
 using NetProxyController.Modle;
 using SQLite;
 using NetProxyController.Modle.Server;
+using CommunityToolkit.Mvvm.Input;
+using Windows.Networking.Sockets;
 
 namespace NetProxyController.ViewModle
 {
     internal class ServerSettingViewModle: INotifyPropertyChanged
     {
         private Dictionary<OutboundProtocol, UserControl> VerifyInfoView;
+        private Dictionary<OutboundProtocol, OutBoundConfiguration> ProtocolModles;
         private Dictionary<TransportType, UserControl> transportSettingView;
         private Dictionary<TransportSecurity, UserControl?> securitySettingView;
         private ServerItem Server;
@@ -23,34 +26,57 @@ namespace NetProxyController.ViewModle
         {
             Server = server;
             StreaminfoObj = Server.GetStreamInfo();
-            VerifyInfoView = new()
-            {
-                {OutboundProtocol.trojan, new TrojanVerifyInfo() },
-                {OutboundProtocol.vmess, new VmessVerifyInfo() },
-                {OutboundProtocol.vless, new VlessVerifyInfo() },
-                {OutboundProtocol.shadowsocks, new ShadowScoksVerifyInfo() },
-                {OutboundProtocol.socks, new SocksVerifyInfo() }
-            };
-            transportSettingView = new()
-            {
-                {TransportType.tcp, new TcpSetting(){ DataContext = new TcpSettingViewModle(StreaminfoObj.TcpTransport) }},
-                {TransportType.kcp, new KcpSetting(){ DataContext = new KcpSettingViewModle(StreaminfoObj.KcpTransport) }},
-                {TransportType.quic, new QuicSetting(){ DataContext = new QuicSettingViewModle(StreaminfoObj.QuicTransport) }},
-                {TransportType.http, new H2Setting(){ DataContext = new H2SettingViewModle(StreaminfoObj.H2Transport) }},
-                {TransportType.grpc, new GrpcSetting(){ DataContext = new GrpcSettingViewModle(StreaminfoObj.GrpcTranport) }},
-                {TransportType.ws, new WebSocketSetting(){ DataContext = new WebSocksSettingViewModle(StreaminfoObj.WsTransport) }}
-            };
-            securitySettingView = new()
-            {
-                {TransportSecurity.tls, new TlsSetting(){ DataContext = new TlsSettingViewModle(StreaminfoObj.TlsPolicy)}},
-                {TransportSecurity.xtls, new TlsSetting(){ DataContext = new TlsSettingViewModle(StreaminfoObj.XTlsPolicy) }},
-                {TransportSecurity.reality, new RealitySetting(){ DataContext = new RealityInfoSettingViewModle(StreaminfoObj.RealityPolicy) }},
-                {TransportSecurity.none, null}
-            };
+            VerifyInfoView = new();
+            ProtocolModles = new();
+            transportSettingView = new();
+            securitySettingView = new();
+            SaveBtnCmd = new(SaveBtn);
+            InitData();
         }
         public ServerSettingViewModle() : this(new ServerItem())
         {
 
+        }
+        private void InitData()
+        {
+            #region 代理协议验证信息
+            VlessInfo vless = Server.Protocol == OutboundProtocol.vless ? Server.GetProtocolInfoObj() as VlessInfo ?? new() : new();
+            VerifyInfoView.Add(OutboundProtocol.vless, new VlessVerifyInfo() { DataContext = new VlessVerifyInfoViewModle(vless) });
+            ProtocolModles.Add(OutboundProtocol.vless, vless);
+            VmessInfo vmess = Server.Protocol == OutboundProtocol.vmess ? Server.GetProtocolInfoObj() as VmessInfo ?? new() : new();
+            VerifyInfoView.Add(OutboundProtocol.vmess, new VmessVerifyInfo() { DataContext = new VmessVeridyInfoViewModle(vmess) });
+            ProtocolModles.Add(OutboundProtocol.vmess, vmess);
+            ShadowSocksInfo shadowSocks = Server.Protocol == OutboundProtocol.shadowsocks ? Server.GetProtocolInfoObj() as ShadowSocksInfo ?? new() : new();
+            VerifyInfoView.Add(OutboundProtocol.shadowsocks, new ShadowScoksVerifyInfo() { DataContext = new ShadowSocksVerifyInfoViewModle(shadowSocks) });
+            ProtocolModles.Add(OutboundProtocol.shadowsocks, shadowSocks);
+            TrojanInfo trojan = Server.Protocol == OutboundProtocol.trojan ? Server.GetProtocolInfoObj() as TrojanInfo ?? new() : new();
+            VerifyInfoView.Add(OutboundProtocol.trojan, new TrojanVerifyInfo() { DataContext = new TrojanVerifyInfoViewModle(trojan) });
+            ProtocolModles.Add(OutboundProtocol.trojan, trojan);
+            SocksInfo socks = Server.Protocol == OutboundProtocol.socks ? Server.GetProtocolInfoObj() as SocksInfo ?? new() : new();
+            VerifyInfoView.Add(OutboundProtocol.socks, new SocksVerifyInfo() { DataContext = new SocksVerifyInfoViewModle(socks) });
+            ProtocolModles.Add(OutboundProtocol.socks, socks);
+            #endregion
+
+            #region 传输协议
+            transportSettingView.Add(TransportType.tcp, new TcpSetting() { DataContext = new TcpSettingViewModle(StreaminfoObj.TcpTransport) });
+            transportSettingView.Add(TransportType.kcp, new KcpSetting() { DataContext = new KcpSettingViewModle(StreaminfoObj.KcpTransport) });
+            transportSettingView.Add(TransportType.quic, new QuicSetting() { DataContext = new QuicSettingViewModle(StreaminfoObj.QuicTransport) });
+            transportSettingView.Add(TransportType.http, new H2Setting() { DataContext = new H2SettingViewModle(StreaminfoObj.H2Transport) });
+            transportSettingView.Add(TransportType.grpc, new GrpcSetting() { DataContext = new GrpcSettingViewModle(StreaminfoObj.GrpcTranport) });
+            transportSettingView.Add(TransportType.ws, new WebSocketSetting() { DataContext = new WebSocksSettingViewModle(StreaminfoObj.WsTransport) });
+            #endregion
+            #region 加密方案
+            securitySettingView.Add(TransportSecurity.tls, new TlsSetting() { DataContext = new TlsSettingViewModle(StreaminfoObj.TlsPolicy) });
+            securitySettingView.Add(TransportSecurity.xtls, new TlsSetting() { DataContext = new TlsSettingViewModle(StreaminfoObj.XTlsPolicy) });
+            securitySettingView.Add(TransportSecurity.reality, new RealitySetting() { DataContext = new RealityInfoSettingViewModle(StreaminfoObj.RealityPolicy) });
+            securitySettingView.Add(TransportSecurity.none, null);
+            #endregion
+        }
+        private void SaveBtn()
+        {
+            Server.SetProtocolInfoObj(ProtocolModles[Server.Protocol]);
+            Server.SetStreamInfo(StreaminfoObj);
+            Server.SaveToDataBase();
         }
         public IEnumerable<OutboundProtocol> ProxyProtocolValues { get; private set; } = Enum.GetValues(typeof(OutboundProtocol)).Cast<OutboundProtocol>();
         public IEnumerable<TransportType> TransportProtocolValues {get; private set; } = Enum.GetValues<TransportType>().Cast<TransportType>();
@@ -98,6 +124,7 @@ namespace NetProxyController.ViewModle
                 OnpropertyChannged(nameof(ProxyUserSettingView));
             }
         }
+        public RelayCommand SaveBtnCmd { get; set; }
         public string Addr
         {
             get => Server.Address;
@@ -133,5 +160,6 @@ namespace NetProxyController.ViewModle
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        
     }
 }
