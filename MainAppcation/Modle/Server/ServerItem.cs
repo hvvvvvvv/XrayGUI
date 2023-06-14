@@ -14,7 +14,7 @@ namespace NetProxyController.Modle.Server
     {
         [PrimaryKey]
         [AutoIncrement]
-        public int Index { get; set; }
+        public int Index { get; set; } = -1;
         public OutboundProtocol Protocol { get; set; }
         public string Address { get; set; } = string.Empty;
         public int Port { get; set; }
@@ -82,6 +82,11 @@ namespace NetProxyController.Modle.Server
         {
             protocolInfoContent = protocolInfoObj is null ? string.Empty : JsonSerializer.Serialize(protocolInfoObj,protocolInfoObj.GetType());
             streamInfoContent = streamInfoObj is null ? string.Empty : JsonSerializer.Serialize(streamInfoObj);
+            if(Index == -1)
+            {
+                Global.DBService.Insert(this);
+                return;
+            }
             Global.DBService.InsertOrReplace(this);
         }
 
