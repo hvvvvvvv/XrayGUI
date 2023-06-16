@@ -67,7 +67,7 @@
                             <TextBlock Text="自定义名称:"/>
 
                             <hc:TextBox Grid.Column="1"
-                                        Text="{Binding Remarks}"/>
+                                        Text="{Binding Remarks, ValidatesOnDataErrors=True}"/>
 
                             <TextBlock Text="地址(Address):"
                                Grid.Row="1"/>
