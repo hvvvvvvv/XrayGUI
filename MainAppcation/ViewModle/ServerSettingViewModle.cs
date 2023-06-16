@@ -19,13 +19,12 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace NetProxyController.ViewModle
 {
-    internal class ServerSettingViewModle: INotifyPropertyChanged,INotifyDataErrorInfo
+    internal class ServerSettingViewModle: ViewModleBase
     {
         private Dictionary<OutboundProtocol, UserControl> VerifyInfoView;
         private Dictionary<OutboundProtocol, OutBoundConfiguration> ProtocolModles;
         private Dictionary<TransportType, UserControl> transportSettingView;
         private Dictionary<TransportSecurity, UserControl?> securitySettingView;
-        private Dictionary<string, List<System.ComponentModel.DataAnnotations.ValidationResult>> _Errors;
         private ServerItem Server;
         private StreamInfo StreaminfoObj;
         public ServerSettingViewModle(ServerItem server)
@@ -36,7 +35,6 @@ namespace NetProxyController.ViewModle
             ProtocolModles = new();
             transportSettingView = new();
             securitySettingView = new();
-            _Errors = new();
             SaveBtnCmd = new(SaveBtn);
             InitData();
         }
@@ -148,18 +146,8 @@ namespace NetProxyController.ViewModle
             set
             {
                 Server.Remarks = value;
-                ValidationContext context = new(this) { MemberName = nameof(Remarks) };
-                List<System.ComponentModel.DataAnnotations.ValidationResult> results = new();
-                var isvalid = Validator.TryValidateProperty(Remarks, context, results);
-
-                if (isvalid) ;
-                else
-                {
-                    _Errors[nameof(Remarks)] = results;
-                    ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(nameof(Remarks)));
-                }
-                
-                OnpropertyChannged(nameof(Remarks));
+                OnpropertyChannged();
+                ValidationProperty();
             }
         }
 
@@ -172,25 +160,6 @@ namespace NetProxyController.ViewModle
                 portStr = value;
                 OnpropertyChannged(nameof(PortStr));
             }
-        }
-
-        public bool HasErrors => _Errors is not null && _Errors.Count > 0;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
-
-        private void OnpropertyChannged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        public IEnumerable GetErrors(string? propertyName)
-        {
-            if(!string.IsNullOrEmpty(propertyName) && _Errors.ContainsKey(propertyName))
-            {
-                return _Errors[propertyName];
-            }
-            return null!;
-        }
+        } 
     }
 }
