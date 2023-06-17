@@ -2,20 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace NetProxyController.ViewModle
 {
-    internal class GrpcSettingViewModle : INotifyPropertyChanged
+    internal class GrpcSettingViewModle : ViewModleBase
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
         private GrpcInfo info;
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(propertyName)));
-        }
         public GrpcSettingViewModle(GrpcInfo info)
         {
             this.info = info;
@@ -30,16 +26,23 @@ namespace NetProxyController.ViewModle
             set
             {
                 info.ServiceName = value;
-                OnPropertyChanged(nameof(ServiceName));
+                OnpropertyChannged(nameof(ServiceName));
             }
         }
-        public int IdleTimeout
+        private string idleTimeout = "10";
+        [Required(ErrorMessage = "值不能为空")]
+        [RegularExpression(@"^(?:[1-9]\d{1,3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$",ErrorMessage = "请输入正确的数值(10-65535)")]
+        public string IdleTimeout
         {
-            get => info.IdleTimeout;
+            get => idleTimeout;
             set
             {
-                info.IdleTimeout = value;
-                OnPropertyChanged(nameof(IdleTimeout));
+                idleTimeout = value;               
+                OnpropertyChannged(nameof(IdleTimeout));
+                if (ValidationProperty())
+                {
+                    info.IdleTimeout = Convert.ToInt32(IdleTimeout);
+                }
             }
         }
         public int HealthCheckTimeout
@@ -48,7 +51,7 @@ namespace NetProxyController.ViewModle
             set
             {
                 info.HealthCheckTimeout = value;
-                OnPropertyChanged(nameof(HealthCheckTimeout));
+                OnpropertyChannged(nameof(HealthCheckTimeout));
             }
         }
         public bool PermitWithoutStream
@@ -57,7 +60,7 @@ namespace NetProxyController.ViewModle
             set
             {
                 info.PermitWithoutStream = value;
-                OnPropertyChanged(nameof(PermitWithoutStream));
+                OnpropertyChannged(nameof(PermitWithoutStream));
             }
         }
         public int InitialWindowsSize
@@ -66,7 +69,7 @@ namespace NetProxyController.ViewModle
             set
             {
                 info.InitialWindowsSize = value;
-                OnPropertyChanged(nameof(InitialWindowsSize));
+                OnpropertyChannged(nameof(InitialWindowsSize));
             }
         }
 

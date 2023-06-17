@@ -133,7 +133,7 @@ namespace NetProxyController.Modle.Server
     internal class GrpcInfo
     {
         public string ServiceName { get; set; } = string.Empty;
-        public int IdleTimeout { get; set; } = 0;
+        public int IdleTimeout { get; set; } = 10;
         public int HealthCheckTimeout { get; set; } = 20;
         public bool PermitWithoutStream { get; set; } = false;
         public int InitialWindowsSize { get; set; } = 0;

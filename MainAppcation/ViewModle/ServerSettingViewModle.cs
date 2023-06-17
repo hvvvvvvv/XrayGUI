@@ -130,6 +130,7 @@ namespace NetProxyController.ViewModle
             }
         }
         public RelayCommand SaveBtnCmd { get; set; }
+        [Required(ErrorMessage = "服务器地址不能为空")]
         public string Addr
         {
             get => Server.Address;
@@ -137,9 +138,10 @@ namespace NetProxyController.ViewModle
             {
                 Server.Address = value;
                 OnpropertyChannged(nameof(Addr));
+                ValidationProperty();
             }
         }
-       [EmailAddress(ErrorMessage = "请输入邮箱地址")]
+       [Required(ErrorMessage = "名称不能为空")]
         public string Remarks
         {
             get => Server.Remarks;
@@ -150,8 +152,10 @@ namespace NetProxyController.ViewModle
                 ValidationProperty();
             }
         }
-
+        
         private string portStr = string.Empty;
+        [Required(ErrorMessage = "端口号不能为空")]
+        [RegularExpression(@"^(?:[1-9]\d{0,3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$",ErrorMessage = "请输入正确的端口号")]
         public string PortStr
         {
             get => portStr;
@@ -159,6 +163,10 @@ namespace NetProxyController.ViewModle
             {
                 portStr = value;
                 OnpropertyChannged(nameof(PortStr));
+                if(ValidationProperty())
+                {
+                    Server.Port = Convert.ToInt32(PortStr);
+                }
             }
         } 
     }

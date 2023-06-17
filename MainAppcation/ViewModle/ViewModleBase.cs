@@ -53,7 +53,11 @@ namespace NetProxyController.ViewModle
                 var propertInfo = GetType().GetProperty(propertyName);
                 var value = propertInfo?.GetValue(this);
                 res = Validator.TryValidateProperty(value, context, results);
-                _Errors[propertyName] = results;
+                _Errors.Remove(propertyName);
+                if (!res)
+                {
+                    _Errors[propertyName] = results;
+                }
                 ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
             }
             return res;
