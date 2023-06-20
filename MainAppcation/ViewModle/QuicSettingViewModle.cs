@@ -9,21 +9,16 @@ using System.Threading.Tasks;
 
 namespace NetProxyController.ViewModle
 {
-    internal class QuicSettingViewModle : INotifyPropertyChanged
+    internal class QuicSettingViewModle : ViewModleBase
     {
         private QuicInfo info;
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
         public QuicSettingViewModle(QuicInfo info)
         {
             this.info = info;
         }
-        public QuicSettingViewModle()
+        public QuicSettingViewModle() : this(new())
         {
-            info = new();
+
         }
         public IEnumerable<SecurityMode> SecurityModeValues { get; set; } = new List<SecurityMode>
         {

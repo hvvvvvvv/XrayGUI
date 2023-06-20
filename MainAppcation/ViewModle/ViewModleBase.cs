@@ -31,7 +31,7 @@ namespace NetProxyController.ViewModle
             }
             return null!;
         }
-        protected void OnpropertyChannged( [CallerMemberName] string? propertyName = null)
+        protected void OnPropertyChanged( [CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
