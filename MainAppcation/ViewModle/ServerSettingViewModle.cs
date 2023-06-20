@@ -91,8 +91,8 @@ namespace NetProxyController.ViewModle
             set
             {
                 StreaminfoObj.Transport = value;
-                OnpropertyChannged(nameof(TransportProtocolSelectedValue));
-                OnpropertyChannged(nameof(TransportSettingView));
+                OnPropertyChanged(nameof(TransportProtocolSelectedValue));
+                OnPropertyChanged(nameof(TransportSettingView));
             }
         }
 
@@ -103,8 +103,8 @@ namespace NetProxyController.ViewModle
             set
             {
                 StreaminfoObj.Security = value;
-                OnpropertyChannged(nameof(SecuritySelectedValue));
-                OnpropertyChannged(nameof(SecuritySettingView));
+                OnPropertyChanged(nameof(SecuritySelectedValue));
+                OnPropertyChanged(nameof(SecuritySettingView));
             }
         }
         public UserControl? ProxyUserSettingView
@@ -125,8 +125,8 @@ namespace NetProxyController.ViewModle
             set
             {
                 Server.Protocol = value;
-                OnpropertyChannged(nameof(SelectedProtocol));
-                OnpropertyChannged(nameof(ProxyUserSettingView));
+                OnPropertyChanged(nameof(SelectedProtocol));
+                OnPropertyChanged(nameof(ProxyUserSettingView));
             }
         }
         public RelayCommand SaveBtnCmd { get; set; }
@@ -137,7 +137,7 @@ namespace NetProxyController.ViewModle
             set
             {
                 Server.Address = value;
-                OnpropertyChannged(nameof(Addr));
+                OnPropertyChanged(nameof(Addr));
                 ValidationProperty();
             }
         }
@@ -148,7 +148,7 @@ namespace NetProxyController.ViewModle
             set
             {
                 Server.Remarks = value;
-                OnpropertyChannged();
+                OnPropertyChanged();
                 ValidationProperty();
             }
         }
@@ -162,7 +162,7 @@ namespace NetProxyController.ViewModle
             set
             {
                 portStr = value;
-                OnpropertyChannged(nameof(PortStr));
+                OnPropertyChanged(nameof(PortStr));
                 if(ValidationProperty())
                 {
                     Server.Port = Convert.ToInt32(PortStr);
