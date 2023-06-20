@@ -21,7 +21,7 @@ namespace NetProxyController.Modle
         {
             var res = ValidationResult.Success;
             var baseRes = base.IsValid(_compareValue, validationContext);
-            if(baseRes is not null &&  baseRes != ValidationResult.Success)
+            if(baseRes is null ||  baseRes == ValidationResult.Success)
             {
                 res = _validationObj.GetValidationResult(value, validationContext);
             }
