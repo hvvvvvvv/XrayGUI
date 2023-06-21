@@ -11,7 +11,7 @@ using Windows.AI.MachineLearning.Preview;
 
 namespace NetProxyController.ViewModle
 {
-    internal class ShadowSocksVerifyInfoViewModle : INotifyPropertyChanged
+    internal class ShadowSocksVerifyInfoViewModle : ViewModleBase
     {
         private ShadowSocksInfo info;
         public ShadowSocksVerifyInfoViewModle(ShadowSocksInfo info)
@@ -22,11 +22,6 @@ namespace NetProxyController.ViewModle
         {
             info = new();
         }
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void OnProertyChanged(string proertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(proertyName)));
-        }
         public IEnumerable<SS_Ecrept> EncryptMethodVlues { get; private set; } = Enum.GetValues<SS_Ecrept>().Cast<SS_Ecrept>();
         public SS_Ecrept EnceryptMethodSelectedValue
         {
@@ -34,7 +29,7 @@ namespace NetProxyController.ViewModle
             set
             {
                 info.Method = value;
-                OnProertyChanged(nameof(EnceryptMethodSelectedValue));
+                OnPropertyChanged(nameof(EnceryptMethodSelectedValue));
             }
         }
         public string Password
@@ -43,7 +38,7 @@ namespace NetProxyController.ViewModle
             set
             {
                 info.Password = value;
-                OnProertyChanged(nameof(Password));
+                OnPropertyChanged(nameof(Password));
             }
         }
         public string Eamail
@@ -52,7 +47,7 @@ namespace NetProxyController.ViewModle
             set
             {
                 info.Email = value;
-                OnProertyChanged(nameof(Eamail));
+                OnPropertyChanged(nameof(Eamail));
             }
         }
         public bool Uot
@@ -61,7 +56,7 @@ namespace NetProxyController.ViewModle
             set
             {
                 info.Uot = value;
-                OnProertyChanged(nameof(Uot));
+                OnPropertyChanged(nameof(Uot));
             }
         }
 

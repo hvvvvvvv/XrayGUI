@@ -3,13 +3,14 @@ using NetProxyController.Modle.Server;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace NetProxyController.ViewModle
 {
-    internal class VlessVerifyInfoViewModle: INotifyPropertyChanged
+    internal class VlessVerifyInfoViewModle: ViewModleBase
     {
         private VlessInfo info;
         public VlessVerifyInfoViewModle(VlessInfo vlessInfo)
@@ -20,11 +21,7 @@ namespace NetProxyController.ViewModle
         {
             info = new();
         }
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        public event PropertyChangedEventHandler? PropertyChanged;
+        [Required(ErrorMessage = "用户ID不能为空")]
         public string Id
         {
             get => info.Id;
@@ -32,6 +29,7 @@ namespace NetProxyController.ViewModle
             {
                 info.Id = value;
                 OnPropertyChanged(nameof(Id));
+                ValidationProperty();
             }
         }
         public IEnumerable<XtlsFlow> FlowValues { get; private set; } = Enum.GetValues<XtlsFlow>().Cast<XtlsFlow>();

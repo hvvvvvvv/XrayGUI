@@ -3,28 +3,25 @@ using NetProxyController.Modle.Server;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace NetProxyController.ViewModle
 {
-    internal class RealityInfoSettingViewModle : INotifyPropertyChanged
+    internal class RealityInfoSettingViewModle : ViewModleBase
     {
         public RealityInfoSettingViewModle(RealityInfo info)
         {
             this.info = info;
         }
-        public RealityInfoSettingViewModle()
+        public RealityInfoSettingViewModle() : this(new())
         {
-            info = new();
+
         }  
-        public event PropertyChangedEventHandler? PropertyChanged;
         private RealityInfo info;
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        [Required(ErrorMessage = "ServerName不能为空")]
         public string ServerName
         {
             get => info.ServerName;
@@ -32,6 +29,7 @@ namespace NetProxyController.ViewModle
             {
                 info.ServerName = value;
                 OnPropertyChanged(nameof(ServerName));
+                ValidationProperty();
             }
         }
         public IEnumerable<TlsFingerPrint> FingerPrintValues { get;} = Enum.GetValues<TlsFingerPrint>().Cast<TlsFingerPrint>();
@@ -53,6 +51,7 @@ namespace NetProxyController.ViewModle
                 OnPropertyChanged(nameof(ShortId));
             }
         }
+        [Required(ErrorMessage = "PublicKey 不能为空")]
         public string PublicKey
         {
             get => info.PublicKey;
@@ -60,6 +59,7 @@ namespace NetProxyController.ViewModle
             {
                 info.PublicKey = value;
                 OnPropertyChanged(nameof(PublicKey));
+                ValidationProperty();
             }
         }
         public string SpiderX

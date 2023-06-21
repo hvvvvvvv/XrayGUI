@@ -10,14 +10,9 @@ using NetProxyController.Modle;
 
 namespace NetProxyController.ViewModle
 {
-    internal class TcpSettingViewModle : INotifyPropertyChanged
+    internal class TcpSettingViewModle : ViewModleBase
     {
         private TcpInfo info;
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
         public TcpSettingViewModle(TcpInfo info)
         {
             this.info = info;

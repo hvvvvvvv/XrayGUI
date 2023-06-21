@@ -3,20 +3,16 @@ using NetProxyController.Modle.Server;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace NetProxyController.ViewModle
 {
-    internal class TlsSettingViewModle : INotifyPropertyChanged
+    internal class TlsSettingViewModle : ViewModleBase
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
         private TlsInfo info;
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
         public TlsSettingViewModle(TlsInfo info)
         {
             this.info = info;
@@ -25,6 +21,7 @@ namespace NetProxyController.ViewModle
         {
             info = new();
         }
+        [Required(ErrorMessage = "ServerName不能为空")]
         public string ServerName
         {
             get => info.ServerName;
@@ -32,6 +29,7 @@ namespace NetProxyController.ViewModle
             {
                 info.ServerName = value;
                 OnPropertyChanged(nameof(ServerName));
+                ValidationProperty();
             }
         }
         public IEnumerable<TlsFingerPrint> FingerPrintValues { get; private set; } = Enum.GetValues<TlsFingerPrint>().Cast<TlsFingerPrint>();

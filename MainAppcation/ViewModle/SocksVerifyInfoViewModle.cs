@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace NetProxyController.ViewModle
 {
-    internal class SocksVerifyInfoViewModle : INotifyPropertyChanged
+    internal class SocksVerifyInfoViewModle : ViewModleBase
     {
         public SocksInfo info;
-        public event PropertyChangedEventHandler? PropertyChanged;
         public SocksVerifyInfoViewModle(SocksInfo info)
         {
             this.info = info;
@@ -19,10 +18,6 @@ namespace NetProxyController.ViewModle
         public SocksVerifyInfoViewModle()
         {
             info = new();
-        }
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         public string User
         {

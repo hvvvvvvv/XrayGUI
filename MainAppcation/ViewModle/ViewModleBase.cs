@@ -18,7 +18,7 @@ namespace NetProxyController.ViewModle
 
         public event PropertyChangedEventHandler? PropertyChanged;
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
-        private Dictionary<string, List<ValidationResult>> _Errors;
+        protected Dictionary<string, List<ValidationResult>> _Errors;
         public ViewModleBase()
         {
             _Errors = new Dictionary<string, List<ValidationResult>>();
@@ -29,7 +29,7 @@ namespace NetProxyController.ViewModle
             {
                 return _Errors[propertyName];
             }
-            return null!;
+            return new List<ValidationResult?> { ValidationResult.Success };
         }
         protected void OnPropertyChanged( [CallerMemberName] string? propertyName = null)
         {
@@ -43,7 +43,7 @@ namespace NetProxyController.ViewModle
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
             }
         }
-        protected bool ValidationProperty([CallerMemberName] string? propertyName = null)
+        protected virtual bool ValidationProperty([CallerMemberName] string? propertyName = null)
         {
             var res = false;
             if(propertyName is not null)

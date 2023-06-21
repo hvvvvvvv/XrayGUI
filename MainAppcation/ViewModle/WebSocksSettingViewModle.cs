@@ -9,21 +9,16 @@ using System.Threading.Tasks;
 
 namespace NetProxyController.ViewModle
 {
-    internal class WebSocksSettingViewModle : INotifyPropertyChanged
+    internal class WebSocksSettingViewModle : ViewModleBase
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
         private WebSocketInfo info;
         public WebSocksSettingViewModle(WebSocketInfo info)
         {
             this.info = info;
         }
-        public WebSocksSettingViewModle()
+        public WebSocksSettingViewModle() : this(new())
         {
-            info = new();
-        }
-        private void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
         }
         public string Path
         {

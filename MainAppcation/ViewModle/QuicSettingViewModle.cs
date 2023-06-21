@@ -3,7 +3,9 @@ using NetProxyController.Modle.Server;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -35,12 +37,15 @@ namespace NetProxyController.ViewModle
                 OnPropertyChanged(nameof(Security));
             }
         }
+        [Required(ErrorMessage = "密钥不能为空")]
         public string Key
         {
             get => info.Key;
             set
             {
                 info.Key = value;
+                OnPropertyChanged();
+                ValidationProperty();
             }
         }
         public IEnumerable<FeignType> Feign { get; private set; } = Enum.GetValues<FeignType>().Cast<FeignType>();
@@ -52,6 +57,14 @@ namespace NetProxyController.ViewModle
                 info.Feign = value;
                 OnPropertyChanged(nameof(Feign));
             }
+        }
+        protected override bool ValidationProperty([CallerMemberName] string? propertyName = null)
+        {
+            if(Security == SecurityMode.None && propertyName == nameof(Key))
+            {
+                return true;
+            }
+            return base.ValidationProperty(propertyName);
         }
 
     }

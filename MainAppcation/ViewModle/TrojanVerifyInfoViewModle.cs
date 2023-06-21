@@ -2,13 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace NetProxyController.ViewModle
 {
-    internal class TrojanVerifyInfoViewModle: INotifyPropertyChanged
+    internal class TrojanVerifyInfoViewModle: ViewModleBase
     {
         public TrojanInfo info;
         public TrojanVerifyInfoViewModle(TrojanInfo info)
@@ -19,11 +20,7 @@ namespace NetProxyController.ViewModle
         {
             info = new();
         }
-        private void OnPropertyChanged(string proertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(proertyName)));
-        }
-        public event PropertyChangedEventHandler? PropertyChanged;
+        [Required(ErrorMessage = "密码不能为空")]
         public string Password
         {
             get => info.Password;
@@ -31,6 +28,7 @@ namespace NetProxyController.ViewModle
             {
                 info.Password = value;
                 OnPropertyChanged(nameof(Password));
+                ValidationProperty();
             }
         }
         public string Email
