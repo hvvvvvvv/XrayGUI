@@ -29,19 +29,36 @@ namespace NetProxyController.ViewModle
             {
                 return _Errors[propertyName];
             }
-            return new List<ValidationResult?> { ValidationResult.Success };
+            return null!;
         }
         protected void OnPropertyChanged( [CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        protected void SetProerty<T>(ref T property,T value, [CallerMemberName] string? propertyName = null)
+        protected void OnErrorsChanged(string propertyName) => ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        //protected void SetProerty<T>(ref T property,T value, [CallerMemberName] string? propertyName = null)
+        //{
+        //    property = value;
+        //    if(propertyName is not null)
+        //    {
+        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        //    }
+        //}
+        public bool ValidationAllProperty()
         {
-            property = value;
-            if(propertyName is not null)
+            var res = true;
+            foreach(var property in  this.GetType().GetProperties())
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                var attributes = Attribute.GetCustomAttributes(property);
+                if (attributes.OfType<ValidationAttribute>().Any())
+                {
+                    if(!ValidationProperty(property.Name))
+                    {
+                        res = false;
+                    }
+                }
             }
+            return res;
         }
         protected virtual bool ValidationProperty([CallerMemberName] string? propertyName = null)
         {
@@ -58,7 +75,7 @@ namespace NetProxyController.ViewModle
                 {
                     _Errors[propertyName] = results;
                 }
-                ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+                OnErrorsChanged(propertyName);
             }
             return res;
         }

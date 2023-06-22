@@ -33,7 +33,7 @@
                         <Setter Property="Margin" Value="5,0,5,0"/>
                     </Style>
                     <Style TargetType="hc:TextBox" BasedOn="{StaticResource TextBoxPlusBaseStyle}">
-                        <Setter Property="Margin" Value="20,5"/>
+                        <Setter Property="Margin" Value="20,12"/>
                     </Style>
                     <Style TargetType="TextBlock" BasedOn="{StaticResource TextBlockBaseStyle}">
                         <Setter Property="FontSize" Value="16"/>
@@ -41,11 +41,11 @@
                         <Setter Property="Margin" Value="0,0,20,0"/>
                     </Style>
                     <Style TargetType="hc:ComboBox" BasedOn="{StaticResource ComboBoxPlusBaseStyle}">
-                        <Setter Property="Margin" Value="20,5"/>
+                        <Setter Property="Margin" Value="20,12"/>
                         <Setter Property="VerticalAlignment" Value="Center"/>
                     </Style>
                     <Style TargetType="ToggleButton" BasedOn="{StaticResource ToggleButtonSwitch}">
-                        <Setter Property="Margin" Value="0,0,120,0"/>
+                        <Setter Property="Margin" Value="0,12,120,12"/>
                     </Style>
                 </Grid.Resources>
                 <StackPanel Grid.Row="0">

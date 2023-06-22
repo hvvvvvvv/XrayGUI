@@ -35,6 +35,7 @@ namespace NetProxyController.ViewModle
             {
                 info.Security = value;
                 OnPropertyChanged(nameof(Security));
+                ValidationProperty(nameof(Key));
             }
         }
         [Required(ErrorMessage = "密钥不能为空")]
@@ -60,8 +61,10 @@ namespace NetProxyController.ViewModle
         }
         protected override bool ValidationProperty([CallerMemberName] string? propertyName = null)
         {
-            if(Security == SecurityMode.None && propertyName == nameof(Key))
+            if (Security == SecurityMode.None && propertyName == nameof(Key))
             {
+                _Errors.Remove(propertyName);
+                OnErrorsChanged(propertyName);
                 return true;
             }
             return base.ValidationProperty(propertyName);

@@ -77,8 +77,33 @@ namespace NetProxyController.ViewModle
             securitySettingView.Add(TransportSecurity.none, null);
             #endregion
         }
+        private bool ValidationData()
+        {
+            var viewModles = new List<ViewModleBase?>()
+            {
+                this,
+                ProxyUserSettingView?.DataContext is ViewModleBase vm1 ? vm1 : null,
+                TransportSettingView?.DataContext is ViewModleBase vm2 ? vm2 : null,
+                SecuritySettingView?.DataContext is ViewModleBase vm3 ? vm3 : null,
+            };
+            foreach(var vm in viewModles)
+            {
+                if(vm is not null)
+                {
+                    if(!vm.ValidationAllProperty())
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;               
+        }
         private void SaveBtn()
         {
+            if(!ValidationData())
+            {
+                return;
+            }
             Server.SetProtocolInfoObj(ProtocolModles[Server.Protocol]);
             Server.SetStreamInfo(StreaminfoObj);
             Server.SaveToDataBase();
