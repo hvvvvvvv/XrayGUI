@@ -1,4 +1,5 @@
-﻿using NetProxyController.Modle.Server;
+﻿using NetProxyController.Modle;
+using NetProxyController.Modle.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,18 @@ namespace NetProxyController.ViewModle
 {
     internal class ServerManagerViewModle: ViewModleBase
     {
-        private List<ServerItem> _serverItem;
-        public List<ServerItem> ServerItem
+        public ServerManagerViewModle()
         {
-            get => _serverItem;
+            serverItemList = new();
+            Global.DBService.Table<ServerItem>().ToList().ForEach(item => serverItemList.Add(new(item)));
+        }
+        private List<ServerItemViewModle> serverItemList;
+        public List<ServerItemViewModle> ServerItemList
+        {
+            get => serverItemList;
             set
             {
-                _serverItem = value;
+                serverItemList = value;
                 OnPropertyChanged();
             }
         }

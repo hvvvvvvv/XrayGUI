@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetProxyController.ViewModle;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,11 +18,16 @@ namespace NetProxyController.View
     /// <summary>
     /// ServerManager.xaml 的交互逻辑
     /// </summary>
-    public partial class ServerManager : Window
+    internal partial class ServerManager : Window
     {
-        public ServerManager()
+        public ServerManager(ServerManagerViewModle vm)
         {
             InitializeComponent();
+            DataContext = vm;
+        }
+        public ServerManager() : this(new ServerManagerViewModle())
+        {
+
         }
     }
 }

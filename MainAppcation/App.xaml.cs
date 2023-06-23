@@ -34,7 +34,7 @@ namespace NetProxyController
             //taskBar.Show();
             //InitDataBase();
             Global.DBService.CreateTable<ServerItem>();
-            new ServerSettingWindow().Show();
+            new ServerManager().Show();
             base.OnStartup(e);
         }
 
