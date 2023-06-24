@@ -1,11 +1,14 @@
-﻿using NetProxyController.Modle;
+﻿using CommunityToolkit.Mvvm.Input;
+using NetProxyController.Modle;
 using NetProxyController.Modle.Server;
+using NetProxyController.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace NetProxyController.ViewModle
 {
@@ -16,6 +19,7 @@ namespace NetProxyController.ViewModle
         {
             Server = server;
             UpdateData();
+            itemDoubleClick = ItemDoubleClickExcute;
         }
         public void UpdateData()
         {
@@ -66,6 +70,16 @@ namespace NetProxyController.ViewModle
         {
             get => securityPolicy;
             set => SetProperty(ref securityPolicy, value);
+        }
+        private MouseButtonEventHandler itemDoubleClick;
+        public MouseButtonEventHandler ItemDoubleClick
+        {
+            get => itemDoubleClick;
+            set => itemDoubleClick = value;
+        }
+        public void ItemDoubleClickExcute(object sender, MouseButtonEventArgs e)
+        {
+            new ServerSettingWindow(Server).ShowDialog();
         }
     }
 }
