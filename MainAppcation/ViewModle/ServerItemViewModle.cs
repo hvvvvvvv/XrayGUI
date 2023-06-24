@@ -19,7 +19,7 @@ namespace NetProxyController.ViewModle
         {
             Server = server;
             UpdateData();
-            itemDoubleClick = ItemDoubleClickExcute;
+            doubleClickItemCmd = new RelayCommand(DoubleClickItemExcute);
         }
         public void UpdateData()
         {
@@ -71,13 +71,13 @@ namespace NetProxyController.ViewModle
             get => securityPolicy;
             set => SetProperty(ref securityPolicy, value);
         }
-        private MouseButtonEventHandler itemDoubleClick;
-        public MouseButtonEventHandler ItemDoubleClick
+        private RelayCommand doubleClickItemCmd;
+        public RelayCommand DoubleClickItemCmd
         {
-            get => itemDoubleClick;
-            set => itemDoubleClick = value;
+            get => doubleClickItemCmd;
+            set => _ = value;
         }
-        public void ItemDoubleClickExcute(object sender, MouseButtonEventArgs e)
+        private void DoubleClickItemExcute()
         {
             new ServerSettingWindow(Server).ShowDialog();
         }
