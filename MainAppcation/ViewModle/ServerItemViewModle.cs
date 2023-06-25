@@ -19,7 +19,7 @@ namespace NetProxyController.ViewModle
         {
             Server = server;
             UpdateData();
-            doubleClickItemCmd = new RelayCommand(DoubleClickItemExcute);
+            doubleClickItemCmd = new RelayCommand(EditServerItem);
         }
         public void UpdateData()
         {
@@ -77,9 +77,10 @@ namespace NetProxyController.ViewModle
             get => doubleClickItemCmd;
             set => _ = value;
         }
-        private void DoubleClickItemExcute()
+        public void EditServerItem()
         {
             new ServerSettingWindow(Server).ShowDialog();
+            UpdateData();
         }
     }
 }

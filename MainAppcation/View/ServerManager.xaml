@@ -5,9 +5,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NetProxyController.View"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:vm="clr-namespace:NetProxyController.ViewModle"
+        xmlns:test="clr-namespace:ProxyNotifyWindow;assembly=ProxyNotifyWindow"
         mc:Ignorable="d"
-        Title="ServerManager" Height="450" Width="800">
+        Title="ServerManager" Height="430" Width="600">
     <Window.DataContext>
         <vm:ServerManagerViewModle/>
     </Window.DataContext>
@@ -20,10 +22,16 @@
         </ResourceDictionary>
     </Window.Resources>
     <StackPanel>
+        <hc:ButtonGroup Margin="0,5,30,5" HorizontalContentAlignment="Left">
+            <Button Content="新建服务器}"/>
+            <Button Content="编辑"/>
+            <Button Content="路由策略"/>
+            <Button Content="设为默认路由出口"/>
+        </hc:ButtonGroup>
         <ListView x:Name="listView" Height="330" Width="auto" ItemsSource="{Binding ServerItemList}" SelectedItem="{Binding SelectServerItem}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemBaseStyle}">
-                    <Setter Property="local:EventCommandBehavior.DoubleClick1" Value="{Binding DoubleClickItemCmd}"/>
+                    <Setter Property="local:EventCommandBehavior.DoubleClick" Value="{Binding DoubleClickItemCmd}"/>
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.View>

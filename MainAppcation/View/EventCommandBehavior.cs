@@ -6,24 +6,23 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
 using System.Windows.Controls;
-using CommunityToolkit.Mvvm.Input;
 
 namespace NetProxyController.View
 {
-    public class EventCommandBehavior : Control
+    public class EventCommandBehavior
     {
-        public static DependencyProperty DoubleclickProperty = DependencyProperty.RegisterAttached("DoubleClick1",
+        public static readonly DependencyProperty DoubleClickProperty = DependencyProperty.RegisterAttached("DoubleClick",
             typeof(ICommand),
             typeof(EventCommandBehavior),
-            new PropertyMetadata(new RelayCommand(() => _ = 1), DoubleClickChanged));
+            new PropertyMetadata(null, DoubleClickChanged));
 
-        public static ICommand GetDoubleClick1(DependencyObject target)
+        public static ICommand GetDoubleClick(DependencyObject target)
         {
-            return (ICommand)target.GetValue(DoubleclickProperty);
+            return (ICommand)target.GetValue(DoubleClickProperty);
         }
-        public static void SetDoubleClick1(DependencyObject target, ICommand value)
+        public static void SetDoubleClick(DependencyObject target, ICommand value)
         {
-            target.SetValue(DoubleclickProperty, value);
+            target.SetValue(DoubleClickProperty, value);
         }
 
         private static void DoubleClickChanged(DependencyObject target, DependencyPropertyChangedEventArgs e)
@@ -49,7 +48,7 @@ namespace NetProxyController.View
         static void element_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             UIElement element = (UIElement)sender;
-            ICommand command = (ICommand)element.GetValue(DoubleclickProperty);
+            ICommand command = (ICommand)element.GetValue(DoubleClickProperty);
             command.Execute(null);
         }
     }

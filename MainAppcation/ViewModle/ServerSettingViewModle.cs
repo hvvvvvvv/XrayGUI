@@ -16,6 +16,7 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
+using System.Windows;
 
 namespace NetProxyController.ViewModle
 {
@@ -36,6 +37,7 @@ namespace NetProxyController.ViewModle
             transportSettingView = new();
             securitySettingView = new();
             SaveBtnCmd = new(SaveBtn);
+            portStr = Server.Port.ToString();
             InitData();
         }
         public ServerSettingViewModle() : this(new ServerItem())
@@ -98,7 +100,7 @@ namespace NetProxyController.ViewModle
             }
             return true;               
         }
-        private void SaveBtn()
+        private void SaveBtn(Window? win)
         {
             if(!ValidationData())
             {
@@ -107,6 +109,7 @@ namespace NetProxyController.ViewModle
             Server.SetProtocolInfoObj(ProtocolModles[Server.Protocol]);
             Server.SetStreamInfo(StreaminfoObj);
             Server.SaveToDataBase();
+            win?.Close();
         }
         public IEnumerable<OutboundProtocol> ProxyProtocolValues { get; private set; } = Enum.GetValues(typeof(OutboundProtocol)).Cast<OutboundProtocol>();
         public IEnumerable<TransportType> TransportProtocolValues {get; private set; } = Enum.GetValues<TransportType>().Cast<TransportType>();
@@ -154,7 +157,7 @@ namespace NetProxyController.ViewModle
                 OnPropertyChanged(nameof(ProxyUserSettingView));
             }
         }
-        public RelayCommand SaveBtnCmd { get; set; }
+        public RelayCommand<Window> SaveBtnCmd { get; set; }
         [Required(ErrorMessage = "服务器地址不能为空")]
         public string Addr
         {
@@ -177,10 +180,10 @@ namespace NetProxyController.ViewModle
                 ValidationProperty();
             }
         }
-        
-        private string portStr = string.Empty;
+
+        private string portStr;
         [Required(ErrorMessage = "端口号不能为空")]
-        [RegularExpression(@"^(?:[1-9]\d{0,3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$",ErrorMessage = "请输入正确的端口号")]
+        [RegularExpression(@"^(?:[1-9]\d{0,3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$",ErrorMessage = "请输入正确的端口号(1-65535)")]
         public string PortStr
         {
             get => portStr;

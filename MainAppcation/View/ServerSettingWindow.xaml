@@ -9,7 +9,8 @@
         xmlns:vm="clr-namespace:NetProxyController.ViewModle"       
         mc:Ignorable="d"
         Background="#ebf3ff"
-        Title="ServerSettingWindow" Height="700" Width="500">
+        Title="ServerSettingWindow" Height="700" Width="500"
+        x:Name="window">
 
     <StackPanel>
         <hc:ScrollViewer Height="600">
@@ -128,7 +129,7 @@
                 Width="200"
                 Margin="0,15"
                 Command="{Binding SaveBtnCmd}"
-                />
+                CommandParameter="{Binding ElementName=window}"/>
     </StackPanel>
     
 </Window>
