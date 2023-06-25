@@ -5,9 +5,13 @@ using NetProxyController.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Controls;
 using System.Text;
+using System.Collections;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
+using System.Diagnostics;
 
 namespace NetProxyController.ViewModle
 {
@@ -16,49 +20,72 @@ namespace NetProxyController.ViewModle
         public ServerManagerViewModle()
         {
             serverItemList = new();
-            Global.DBService.Table<ServerItem>().ToList().ForEach(item => serverItemList.Add(new(item)));
-            editServerItemCmd = new RelayCommand(EditServerItemExcute);
-            itemDoubleClick = ItemDoubleClickExcute;
+            serverItems = GetDateItemFromDataBase();
+            serverItemList = new CollectionViewSource()
+            {
+                Source = serverItems
+            };
+            createProxyServerCmd = new(CreateProxyServerExcute);
+            selectionChangedCmd = new(SelectionChangedCmdExcute!);
         }
-        private List<ServerItemViewModle> serverItemList;
-        public List<ServerItemViewModle> ServerItemList
+        private static List<ServerItemViewModle> GetDateItemFromDataBase()
+        {
+            var ret = new List<ServerItemViewModle>();
+            Global.DBService.Table<ServerItem>().ToList().ForEach(item => ret.Add(new(item)));
+            return ret;
+        }
+        private List<ServerItemViewModle> serverItems;
+        private CollectionViewSource serverItemList;
+        private IList? selectionServerItems;
+        public CollectionViewSource ServerItemList
         {
             get => serverItemList;
             set
             {
                 serverItemList = value;
-                OnPropertyChanged();
+                OnPropertyChanged();                
             }
         }
-        private ServerItemViewModle? selectServerItem;
-        public ServerItemViewModle? SelectServerItem
+        private ServerItemViewModle? selectServerItems;
+        public ServerItemViewModle? SelectServerItems
         {
-            get => selectServerItem;
+            get => selectServerItems;
             set
             {
-                selectServerItem = value;
+                selectServerItems = value;
                 OnPropertyChanged();
             }
         }
-        private RelayCommand editServerItemCmd;
-        public RelayCommand EditServerItemCmd
-        { 
-            get => editServerItemCmd;
+        private RelayCommand createProxyServerCmd;
+        public RelayCommand CreateProxyServerCmd
+        {
+            get => createProxyServerCmd;
             set => _ = value;
         }
-        private MouseButtonEventHandler itemDoubleClick;
-        public MouseButtonEventHandler ItemDoubleClick
+        private RelayCommand<object> selectionChangedCmd;
+        public RelayCommand<object> SelectionChangedCmd
         {
-            get => itemDoubleClick;
+            get => selectionChangedCmd;
             set => _ = value;
         }
-        private void EditServerItemExcute()
+        private void SelectionChangedCmdExcute(object view)
         {
-            new ServerSettingWindow(SelectServerItem?.Server ?? new()).ShowDialog();
+            if (view is ListView listView)
+            {
+                selectionServerItems ??= listView.SelectedItems;
+                Debug.WriteLine(selectionServerItems.GetType());
+            }
         }
-        private void ItemDoubleClickExcute(object sender, MouseButtonEventArgs e)
+        private void CreateProxyServerExcute()
         {
-            new ServerSettingWindow(SelectServerItem?.Server ?? new()).ShowDialog();
+            var NewServer = new ServerItemViewModle();
+            if(new ServerSettingWindow(NewServer.Server).ShowDialog() == true)
+            {
+                NewServer.UpdateData();
+                serverItems.Add(NewServer);
+                ServerItemList.View.Refresh();
+            }
         }
+
     }
 }

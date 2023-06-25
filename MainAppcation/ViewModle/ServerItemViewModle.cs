@@ -21,6 +21,10 @@ namespace NetProxyController.ViewModle
             UpdateData();
             doubleClickItemCmd = new RelayCommand(EditServerItem);
         }
+        public ServerItemViewModle() : this(new())
+        {
+
+        }
         public void UpdateData()
         {
             ServerName = Server.Remarks;

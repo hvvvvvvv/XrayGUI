@@ -36,7 +36,7 @@ namespace NetProxyController.ViewModle
             ProtocolModles = new();
             transportSettingView = new();
             securitySettingView = new();
-            SaveBtnCmd = new(SaveBtn);
+            SaveBtnCmd = new(SaveBtn!);
             portStr = Server.Port.ToString();
             InitData();
         }
@@ -100,7 +100,7 @@ namespace NetProxyController.ViewModle
             }
             return true;               
         }
-        private void SaveBtn(Window? win)
+        private void SaveBtn(Window win)
         {
             if(!ValidationData())
             {
@@ -109,7 +109,8 @@ namespace NetProxyController.ViewModle
             Server.SetProtocolInfoObj(ProtocolModles[Server.Protocol]);
             Server.SetStreamInfo(StreaminfoObj);
             Server.SaveToDataBase();
-            win?.Close();
+            win.DialogResult = true;
+            win.Close();
         }
         public IEnumerable<OutboundProtocol> ProxyProtocolValues { get; private set; } = Enum.GetValues(typeof(OutboundProtocol)).Cast<OutboundProtocol>();
         public IEnumerable<TransportType> TransportProtocolValues {get; private set; } = Enum.GetValues<TransportType>().Cast<TransportType>();

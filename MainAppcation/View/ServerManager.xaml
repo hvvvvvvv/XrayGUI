@@ -7,7 +7,6 @@
         xmlns:local="clr-namespace:NetProxyController.View"
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:vm="clr-namespace:NetProxyController.ViewModle"
-        xmlns:test="clr-namespace:ProxyNotifyWindow;assembly=ProxyNotifyWindow"
         mc:Ignorable="d"
         Title="ServerManager" Height="430" Width="600">
     <Window.DataContext>
@@ -23,15 +22,15 @@
     </Window.Resources>
     <StackPanel>
         <hc:ButtonGroup Margin="0,5,30,5" HorizontalContentAlignment="Left">
-            <Button Content="新建服务器}"/>
+            <Button Content="新建服务器" Command="{Binding CreateProxyServerCmd}"/>
             <Button Content="编辑"/>
             <Button Content="路由策略"/>
             <Button Content="设为默认路由出口"/>
         </hc:ButtonGroup>
-        <ListView x:Name="listView" Height="330" Width="auto" ItemsSource="{Binding ServerItemList}" SelectedItem="{Binding SelectServerItem}">
+        <ListView x:Name="listView" Height="330" Width="auto" ItemsSource="{Binding ServerItemList.View}" local:AttachProperties.SelectionChangedCommand="{Binding SelectionChangedCmd}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemBaseStyle}">
-                    <Setter Property="local:EventCommandBehavior.DoubleClick" Value="{Binding DoubleClickItemCmd}"/>
+                    <Setter Property="local:AttachProperties.DoubleClick" Value="{Binding DoubleClickItemCmd}"/>
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.View>
@@ -43,8 +42,8 @@
                     <GridViewColumn Width="80" Header="传输协议" DisplayMemberBinding="{Binding TransportProtocol}"/>
                     <GridViewColumn Width="80" Header="安全策略" DisplayMemberBinding="{Binding SecurityPolicy}"/>
                 </GridView>
-            </ListView.View>       
+            </ListView.View>
         </ListView>
-        
+
     </StackPanel>
 </Window>
