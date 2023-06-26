@@ -134,7 +134,7 @@ namespace NetProxyController.ViewModle
                         i--;
                     }
                 }
-            }   
+            }
             else
             {
                 serverItems.ForEach(i => i.IsSelected = false);

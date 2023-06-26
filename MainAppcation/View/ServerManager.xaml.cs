@@ -31,10 +31,5 @@ namespace NetProxyController.View
         {
 
         }
-
-        private void listView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            Debug.WriteLine($"SelectionChanged Seleted Count {listView.SelectedItems.Count}");
-        }
     }
 }
