@@ -89,6 +89,11 @@ namespace NetProxyController.Modle.Server
             }
             Global.DBService.InsertOrReplace(this);
         }
+        public void DeleteFromDataBase()
+        {
+            if (Index == -1) return;
+            Global.DBService.Delete<ServerItem>(Index);
+        }
 
         public static List<ServerItem> GetItemsFromDataBase()
         {

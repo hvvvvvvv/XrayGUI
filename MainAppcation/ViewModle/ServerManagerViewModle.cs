@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Diagnostics;
+using HandyControl.Controls;
 
 namespace NetProxyController.ViewModle
 {
@@ -26,7 +27,9 @@ namespace NetProxyController.ViewModle
                 Source = serverItems
             };
             createProxyServerCmd = new(CreateProxyServerExcute);
-            selectionChangedCmd = new(SelectionChangedCmdExcute!);
+            selectionChangedCmd = new(SelectionChangedCmdExcute);
+            editServerCmd = new(EditProxyServerExcute);
+            deleteServerCmd = new(DeleteProxyServerItemExcute);
         }
         private static List<ServerItemViewModle> GetDateItemFromDataBase()
         {
@@ -36,7 +39,6 @@ namespace NetProxyController.ViewModle
         }
         private List<ServerItemViewModle> serverItems;
         private CollectionViewSource serverItemList;
-        private IList? selectionServerItems;
         public CollectionViewSource ServerItemList
         {
             get => serverItemList;
@@ -62,19 +64,38 @@ namespace NetProxyController.ViewModle
             get => createProxyServerCmd;
             set => _ = value;
         }
-        private RelayCommand<object> selectionChangedCmd;
-        public RelayCommand<object> SelectionChangedCmd
+        private RelayCommand selectionChangedCmd;
+        public RelayCommand SelectionChangedCmd
         {
             get => selectionChangedCmd;
             set => _ = value;
         }
-        private void SelectionChangedCmdExcute(object view)
+        private RelayCommand editServerCmd;
+        public RelayCommand EditServerCmd
         {
-            if (view is ListView listView)
-            {
-                selectionServerItems ??= listView.SelectedItems;
-                Debug.WriteLine(selectionServerItems.GetType());
-            }
+            get => editServerCmd;
+            set => _ = value;
+        }
+        private RelayCommand deleteServerCmd;
+        public RelayCommand DeleteServerCmd
+        {
+            get => deleteServerCmd;
+            set => _ = value;
+        }
+        public bool SelectedItemsIsSingle
+        {
+            get => serverItems.Where(item => item.IsSelected).Count() == 1;
+            set => _ = value;
+        }
+        public bool SelectedItemsIsMultiple
+        {
+            get => serverItems.Where(item => item.IsSelected).Count() >= 1;
+            set => _ = value;
+        }
+        private void SelectionChangedCmdExcute()
+        {
+            OnPropertyChanged(nameof(SelectedItemsIsSingle));
+            OnPropertyChanged(nameof(SelectedItemsIsMultiple));
         }
         private void CreateProxyServerExcute()
         {
@@ -85,6 +106,41 @@ namespace NetProxyController.ViewModle
                 serverItems.Add(NewServer);
                 ServerItemList.View.Refresh();
             }
+        }
+        private void EditProxyServerExcute()
+        {
+            foreach(var item in serverItems)
+            {
+                if(item.IsSelected)
+                {
+                    item.EditServerItem();
+                    serverItems.ForEach(i => i.IsSelected = false);
+                    SelectionChangedCmdExcute();
+                    return;
+                }
+            }
+        }
+        private void DeleteProxyServerItemExcute()
+        {
+            if(MessageBox.Show(messageBoxText:"是否删除选中项？",button: System.Windows.MessageBoxButton.YesNo,
+                icon: System.Windows.MessageBoxImage.Question) == System.Windows.MessageBoxResult.Yes)
+            {
+                for (int i = 0; i < serverItems.Count; i++)
+                {
+                    if (serverItems[i].IsSelected)
+                    {
+                        serverItems[i].Server.DeleteFromDataBase();
+                        serverItems.RemoveAt(i);
+                        i--;
+                    }
+                }
+            }   
+            else
+            {
+                serverItems.ForEach(i => i.IsSelected = false);
+            }
+            serverItemList.View.Refresh();
+            SelectionChangedCmdExcute();
         }
 
     }

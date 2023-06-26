@@ -53,6 +53,8 @@ namespace NetProxyController.View
             command.Execute(null);
         }
         #endregion
+
+        #region SelectionChangedCommand
         public static readonly DependencyProperty SelectionChangedCommandProperty = DependencyProperty.RegisterAttached("SelectionChangedCommand",
         typeof(ICommand), typeof(AttachProperties), new PropertyMetadata(null, SelectionChangedCommandChanged));
         public static ICommand GetSelectionChangedCommand(DependencyObject target)
@@ -78,7 +80,6 @@ namespace NetProxyController.View
                         element.SelectionChanged -= Element_SelectionChanged;
                     }
                 }
-
             }
         }
         private static void Element_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -87,6 +88,7 @@ namespace NetProxyController.View
             ICommand command = (ICommand)element.GetValue(SelectionChangedCommandProperty);
             command.Execute(sender);
         }
+        #endregion 
     }
 
 

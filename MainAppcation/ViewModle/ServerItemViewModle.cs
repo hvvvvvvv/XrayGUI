@@ -39,6 +39,12 @@ namespace NetProxyController.ViewModle
             property = value;
             OnPropertyChanged(propertyName);
         }
+        private bool isSelected;
+        public bool IsSelected
+        {
+            get => isSelected;
+            set => isSelected = value;
+        }
         private string serverName = default!;
         public string ServerName
         {

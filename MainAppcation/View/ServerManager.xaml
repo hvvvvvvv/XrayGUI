@@ -8,7 +8,7 @@
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:vm="clr-namespace:NetProxyController.ViewModle"
         mc:Ignorable="d"
-        Title="ServerManager" Height="430" Width="600">
+        Title="代理服务器管理" Height="430" Width="600">
     <Window.DataContext>
         <vm:ServerManagerViewModle/>
     </Window.DataContext>
@@ -21,20 +21,22 @@
         </ResourceDictionary>
     </Window.Resources>
     <StackPanel>
-        <hc:ButtonGroup Margin="0,5,30,5" HorizontalContentAlignment="Left">
+        <hc:ButtonGroup Margin="0,5,50,5" HorizontalContentAlignment="Left">
             <Button Content="新建服务器" Command="{Binding CreateProxyServerCmd}"/>
-            <Button Content="编辑"/>
-            <Button Content="路由策略"/>
-            <Button Content="设为默认路由出口"/>
+            <Button Content="编辑" IsEnabled="{Binding SelectedItemsIsSingle, Mode=OneWay}" Command="{Binding EditServerCmd}"/>
+            <Button Content="删除" IsEnabled="{Binding SelectedItemsIsMultiple, Mode=OneWay}" Command="{Binding DeleteServerCmd}"/>
+            <Button Content="设为默认路由出口" IsEnabled="{Binding SelectedItemsIsSingle, Mode=OneWay}"/>
         </hc:ButtonGroup>
         <ListView x:Name="listView" Height="330" Width="auto" ItemsSource="{Binding ServerItemList.View}" local:AttachProperties.SelectionChangedCommand="{Binding SelectionChangedCmd}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemBaseStyle}">
                     <Setter Property="local:AttachProperties.DoubleClick" Value="{Binding DoubleClickItemCmd}"/>
+                    <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.View>
                 <GridView>
+                    <GridViewColumn Width="20" DisplayMemberBinding="{Binding}"/>
                     <GridViewColumn Width="120" Header="名称" DisplayMemberBinding="{Binding ServerName}"/>
                     <GridViewColumn Width="100" Header="地址" DisplayMemberBinding="{Binding Address}"/>
                     <GridViewColumn Width="80" Header="端口" DisplayMemberBinding="{Binding Port}"/>
