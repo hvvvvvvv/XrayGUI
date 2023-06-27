@@ -53,14 +53,16 @@ namespace NetProxyController.ViewModle
         }
         public RelayCommand QuitCmd { get; set; }
         public RelayCommand ShowSettingWndCmd { get; set; }
+        public RelayCommand ServerManagerCmd { get; set; }
 
         public NotifyIconViewModle(MainConfigration configration)
         {
             _configration = configration;
             _configration.hotkeyHandler.HotkeyHappenedCallback += OnHotkeyEvenRaise;
             _notifyWindow = new(_notifyWndImage);
-            QuitCmd = new RelayCommand(() => Application.Current.Shutdown(0));
+            QuitCmd = new (() => Application.Current.Shutdown(0));
             ShowSettingWndCmd = new(ShowSettingWindow);
+            ServerManagerCmd = new(ShowServerManager);
         }
         private void RiaseChangedEvent(string proertyName)
         {
@@ -93,6 +95,10 @@ namespace NetProxyController.ViewModle
                 _settingWindow = new(_configration);
                 _settingWindow.Show();
             }
+        }
+        private void ShowServerManager()
+        {
+
         }
         private void OnHotkeyEvenRaise()
         {
