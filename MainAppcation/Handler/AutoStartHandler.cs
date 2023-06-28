@@ -11,11 +11,21 @@ namespace NetProxyController.Handler
 {
     internal class AutoStartHandler: RunAtStartup.StartupService
     {
-        public AutoStartHandler():base(Global.AutoStartItemName)
+        public AutoStartHandler() : base(Global.AutoStartItemName)
         {
             
         }
-
+        public void LoadConfig()
+        {
+            if(ConfigObject.Instance.ProxyEnable)
+            {
+                Set(Environment.ProcessPath!);
+            }
+            else
+            {
+                Delete();
+            }
+        }
         public bool Enable
         {
             get => Check(Environment.ProcessPath!);
@@ -27,7 +37,8 @@ namespace NetProxyController.Handler
                     Delete();
             }
         }
-        
+        private static AutoStartHandler? _instance;
+        public static AutoStartHandler Instance => _instance ??= new AutoStartHandler();
 
     }
 }

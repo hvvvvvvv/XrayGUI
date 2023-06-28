@@ -29,7 +29,8 @@ namespace NetProxyController.View
         }
         public ServerManager() : this(new ServerManagerViewModle())
         {
-
+            
         }
+        
     }
 }
