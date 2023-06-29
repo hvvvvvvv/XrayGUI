@@ -13,6 +13,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Diagnostics;
 using HandyControl.Controls;
+using NetProxyController.Handler;
 
 namespace NetProxyController.ViewModle
 {
@@ -31,6 +32,10 @@ namespace NetProxyController.ViewModle
             editServerCmd = new(EditProxyServerExcute);
             deleteServerCmd = new(DeleteProxyServerItemExcute);
             setDefalutRoutingCmd = new(SetDefalutRoutingExcute);
+            if (serverItems.Count > 0 && serverItems.FirstOrDefault(i => i.Server.Index == ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex) is null)
+            {
+                ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex = serverItems[0].Server.Index;
+            }
         }
         private static List<ServerItemViewModle> GetDateItemFromDataBase()
         {
@@ -89,7 +94,7 @@ namespace NetProxyController.ViewModle
             get => serverItems.Where(item => item.IsSelected).Count() >= 1;
             set => _ = value;
         }
-        private int selectedIndex;
+        private int selectedIndex = -1;
         public int SelectedIndex
         {
             get => selectedIndex;
@@ -148,6 +153,7 @@ namespace NetProxyController.ViewModle
             }
             serverItemList.View.Refresh();
             SelectionChangedCmdExcute();
+            XrayHanler.Instance.ReLoad();
         }
         private void SetDefalutRoutingExcute()
         {
@@ -160,6 +166,7 @@ namespace NetProxyController.ViewModle
                 SelectedIndex = -1;
                 serverItemList.View.Refresh();
                 SelectionChangedCmdExcute();
+                XrayHanler.Instance.ReLoad();
             }
         }
 

@@ -113,7 +113,7 @@ namespace NetProxyController.ViewModle
                 OnPropertyChanged();
             }
         }
-        public RelayCommand<Window> SaveBtnCmd { get; set; }
+        public RelayCommand<System.Windows.Window> SaveBtnCmd { get; set; }
         public RelayCommand<KeyEventArgs> NumberInputPreviewKeyDownCmd { get; set; }
         public RelayCommand<KeyEventArgs> HotkeyInputPreviewKeyDownCmd { get; set; }
         public SettingWindowViewModle()
@@ -132,7 +132,7 @@ namespace NetProxyController.ViewModle
             HotkeyInputPreviewKeyDownCmd = new(HotkeyInputPreviewKeyDownExcute!);
         }
 
-        private void SaveBtnExcute(Window win)
+        private void SaveBtnExcute(System.Windows.Window win)
         {
             if (!ValidationAllProperty()) return;
             ConfigObject.Instance.localPort.Scoks = socksPort;
@@ -142,6 +142,7 @@ namespace NetProxyController.ViewModle
             ConfigObject.Instance.HotkeySetting.Hotkey = Hotkey;
             HotkeyHandler.Instance.LoadConfig();
             ConfigObject.Instance.Save();
+            XrayHanler.Instance.ReLoad();
             win.Close();
         }
         private void NumberInputPreviewKeyDownExcute(KeyEventArgs e)

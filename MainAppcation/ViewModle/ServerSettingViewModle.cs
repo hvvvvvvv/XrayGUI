@@ -17,6 +17,7 @@ using System.Runtime.CompilerServices;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
+using NetProxyController.Handler;
 
 namespace NetProxyController.ViewModle
 {
@@ -109,6 +110,7 @@ namespace NetProxyController.ViewModle
             Server.SetProtocolInfoObj(ProtocolModles[Server.Protocol]);
             Server.SetStreamInfo(StreaminfoObj);
             Server.SaveToDataBase();
+            XrayHanler.Instance.ReLoad();
             win.DialogResult = true;
             win.Close();
         }

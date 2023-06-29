@@ -9,10 +9,8 @@ namespace NetProxyController.Modle
 {
     internal class XrayCoreSettingObject
     {
-        public List<OutboundServerItemObject> OutBoundServers { get; set; } = new();
         public RouteMatchSettingObject RouteMatchSetting { get; set; } = new();
         public List<XrayCoreConfigModle.Routing.RuleObject> RoutingRules{ get; set; } = new();
-        public string? DefaultOutBoundServerTag { get; set; }
         public int? DefaultOutboundServerIndex { get; set; }
     }
     internal class RouteMatchSettingObject

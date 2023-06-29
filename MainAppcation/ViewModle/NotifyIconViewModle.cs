@@ -25,7 +25,7 @@ namespace NetProxyController.ViewModle
     internal class NotifyIconViewModle : ViewModleBase
     {
         private NotifyWindow _notifyWindow;
-        private ImageSource _notifyWndImage = ConfigObject.Instance.ProxyEnable ? NotifyWindow.StatusEnableImage : NotifyWindow.StatusDisableImage;      
+        private ImageSource _notifyWndImage => ConfigObject.Instance.ProxyEnable ? NotifyWindow.StatusEnableImage : NotifyWindow.StatusDisableImage;      
    
         public bool ProxyEnableChecked
         {
@@ -68,6 +68,8 @@ namespace NetProxyController.ViewModle
             QuitCmd = new (() => Application.Current.Shutdown(0));
             ShowSettingWndCmd = new(() => SettingWindow.Instance.Show());
             ShowServerManagerCmd = new(() => ServerManager.Instance.Show());
+            //XrayHanler.Instance.CoreStart();
+            SystemProxyHanler.Instance.LoadConfig();
         }
         private void OnHotkeyEvenRaise()
         {

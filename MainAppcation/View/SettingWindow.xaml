@@ -11,7 +11,7 @@
         Background="#ebf3ff"
         ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen"
-        x:Name="Window"
+        x:Name="Wnd"
         Icon="/Icon/Setting.ico"
         Title="参数设置" Height="470" Width="380">
 
@@ -113,7 +113,7 @@
             <Button Style="{StaticResource ButtonInfo}" Width="180" 
                 Background="RoyalBlue" Content="保存"
                 Margin="0,0,0,0" IsEnabled="{Binding SaveBtnEnable, Mode=TwoWay}"
-                Command="{Binding SaveBtnCmd}" CommandParameter="{Binding ElementName=Window}"/>
+                Command="{Binding SaveBtnCmd}" CommandParameter="{Binding ElementName=Wnd}"/>
         </Grid>
 
     </Grid>

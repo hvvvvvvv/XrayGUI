@@ -20,6 +20,8 @@ namespace NetProxyController.Handler
 {
     internal class XrayHanler
     {
+        private static XrayHanler? _instance;
+        public static XrayHanler Instance => _instance ??= new XrayHanler();
         public XrayCoreSettingObject XrayConfig { get; set; }
         public bool Isrunning { get; private set; } = false;
         private Process _coreProcess;
@@ -36,7 +38,7 @@ namespace NetProxyController.Handler
                 RedirectStandardOutput = true,
                 CreateNoWindow = true,
                 StandardOutputEncoding = Encoding.UTF8,
-                StandardErrorEncoding = Encoding.UTF8,
+                StandardErrorEncoding = Encoding.UTF8              
             };
         }
             
@@ -46,9 +48,10 @@ namespace NetProxyController.Handler
             _LocalPort = ConfigObject.Instance.localPort;
             _coreProcess = new()
             {
-                EnableRaisingEvents = true
+                EnableRaisingEvents = true               
             };
             _coreProcess.Exited += OnCoreProcessAccidentExted;
+            _coreProcess.OutputDataReceived += (_, e) => Debug.WriteLine(e.Data);            
             LoadConfig();
 
             if (!File.Exists(Global.XrayCoreApplictionPath))
@@ -131,9 +134,11 @@ namespace NetProxyController.Handler
             if(_ExitedEventPause) return;
 
             _ExitedEventPause = true;
-            _coreProcess.Close();           
+            _coreProcess.CancelOutputRead();
+            _coreProcess.Close();
             _coreProcess.StartInfo = _CoreProcessStartInfo;
-            _coreProcess.Start();
+            _coreProcess.Start();            
+            _coreProcess.BeginOutputReadLine();
             Kernel32.AssignProcessToJobObject(Global.ProcessJobs, _coreProcess);
 
             if (_coreProcess.WaitForExit(5000))
@@ -146,14 +151,14 @@ namespace NetProxyController.Handler
             }
 
         }
-
         public void CoreStart()
         {
             if (Isrunning) return;
 
             _coreProcess.Close();   
             _coreProcess.StartInfo = _CoreProcessStartInfo;
-            _coreProcess.Start();
+            _coreProcess.Start();           
+            _coreProcess.BeginOutputReadLine();
             _ExitedEventPause = false;
             Isrunning = true;
             Kernel32.AssignProcessToJobObject(Global.ProcessJobs, _coreProcess);
@@ -164,7 +169,7 @@ namespace NetProxyController.Handler
             var _isRunning = Isrunning;
             CoreStop();
             LoadConfig();
-            if(_isRunning)
+            if (_isRunning)
             {
                 CoreStart();
             }
@@ -176,10 +181,14 @@ namespace NetProxyController.Handler
             if(Isrunning)
             {
                 _ExitedEventPause = true;
+                _coreProcess.CancelOutputRead();
                 try
                 {
                     _coreProcess.Kill();
-                    _coreProcess.WaitForExit();
+                    if(!_coreProcess.WaitForExit(10000))
+                    {
+                        throw new Exception("等待进程退出超时");
+                    }
                 }
                 catch(Exception ex)
                 {

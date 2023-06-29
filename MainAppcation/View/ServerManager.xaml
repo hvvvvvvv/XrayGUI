@@ -29,7 +29,8 @@
         </hc:ButtonGroup>
         <ListView x:Name="listView" Height="330" Width="auto" 
                   ItemsSource="{Binding ServerItemList.View}" 
-                  local:AttachProperties.SelectionChangedCommand="{Binding SelectionChangedCmd}">
+                  local:AttachProperties.SelectionChangedCommand="{Binding SelectionChangedCmd}"
+                  SelectedIndex="{Binding SelectedIndex}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemBaseStyle}">
                     <Setter Property="local:AttachProperties.DoubleClick" Value="{Binding DoubleClickItemCmd}"/>
