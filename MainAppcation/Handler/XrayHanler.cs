@@ -14,6 +14,7 @@ using XrayCoreConfigModle.Routing;
 using Windows.System.Profile;
 using HandyControl.Controls;
 using HandyControl.Data;
+using NetProxyController.Modle.Server;
 
 namespace NetProxyController.Handler
 {
@@ -39,15 +40,15 @@ namespace NetProxyController.Handler
             };
         }
             
-        public XrayHanler(XrayCoreSettingObject xrayConfig,LocalPortObect localPort)
+        public XrayHanler()
         {
-            XrayConfig = xrayConfig;
+            XrayConfig = ConfigObject.Instance.XrayCoreSetting;
+            _LocalPort = ConfigObject.Instance.localPort;
             _coreProcess = new()
             {
                 EnableRaisingEvents = true
             };
             _coreProcess.Exited += OnCoreProcessAccidentExted;
-            _LocalPort = localPort;
             LoadConfig();
 
             if (!File.Exists(Global.XrayCoreApplictionPath))
@@ -61,7 +62,7 @@ namespace NetProxyController.Handler
         }
         private void LoadConfig()
         {
-            var inbounds = new List<InboundServerItemObject>
+            var _inbounds = new List<InboundServerItemObject>
             {
                 new()
                 {
@@ -92,30 +93,33 @@ namespace NetProxyController.Handler
                     }
                 }
             };
-            var rules = new List<RuleObject>(XrayConfig.RoutingRules);
-            if(!string.IsNullOrEmpty(XrayConfig.DefaultOutBoundServerTag))
+            var _outbounds = new List<OutboundServerItemObject>();
+            foreach ( var item in ServerItem.GetItemsFromDataBase())
             {
-                bool defalutTagExited = false;
-                XrayConfig.OutBoundServers.ForEach(i => defalutTagExited = i.tag == XrayConfig.DefaultOutBoundServerTag);
-                if(defalutTagExited)
+                if(item.Index == XrayConfig.DefaultOutboundServerIndex)
                 {
-                    rules.Add(new RuleObject
-                    {
-                        outboundTag = XrayConfig.DefaultOutBoundServerTag
-                    });
+                    _outbounds.Insert(0, item.ToOutboundServerItemObject());
+                }
+                else
+                {
+                    _outbounds.Add(item.ToOutboundServerItemObject());
                 }
             }
+            _outbounds.Add(new OutboundServerItemObject()
+            {
+                protocol = "Freedom",
+                tag = Global.XrayDirectTag,
+            });
             var routing = new RoutingObject()
             {
                 domainMatcher = XrayConfig.RouteMatchSetting.domainMatcher,
                 domainStrategy = XrayConfig.RouteMatchSetting.domainStrategy,
-                rules = rules
             };
 
             var mainConfig = new MainConfiguration()
             {
-                inbounds = inbounds,
-                outbounds = XrayConfig.OutBoundServers,
+                inbounds = _inbounds,
+                outbounds = _outbounds,
                 routing = routing
             };
            JsonHandler.JsonSerializeToFile(mainConfig, Global.XrayCoreConfigPath);       

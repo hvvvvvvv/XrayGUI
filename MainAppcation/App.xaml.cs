@@ -30,11 +30,10 @@ namespace NetProxyController
                 return;
             }
             SetProcessJobs();
-            //NotifyIcon taskBar = new();
-            //taskBar.Show();
-            //InitDataBase();
-            Global.DBService.CreateTable<ServerItem>();
-            new ServerManager().Show();
+            InitDataBase();
+            NotifyIcon taskBar = new();
+            taskBar.Show();                       
+            //new ServerManager().Show();
             base.OnStartup(e);
         }
 
@@ -54,24 +53,6 @@ namespace NetProxyController
         static void InitDataBase()
         {
             Global.DBService.CreateTable<ServerItem>();
-
-            Global.DBService.CreateTable<SocksInfo>();
-            Global.DBService.CreateTable<TrojanInfo>();
-            Global.DBService.CreateTable<ShadowSocksInfo>();
-            Global.DBService.CreateTable<VmessInfo>();
-            Global.DBService.CreateTable<VlessInfo>();
-
-            Global.DBService.CreateTable<StreamInfo>();
-
-            Global.DBService.CreateTable<TcpInfo>();
-            Global.DBService.CreateTable<KcpInfo>();
-            Global.DBService.CreateTable<WebSocketInfo>();
-            Global.DBService.CreateTable<H2Info>();
-            Global.DBService.CreateTable<QuicInfo>();
-            Global.DBService.CreateTable<GrpcInfo>();
-
-            Global.DBService.CreateTable<TlsInfo>();
-            Global.DBService.CreateTable<RealityInfo>();            
         }
 	}
 }

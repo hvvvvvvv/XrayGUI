@@ -6,17 +6,18 @@ using CommunityToolkit;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GlobalHotkey;
 using CommunityToolkit.Mvvm.Input;
+using NetProxyController.Modle;
+using HandyControl.Controls;
+using NetProxyController.Handler;
+using System.ComponentModel.DataAnnotations;
+using System.Windows.Input;
 
 namespace NetProxyController.ViewModle
 {
-    internal class SettingWindowViewModle : INotifyPropertyChanged, INotifyDataErrorInfo
+    internal class SettingWindowViewModle : ViewModleBase
     {
-        public bool HasErrors => _Errors.Count > 0;
-        public event PropertyChangedEventHandler? PropertyChanged;
-        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
-        private Dictionary<string, List<string>> _Errors;
-        private Modle.MainConfigration _configration;
         private bool saveBtnEnable = true;
         public bool SaveBtnEnable 
         {
@@ -24,56 +25,60 @@ namespace NetProxyController.ViewModle
             set
             {
                 saveBtnEnable = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SaveBtnEnable)));
+                OnPropertyChanged();
             }
         }
         private int httpPort;
         private string _httpHost;
-        private Action _closeWindow;
+        [Required(ErrorMessage = "Http端口号不能为空")]
+        [RegularExpression(@"^(?:[1-9]\d{0,3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$", ErrorMessage = "请输入正确的端口号(1-65535)")]
         public string HttpPort
         {
             get => _httpHost;
             set
             {
                 _httpHost = value;
-                if(ValidationAndConvertPortNumber(nameof(HttpPort),value,out int _value))
+                if(ValidationProperty())
                 {
-                    httpPort = _value;
+                    httpPort = Convert.ToInt32(value);
                 }
             }
         }
         private int socksPort;
         private string _socksHost;
+        [Required(ErrorMessage = "Socks端口号不能为空")]
+        [RegularExpression(@"^(?:[1-9]\d{0,3}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])$", ErrorMessage = "请输入正确的端口号(1-65535)")]
         public string SocksPort
         {
             get => _socksHost;
             set
             {
                 _socksHost = value;
-                if(ValidationAndConvertPortNumber(nameof(SocksPort),value,out int _value))
+
+                if(ValidationProperty())
                 {
-                    socksPort = _value;
+                    socksPort = Convert.ToInt32(value);
                 }
             }
         }
 
-        private Modle.SystemProtocol proxyProtocol;
+        private SystemProtocol proxyProtocol;
         public bool HttpProxyChecked
         {
-            get => proxyProtocol == Modle.SystemProtocol.Http;
+            get => proxyProtocol == SystemProtocol.Http;
             set
             {
                 if(value == true) 
-                    proxyProtocol = Modle.SystemProtocol.Http;
+                    proxyProtocol = SystemProtocol.Http;
             }
         }
         public bool SocksProxyChecked
         {
-            get => proxyProtocol == Modle.SystemProtocol.Socks;
+            get => proxyProtocol == SystemProtocol.Socks;
             set
             {
                 if (value == true)
-                    proxyProtocol = Modle.SystemProtocol.Socks;
+                    proxyProtocol = SystemProtocol.Socks;
             }
         }
         private bool hotKeyEnabled;
@@ -83,7 +88,7 @@ namespace NetProxyController.ViewModle
             set
             {
                 hotKeyEnabled = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HotKeyEnableChecked)));
+                OnPropertyChanged();
             }
         }
         public bool HotKeyDisableChecked
@@ -98,78 +103,84 @@ namespace NetProxyController.ViewModle
             set => sysProxyByPass = value;
         }
 
-        private GlobalHotkey.Hotkey hotKey;
-        public GlobalHotkey.Hotkey Hotkey
+        private Hotkey hotKey;
+        public Hotkey Hotkey
         {
             get => hotKey;
             set
             {
                 hotKey = value;
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HotkeyStr)));
+                OnPropertyChanged();
             }
         }
-        public string HotkeyStr
+        public RelayCommand<Window> SaveBtnCmd { get; set; }
+        public RelayCommand<KeyEventArgs> NumberInputPreviewKeyDownCmd { get; set; }
+        public RelayCommand<KeyEventArgs> HotkeyInputPreviewKeyDownCmd { get; set; }
+        public SettingWindowViewModle()
         {
-            get => Hotkey.ToString();
-        }
-        public RelayCommand SaveBtnCmd { get; set; }
-        public SettingWindowViewModle(Modle.MainConfigration configration, Action closeWindow)
-        {
-            _closeWindow = closeWindow;
-            _configration = configration;
-            _Errors = new();
-            proxyProtocol = _configration.SystemProxySetting.UseProtocol;
-            hotKeyEnabled = _configration.HotkeySetting.Enable;
-            sysProxyByPass = _configration.SystemProxySetting.ByPassUrl;
-            _httpHost = _configration.LocalPort.Http.ToString();
-            httpPort = _configration.LocalPort.Http;
-            _socksHost = _configration.LocalPort.Scoks.ToString();
-            socksPort = _configration.LocalPort.Scoks;
-            hotKey = _configration.HotkeySetting.Hotkey;
+            proxyProtocol = ConfigObject.Instance.SystemProxySetting.UseProtocol;
+            hotKeyEnabled = ConfigObject.Instance.HotkeySetting.Enable;
+            sysProxyByPass = ConfigObject.Instance.SystemProxySetting.ByPassUrl;
+            _httpHost = ConfigObject.Instance.localPort.Http.ToString();
+            httpPort = ConfigObject.Instance.localPort.Http;
+            _socksHost = ConfigObject.Instance.localPort.Scoks.ToString();
+            socksPort = ConfigObject.Instance.localPort.Scoks;
+            hotKey = ConfigObject.Instance.HotkeySetting.Hotkey;
             ErrorsChanged += (s, e) => SaveBtnEnable = !HasErrors;
-            SaveBtnCmd = new(SaveConfiguration, () => !HasErrors);
+            SaveBtnCmd = new(SaveBtnExcute!, (_) => !HasErrors);
+            NumberInputPreviewKeyDownCmd = new(NumberInputPreviewKeyDownExcute!);
+            HotkeyInputPreviewKeyDownCmd = new(HotkeyInputPreviewKeyDownExcute!);
         }
-        private bool ValidationAndConvertPortNumber(string propertyName, string value,out int convertVaue)
+
+        private void SaveBtnExcute(Window win)
         {
-            bool isSucess = false;
-            if(int.TryParse(value,out convertVaue))
-            {
-                isSucess = convertVaue >= 0x1 && convertVaue <= 0xffff;
-            }
-            if(isSucess)
-            {
-                _Errors.Remove(propertyName);
-            }
-            else
-            {
-                _Errors[propertyName] = new() { "请输入正确的端口号" };
-            }
-            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-            return isSucess;
+            if (!ValidationAllProperty()) return;
+            ConfigObject.Instance.localPort.Scoks = socksPort;
+            ConfigObject.Instance.localPort.Http = httpPort;
+            ConfigObject.Instance.SystemProxySetting.UseProtocol = proxyProtocol;
+            ConfigObject.Instance.SystemProxySetting.ByPassUrl = sysProxyByPass;
+            ConfigObject.Instance.HotkeySetting.Hotkey = Hotkey;
+            HotkeyHandler.Instance.LoadConfig();
+            ConfigObject.Instance.Save();
+            win.Close();
         }
-        public IEnumerable GetErrors(string? propertyName)
+        private void NumberInputPreviewKeyDownExcute(KeyEventArgs e)
         {
-            if(string.IsNullOrEmpty(propertyName) || !_Errors.ContainsKey(propertyName))
+            if (Keyboard.Modifiers == ModifierKeys.None && bumberKeys.Contains(e.Key))
             {
-                return null!;
+                return;
             }
-            return _Errors[propertyName];
+            e.Handled = true;
         }
-        private void SaveConfiguration()
+        private void HotkeyInputPreviewKeyDownExcute(KeyEventArgs e)
         {
-            var needReloadCore = socksPort != _configration.LocalPort.Scoks || httpPort != _configration.LocalPort.Http;
-            _configration.LocalPort.Scoks = socksPort;
-            _configration.LocalPort.Http = httpPort;
-            _configration.SystemProxySetting.UseProtocol = proxyProtocol;
-            _configration.SystemProxySetting.ByPassUrl = sysProxyByPass;
-            _configration.HotkeySetting.Hotkey = Hotkey;
-            if(needReloadCore)
+            e.Handled = true;
+            if (!assistKeys.Contains(e.Key) && !assistKeys.Contains(e.SystemKey))
             {
-                _configration.xrayHanler.ReLoad();
+                Key _key;
+                if (e.Key == Key.System)
+                {
+                    _key = e.SystemKey;
+                }
+                else
+                {
+                    _key = e.Key;
+                }
+                Hotkey = new Hotkey((KeyModifier)Keyboard.Modifiers, _key);
             }
-            _configration.hotkeyHandler.Load();
-            _configration.UpdateSetting();
-            _closeWindow();
         }
+        private static readonly List<Key> bumberKeys = new()
+        {
+            Key.D0, Key.D1, Key.D2, Key.D3, Key.D4,
+            Key.D5, Key.D6, Key.D7, Key.D8, Key.D9,
+            Key.NumPad0, Key.NumPad1, Key.NumPad2,
+            Key.NumPad3, Key.NumPad4, Key.NumPad5,
+            Key.NumPad6, Key.NumPad7, Key.NumPad8,
+            Key.NumPad9,Key.Back,Key.Tab
+        };
+        private static readonly List<Key> assistKeys = new List<Key>()
+         {
+              Key.LeftCtrl, Key.RightCtrl, Key.LeftAlt, Key.RightAlt,Key.LeftShift,Key.RightShift
+         };
     }
 }

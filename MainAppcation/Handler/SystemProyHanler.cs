@@ -8,19 +8,35 @@ using WindowsProxy;
 
 namespace NetProxyController.Handler
 {
-    internal class SystemProyHanler
+    internal class SystemProxyHanler
     {
         private ProxyService _ProxyService;
         private SystemProxySettingObject _Setting = new();
         private LocalPortObect LocalPort;
-        public SystemProyHanler(SystemProxySettingObject setting, LocalPortObect localPort)
+        public SystemProxyHanler(SystemProxySettingObject setting, LocalPortObect localPort)
         {
             _ProxyService = new();
             _Setting = setting;
             LocalPort = localPort;
+            LoadConfig();
+        }
+        public SystemProxyHanler() : this(ConfigObject.Instance.SystemProxySetting, ConfigObject.Instance.localPort)
+        {
+
+        }
+        public void LoadConfig()
+        {
+            if(ConfigObject.Instance.ProxyEnable)
+            {
+                OnProxy();
+            }
+            else
+            {
+                OffProxy();
+            }
         }
 
-        public void OnProxy()
+        private void OnProxy()
         {
             string serverAddr = _Setting.UseProtocol switch
             {
@@ -33,7 +49,8 @@ namespace NetProxyController.Handler
             _ProxyService.Bypass = string.Join(';', ProxyService.LanIp) + customBypass;
             _ProxyService.Global();
         }
-        public void OffProxy() => _ProxyService.Direct();
-        
+        private void OffProxy() => _ProxyService.Direct();
+        private static SystemProxyHanler? _instance;
+        public static SystemProxyHanler Instance => _instance ??= new SystemProxyHanler();
     }
 }

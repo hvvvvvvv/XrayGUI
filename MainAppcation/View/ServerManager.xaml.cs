@@ -22,15 +22,24 @@ namespace NetProxyController.View
     /// </summary>
     internal partial class ServerManager : Window
     {
-        public ServerManager(ServerManagerViewModle vm)
+        public bool IsClosed = false;
+        public ServerManager()
         {
             InitializeComponent();
-            DataContext = vm;
+            Closing += (_, _) => IsClosed = true;
         }
-        public ServerManager() : this(new ServerManagerViewModle())
+        private static ServerManager _instance = new ServerManager();
+        public static ServerManager Instance
         {
-            
+            get
+            {
+                if(_instance.IsClosed)
+                {
+                    _instance = new ServerManager();
+                }
+                return _instance;
+            }
         }
-        
+
     }
 }

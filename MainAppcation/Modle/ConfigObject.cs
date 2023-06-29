@@ -20,18 +20,21 @@ namespace NetProxyController.Modle
         public XrayCoreSettingObject XrayCoreSetting { get; set; } = new();
         public void Save()
         {
-            JsonSerializerOptions options_ = new()
+            lock (this)
             {
-                WriteIndented = true,
-                DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
-            };
-            string jsonContent = JsonSerializer.Serialize(this, options_);
-            string path = Path.GetDirectoryName(Global.AppConfigPath)!;
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
+                JsonSerializerOptions options_ = new()
+                {
+                    WriteIndented = true,
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                };
+                string jsonContent = JsonSerializer.Serialize(this, options_);
+                string path = Path.GetDirectoryName(Global.AppConfigPath)!;
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+                File.WriteAllText(Global.AppConfigPath, jsonContent);
             }
-            File.WriteAllText(Global.AppConfigPath, jsonContent);
         }
         private static ConfigObject ReadConfig()
         {

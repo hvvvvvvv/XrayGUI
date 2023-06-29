@@ -17,88 +17,57 @@ using System.Configuration;
 using System.Windows.Media;
 using static NetProxyController.Tools.ImageHelper;
 using System.Windows.Media.Imaging;
+using NetProxyController.Handler;
+using NetProxyController.View;
 
 namespace NetProxyController.ViewModle
 {
-    internal class NotifyIconViewModle : INotifyPropertyChanged
+    internal class NotifyIconViewModle : ViewModleBase
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private MainConfigration _configration;
-        private SettingWindow _settingWindow = default!;
         private NotifyWindow _notifyWindow;
-        private ImageSource _notifyWndImage => _configration.ProxyEnable ? NotifyWindow.StatusEnableImage : NotifyWindow.StatusDisableImage;      
+        private ImageSource _notifyWndImage = ConfigObject.Instance.ProxyEnable ? NotifyWindow.StatusEnableImage : NotifyWindow.StatusDisableImage;      
    
         public bool ProxyEnableChecked
         {
-            get => _configration.ProxyEnable;
+            get => ConfigObject.Instance.ProxyEnable;
             set
             {
-                _configration.ProxyEnable = value;
-                OnProxyEnableChanged(value);
+                ConfigObject.Instance.ProxyEnable = value;
+                SystemProxyHanler.Instance.LoadConfig();
+                OnPropertyChanged(nameof(ProxyEnableChecked));
+                OnPropertyChanged(nameof(BarIconPath));
+                OnPropertyChanged(nameof(ToolTipText));
+                ConfigObject.Instance.Save();
             }
-        }
-        
+        }     
         public string BarIconPath
         {
-            get => _configration.ProxyEnable ? "/Icon/ProxyEnable.ico" : "/Icon/ProxyDisable.ico";
+            get => ConfigObject.Instance.ProxyEnable ? "/Icon/ProxyEnable.ico" : "/Icon/ProxyDisable.ico";
         }
         public string ToolTipText
         {
-            get => _configration.ProxyEnable ? "代理已开启" : "代理已关闭";
+            get => ConfigObject.Instance.ProxyEnable ? "代理已开启" : "代理已关闭";
         }
         public bool AutoStartChecked
         {
-            get => _configration.autoStartHandler.Enable;
-            set => _configration.autoStartHandler.Enable = value;
+            get => ConfigObject.Instance.EnableAutostart;
+            set
+            {
+                ConfigObject.Instance.EnableAutostart = value;
+                ConfigObject.Instance.Save();
+            }                
         }
         public RelayCommand QuitCmd { get; set; }
         public RelayCommand ShowSettingWndCmd { get; set; }
-        public RelayCommand ServerManagerCmd { get; set; }
+        public RelayCommand ShowServerManagerCmd { get; set; }
 
-        public NotifyIconViewModle(MainConfigration configration)
+        public NotifyIconViewModle()
         {
-            _configration = configration;
-            _configration.hotkeyHandler.HotkeyHappenedCallback += OnHotkeyEvenRaise;
+            HotkeyHandler.Instance.HotkeyHappenedCallback += OnHotkeyEvenRaise;
             _notifyWindow = new(_notifyWndImage);
             QuitCmd = new (() => Application.Current.Shutdown(0));
-            ShowSettingWndCmd = new(ShowSettingWindow);
-            ServerManagerCmd = new(ShowServerManager);
-        }
-        private void RiaseChangedEvent(string proertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(proertyName));
-        }
-        private void OnProxyEnableChanged(bool IsEnable)
-        {
-            if (IsEnable)
-            {
-                _configration.systemProyHanler.OnProxy();
-            }
-            else
-            {
-                _configration.systemProyHanler.OffProxy();
-            }
-            RiaseChangedEvent(nameof(BarIconPath));
-            RiaseChangedEvent(nameof(ProxyEnableChecked));
-            RiaseChangedEvent(nameof(ToolTipText));
-            _configration.Save();
-        }
-        private void ShowSettingWindow()
-        {
-            if(_settingWindow?.IsShowing ?? false)
-            {
-                _settingWindow.WindowState = WindowState.Normal;
-                _settingWindow.Activate();
-            }
-            else
-            {
-                _settingWindow = new(_configration);
-                _settingWindow.Show();
-            }
-        }
-        private void ShowServerManager()
-        {
-
+            ShowSettingWndCmd = new(() => SettingWindow.Instance.Show());
+            ShowServerManagerCmd = new(() => ServerManager.Instance.Show());
         }
         private void OnHotkeyEvenRaise()
         {

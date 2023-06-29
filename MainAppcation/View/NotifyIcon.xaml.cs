@@ -20,7 +20,6 @@ namespace NetProxyController.View
     {
         public NotifyIcon()
         {
-            DataContext = new NotifyIconViewModle(new MainConfigration());
             InitializeComponent();
         }
         public void Show() => Visibility = Visibility.Visible;

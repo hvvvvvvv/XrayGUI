@@ -29,60 +29,23 @@ namespace NetProxyController
     /// <summary>
     /// SettingWindow.xaml 的交互逻辑
     /// </summary>
-    public partial class SettingWindow : Window
+    internal partial class SettingWindow : Window
     {
-        public bool IsShowing = false;
-        private SettingWindowViewModle viewModle;
-        internal SettingWindow(MainConfigration appConfig)
+        public bool IsClosed = false;
+        internal SettingWindow()
         {
-            viewModle = new(appConfig, Close);
-            DataContext = viewModle;
-            Closing += (s, e) => IsShowing = false;
             InitializeComponent();
+            Closing += (_,_) => IsClosed = true;            
         }
-        public new void Show()
+        private static SettingWindow _instance = new SettingWindow();
+        public static SettingWindow Instance
         {
-            IsShowing = true;
-            base.Show();
-        }
-        private static readonly List<Key> assistKeys = new List<Key>()
-         {
-              Key.LeftCtrl, Key.RightCtrl, Key.LeftAlt, Key.RightAlt,Key.LeftShift,Key.RightShift
-         };
-        private void TextboxByHotkeySetting_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            e.Handled = true;           
-            if(!assistKeys.Contains(e.Key) && !assistKeys.Contains(e.SystemKey))
+            get
             {
-                Key _key;
-                if(e.Key == Key.System)
-                {
-                    _key = e.SystemKey;
-                }
-                else
-                {
-                    _key = e.Key;
-                }
-                viewModle.Hotkey = new Hotkey((KeyModifier)Keyboard.Modifiers, _key);
+                if(_instance.IsClosed) _instance = new SettingWindow();
+                return _instance;
             }
         }
 
-        private static readonly List<Key> allowKeyByNumber = new()
-        {
-            Key.D0, Key.D1, Key.D2, Key.D3, Key.D4,
-            Key.D5, Key.D6, Key.D7, Key.D8, Key.D9,
-            Key.NumPad0, Key.NumPad1, Key.NumPad2,
-            Key.NumPad3, Key.NumPad4, Key.NumPad5,
-            Key.NumPad6, Key.NumPad7, Key.NumPad8,
-            Key.NumPad9,Key.Back,Key.Tab
-        };
-        private void TextboxPortnumber_PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            if(Keyboard.Modifiers == ModifierKeys.None && allowKeyByNumber.Contains(e.Key))
-            {
-                return;
-            }
-            e.Handled = true;
-        }
     }
 }

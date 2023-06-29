@@ -81,6 +81,17 @@ namespace NetProxyController.ViewModle
             get => securityPolicy;
             set => SetProperty(ref securityPolicy, value);
         }
+        public string DefaultRoutingFlag
+        {
+            get
+            {
+                if(Server.Index == ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex)
+                {
+                    return "=>";
+                }
+                return string.Empty;
+            }
+        }
         private RelayCommand doubleClickItemCmd;
         public RelayCommand DoubleClickItemCmd
         {

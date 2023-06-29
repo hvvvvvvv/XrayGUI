@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using Vanara.Extensions.Reflection;
 
 namespace NetProxyController.View
 {
@@ -55,6 +56,7 @@ namespace NetProxyController.View
         #endregion
 
         #region SelectionChangedCommand
+        
         public static readonly DependencyProperty SelectionChangedCommandProperty = DependencyProperty.RegisterAttached("SelectionChangedCommand",
         typeof(ICommand), typeof(AttachProperties), new PropertyMetadata(null, SelectionChangedCommandChanged));
         public static ICommand GetSelectionChangedCommand(DependencyObject target)
@@ -88,7 +90,42 @@ namespace NetProxyController.View
             ICommand command = (ICommand)element.GetValue(SelectionChangedCommandProperty);
             command.Execute(sender);
         }
-        #endregion 
+        #endregion
+
+        #region PreviewKeyDownCommand
+        public static readonly DependencyProperty PreviewKeyDownCommandProperty = DependencyProperty.RegisterAttached("PreviewKeyDownCommand",
+            typeof(ICommand), typeof(AttachProperties), new PropertyMetadata(null, PreviewKeyDownCommandChanged));
+        public static ICommand GetPreviewKeyDownCommand(DependencyObject target)
+        {
+            return (ICommand)target.GetValue(PreviewKeyDownCommandProperty);
+        }
+        public static void SetPreviewKeyDownCommand(DependencyObject target, ICommand command)
+        {
+            target.SetValue(PreviewKeyDownCommandProperty, command);
+        }
+        public static void PreviewKeyDownCommandChanged(DependencyObject target, DependencyPropertyChangedEventArgs e)
+        {
+            if (target is UIElement element)
+            {
+                if (element != null)
+                {
+                    if ((e.NewValue != null) && (e.OldValue == null))
+                    {
+                        element.PreviewKeyDown += Element_PreviewKeyDown;
+                    }
+                    else if ((e.NewValue == null) && (e.OldValue != null))
+                    {
+                        element.PreviewKeyDown -= Element_PreviewKeyDown;
+                    }
+                }
+            }
+        }
+        private static void Element_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            ICommand command =  (ICommand)((UIElement)sender).GetValue(PreviewKeyDownCommandProperty);
+            command.Execute(e);
+        }
+        #endregion
     }
 
 

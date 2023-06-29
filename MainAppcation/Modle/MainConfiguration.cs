@@ -44,16 +44,15 @@ namespace NetProxyController.Modle
             set => _Config.EnableAutostart = value;
         }
         public readonly Handler.HotkeyHandler hotkeyHandler;
-        public readonly Handler.SystemProyHanler systemProyHanler;
+        public readonly Handler.SystemProxyHanler systemProyHanler;
         public readonly Handler.XrayHanler xrayHanler;
         public readonly Handler.AutoStartHandler autoStartHandler;
         public MainConfigration()
         {
             _Config = ReadConfig();
-            hotkeyHandler = new(HotkeySetting);
+            hotkeyHandler = new();
             systemProyHanler = new(SystemProxySetting, LocalPort);
             autoStartHandler = new();
-            xrayHanler = new(XrayCoreSetting, LocalPort);
             //XrayCoreSetting.OutBoundServers = JsonHandler.JsonDeserializeFromFile<MainConfiguration>(
             //    @"C:\Users\万超\Desktop\小飞机\xrayDeamon\Xray\config.json").outbounds;
             UpdateSetting();
@@ -84,10 +83,7 @@ namespace NetProxyController.Modle
             {
                 autoStartHandler.Enable = EnableAutostart;
             }
-            if (ProxyEnable)
-                systemProyHanler.OnProxy();
-            else
-                systemProyHanler.OffProxy();
+            
             Save();
         }
 

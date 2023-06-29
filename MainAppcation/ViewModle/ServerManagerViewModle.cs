@@ -30,6 +30,7 @@ namespace NetProxyController.ViewModle
             selectionChangedCmd = new(SelectionChangedCmdExcute);
             editServerCmd = new(EditProxyServerExcute);
             deleteServerCmd = new(DeleteProxyServerItemExcute);
+            setDefalutRoutingCmd = new(SetDefalutRoutingExcute);
         }
         private static List<ServerItemViewModle> GetDateItemFromDataBase()
         {
@@ -46,16 +47,6 @@ namespace NetProxyController.ViewModle
             {
                 serverItemList = value;
                 OnPropertyChanged();                
-            }
-        }
-        private ServerItemViewModle? selectServerItems;
-        public ServerItemViewModle? SelectServerItems
-        {
-            get => selectServerItems;
-            set
-            {
-                selectServerItems = value;
-                OnPropertyChanged();
             }
         }
         private RelayCommand createProxyServerCmd;
@@ -82,6 +73,12 @@ namespace NetProxyController.ViewModle
             get => deleteServerCmd;
             set => _ = value;
         }
+        private RelayCommand setDefalutRoutingCmd;
+        public RelayCommand SetDefalutRoutingCmd
+        {
+            get => setDefalutRoutingCmd;
+            set => _ = value;
+        }
         public bool SelectedItemsIsSingle
         {
             get => serverItems.Where(item => item.IsSelected).Count() == 1;
@@ -91,6 +88,16 @@ namespace NetProxyController.ViewModle
         {
             get => serverItems.Where(item => item.IsSelected).Count() >= 1;
             set => _ = value;
+        }
+        private int selectedIndex;
+        public int SelectedIndex
+        {
+            get => selectedIndex;
+            set
+            {
+                selectedIndex = value;
+                OnPropertyChanged();
+            }
         }
         private void SelectionChangedCmdExcute()
         {
@@ -141,6 +148,19 @@ namespace NetProxyController.ViewModle
             }
             serverItemList.View.Refresh();
             SelectionChangedCmdExcute();
+        }
+        private void SetDefalutRoutingExcute()
+        {
+            var selectedItem = serverItems.Where(i => i.IsSelected).FirstOrDefault();
+            if (selectedItem != null)
+            {
+                ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex = selectedItem.Server.Index;
+                ConfigObject.Instance.Save();
+                serverItems.ForEach(i => i.IsSelected = false);
+                SelectedIndex = -1;
+                serverItemList.View.Refresh();
+                SelectionChangedCmdExcute();
+            }
         }
 
     }
