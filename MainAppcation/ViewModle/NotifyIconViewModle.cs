@@ -68,7 +68,7 @@ namespace NetProxyController.ViewModle
             QuitCmd = new (() => Application.Current.Shutdown(0));
             ShowSettingWndCmd = new(() => SettingWindow.Instance.Show());
             ShowServerManagerCmd = new(() => ServerManager.Instance.Show());
-            //XrayHanler.Instance.CoreStart();
+            XrayHanler.Instance.CoreStart();
             SystemProxyHanler.Instance.LoadConfig();
         }
         private void OnHotkeyEvenRaise()
