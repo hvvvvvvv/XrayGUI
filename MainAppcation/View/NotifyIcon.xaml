@@ -8,7 +8,7 @@
                 xmlns:vm="clr-namespace:NetProxyController.ViewModle"
                 IconSource="{Binding BarIconPath}"
                 ToolTipText="{Binding ToolTipText}"
-                LeftClickCommand="{Binding ShowSettingWndCmd}">
+                LeftClickCommand="{Binding ShowServerManagerCmd}">
     <n:TaskbarIcon.DataContext>
         <vm:NotifyIconViewModle/>
     </n:TaskbarIcon.DataContext>

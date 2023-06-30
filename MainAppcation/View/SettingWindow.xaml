@@ -85,11 +85,12 @@
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
                 <RadioButton Content="启用" HorizontalAlignment="Center" 
-                         VerticalAlignment="Center" FontSize="15"
-                         IsChecked="{Binding HotKeyEnableChecked}"/>
+                            VerticalAlignment="Center" FontSize="15"
+                            IsChecked="{Binding HotKeyEnableChecked}"/>
                 <RadioButton Content="禁用" HorizontalAlignment="Center" 
-                         IsChecked="{Binding HotKeyDisableChecked}"
-                         Grid.Column="1"/>
+                             VerticalAlignment="Center" FontSize="15"
+                             IsChecked="{Binding HotKeyDisableChecked}"
+                             Grid.Column="1"/>
             </Grid>
 
             <hc:TextBox hc:InfoElement.ShowClearButton="True"

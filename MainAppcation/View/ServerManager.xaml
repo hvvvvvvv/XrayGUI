@@ -18,6 +18,12 @@
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <ContextMenu x:Key="ItemRightClickMenu" Width="150">
+                <MenuItem Header="编辑" Command="{Binding Path=DataContext.EditServerCmd,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
+                <MenuItem Header="删除" Command="{Binding Path=DataContext.DeleteServerCmd,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
+                <MenuItem Header="设为默认路由" Command="{Binding Path=DataContext.SetDefalutRoutingCmd,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
+                <MenuItem Header="路由策略"/>
+            </ContextMenu>
         </ResourceDictionary>
     </Window.Resources>
     <StackPanel>
@@ -33,10 +39,25 @@
                   SelectedIndex="{Binding SelectedIndex}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemBaseStyle}">
-                    <Setter Property="local:AttachProperties.DoubleClick" Value="{Binding DoubleClickItemCmd}"/>
+                    <Setter Property="local:AttachProperties.DoubleClick" Value="{Binding Path=DataContext.EditServerCmd, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
                     <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
+                    <Setter Property="ContextMenu" Value="{StaticResource ItemRightClickMenu}"/>
+                    <Style.Triggers>
+                        <EventTrigger RoutedEvent="MouseRightButtonDown">
+                            <EventTrigger.Actions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <BooleanAnimationUsingKeyFrames Duration="0" Storyboard.TargetProperty="ContextMenu.IsOpen">
+                                            <DiscreteBooleanKeyFrame KeyTime="0" Value="True" />
+                                        </BooleanAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger.Actions>
+                        </EventTrigger>
+                    </Style.Triggers>
                 </Style>
             </ListView.ItemContainerStyle>
+            
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="30" DisplayMemberBinding="{Binding DefaultRoutingFlag}"/>

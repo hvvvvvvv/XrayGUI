@@ -28,13 +28,12 @@ namespace NetProxyController.Modle
     }
     public enum XtlsFlow
     {
-        None = 0,
-        Xtls_rprx_vision = 1,
-        Xtls_rprx_vision_udp443 = 2,
-        Xtls_rprx_direct = 3,
-        Xtls_rprx_direct_udp443= 4,
-        Xtls_rprx_origin = 5,
-        Xtls_rprx_origin_udp443 = 6
+        Xtls_rprx_vision = 0,
+        Xtls_rprx_vision_udp443 = 1,
+        Xtls_rprx_direct = 2,
+        Xtls_rprx_direct_udp443= 3,
+        Xtls_rprx_origin = 4,
+        Xtls_rprx_origin_udp443 = 5
     }
     public enum SecurityMode
     {

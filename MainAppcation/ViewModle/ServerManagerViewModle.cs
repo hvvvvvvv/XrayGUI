@@ -127,6 +127,7 @@ namespace NetProxyController.ViewModle
                 {
                     item.EditServerItem();
                     serverItems.ForEach(i => i.IsSelected = false);
+                    SelectedIndex = -1;
                     SelectionChangedCmdExcute();
                     return;
                 }
@@ -150,6 +151,7 @@ namespace NetProxyController.ViewModle
             else
             {
                 serverItems.ForEach(i => i.IsSelected = false);
+                SelectedIndex = -1;
             }
             serverItemList.View.Refresh();
             SelectionChangedCmdExcute();

@@ -141,8 +141,9 @@ namespace NetProxyController.ViewModle
             ConfigObject.Instance.SystemProxySetting.ByPassUrl = sysProxyByPass;
             ConfigObject.Instance.HotkeySetting.Hotkey = Hotkey;
             HotkeyHandler.Instance.LoadConfig();
-            ConfigObject.Instance.Save();
             XrayHanler.Instance.ReLoad();
+            SystemProxyHanler.Instance.LoadConfig();
+            ConfigObject.Instance.Save();
             win.Close();
         }
         private void NumberInputPreviewKeyDownExcute(KeyEventArgs e)
