@@ -1,22 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Drawing;
 using NetProxyController.Modle;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Data.Common;
-using CommunityToolkit;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows;
 using ProxyNotifyWindow;
-using System.Configuration;
 using System.Windows.Media;
-using static NetProxyController.Tools.ImageHelper;
-using System.Windows.Media.Imaging;
 using NetProxyController.Handler;
 using NetProxyController.View;
 
