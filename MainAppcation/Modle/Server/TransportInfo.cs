@@ -79,7 +79,7 @@ namespace NetProxyController.Modle.Server
     {
         public bool AcceptProxyProtocol { get; set; } = false;
         public string Path { get; set; } = "/";
-        Dictionary<string,string>? Headers { get; set; }
+        public Dictionary<string,string>? Headers { get; set; }
         public WebSocketObject ToWebSocketObject()
         {
             return new()

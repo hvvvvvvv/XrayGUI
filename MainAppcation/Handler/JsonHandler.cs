@@ -19,6 +19,24 @@ namespace XrayCoreConfigModle
         {
             return JsonSerializer.Deserialize<T>(text, serializerOptions);
         }
+        public static bool TryJsonDeserializeFromText<T>(string text_, out T? outPut)
+        {
+            bool ret = true;
+            try
+            {
+                outPut = JsonDeserializeFromText<T>(text_);
+                if(outPut is null)
+                {
+                    throw new Exception();
+                }
+            }
+            catch
+            {
+                ret = false;
+                outPut = default;
+            }
+            return ret;
+        }
         public static T? JsonDeserializeFromFile<T>(string path)
         {
             return JsonDeserializeFromText<T>(File.ReadAllText(path));

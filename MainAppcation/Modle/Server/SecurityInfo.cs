@@ -14,6 +14,7 @@ namespace NetProxyController.Modle.Server
         public string ServerName { get; set; } = string.Empty;
         public TlsFingerPrint FingerPrint { get; set; }
         public bool AllowInsecure { get; set; }
+        public List<string>? Alpn { get; set; }
         public TLSObject ToTLSObject()
         {
             return new()
@@ -21,6 +22,7 @@ namespace NetProxyController.Modle.Server
                 serverName = ServerName,
                 fingerprint = FingerPrint == TlsFingerPrint.none ? null : FingerPrint.ToString(),
                 allowInsecure = AllowInsecure,
+                alpn = Alpn
             };
         }
     }

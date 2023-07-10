@@ -153,5 +153,17 @@ namespace NetProxyController.Modle
                 _ => "none"
             };
         }
+        public static T ParseEunmEx<T>(string text) where T : Enum
+        {
+            var text_ = text.Replace("-", "_");
+            foreach(var item in Enum.GetValues(typeof(T)).Cast<T>())
+            {
+                if (string.Equals(text_, item.ToString()))
+                {
+                    return item;
+                }
+            }
+            throw new Exception();
+        }
     }
 }
