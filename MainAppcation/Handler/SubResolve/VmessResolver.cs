@@ -8,10 +8,13 @@ using NetProxyController.Modle;
 using NetProxyController.View;
 using XrayCoreConfigModle;
 using Vanara.Extensions.Reflection;
+using System.Text.RegularExpressions;
+using System.Web;
+using System.Drawing;
 
 namespace NetProxyController.Handler.SubResolve
 {
-    internal static class VmessResolvecs
+    internal static class VmessResolver
     {
         public const string PrefixMatch = "vmess://";
         public static ServerItem? ResolveByJson(string subContent)
@@ -20,7 +23,12 @@ namespace NetProxyController.Handler.SubResolve
             {
                 return null;
             }
-            if (!JsonHandler.TryJsonDeserializeFromText(subContent[PrefixMatch.Length..], out Modle.Subscription.VmessbyJson? jsonObj) || jsonObj is null)
+            subContent = subContent[PrefixMatch.Length..];
+            if(Tools.EncodeHelper.TryConvertFromBase64(subContent, out string outPut))
+            {
+                subContent = outPut;
+            }
+            if (!JsonHandler.TryJsonDeserializeFromText(subContent, out Modle.Subscription.VmessbyJson jsonObj))
             {
                 return null;
             }
@@ -28,6 +36,7 @@ namespace NetProxyController.Handler.SubResolve
             {
                 var ret = new ServerItem()
                 {
+                    Protocol = OutboundProtocol.vmess,
                     Address = jsonObj.add,
                     Port = Convert.ToInt32(jsonObj.port),
                     Remarks = jsonObj.ps
@@ -136,9 +145,97 @@ namespace NetProxyController.Handler.SubResolve
                 return null;
             }
         }
-        public static ServerItem? ResoveByJsonBase64(string subContent)
-        {
+        private static readonly Regex StdVmessUserInfo = new(
+            @"^(?<network>[a-z]+)(\+(?<streamSecurity>[a-z]+))?:(?<id>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$", RegexOptions.Compiled);
 
+        public static ServerItem? ResolveByStdUrl(string SubContent)
+        {
+            try
+            {
+                Uri u = new(SubContent);
+                var q = HttpUtility.ParseQueryString(u.Query);
+                var m = StdVmessUserInfo.Match(u.UserInfo);
+                if (!m.Success) throw new Exception();
+                var ret = new ServerItem()
+                {
+                    Protocol = OutboundProtocol.vmess,
+                    Address = u.IdnHost,
+                    Port = u.Port,
+                    Remarks = u.GetComponents(UriComponents.Fragment, UriFormat.Unescaped)
+                };
+                VmessInfo vmessInfo = new()
+                {
+                    Security = SecurityMode.Auto,
+                    Id = m.Groups["id"].Value
+                };
+                StreamInfo streamInfo = new()
+                {
+                    Security = m.Groups["streamSecurity"].Success ? EnumExtensions.ParseEunmEx<TransportSecurity>(m.Groups["streamSecurity"].Value) : TransportSecurity.tls
+                };
+                switch(m.Groups["network"].Value)
+                {
+                    case "tcp":
+                        {
+                            streamInfo.Transport = TransportType.tcp;
+                            streamInfo.TcpTransport.Feign = EnumExtensions.ParseEunmEx<FeignType>(q["type"] ?? "none");
+                            if(!Global.TcpFeignItems.Contains(streamInfo.TcpTransport.Feign))
+                            {
+                                throw new Exception();
+                            }
+                        }
+                        break;
+                    case "kcp":
+                        {
+                            streamInfo.Transport = TransportType.kcp;
+                            streamInfo.KcpTransport.Feign = EnumExtensions.ParseEunmEx<FeignType>(q["type"] ?? "none");
+                            if (!Global.KcpOrQuicFeignItems.Contains(streamInfo.TcpTransport.Feign))
+                            {
+                                throw new Exception();
+                            }
+                        }
+                        break;
+                    case "quic":
+                        {
+                            streamInfo.Transport = TransportType.quic;
+                            streamInfo.QuicTransport.Feign = EnumExtensions.ParseEunmEx<FeignType>(q["type"] ?? "none");
+                            streamInfo.QuicTransport.Security = EnumExtensions.ParseEunmEx<SecurityMode>(HttpUtility.UrlDecode(q["security"] ?? "none"));
+                            streamInfo.QuicTransport.Key = q["key"] ?? string.Empty;
+                            if(!Global.QuicSecurityModeItems.Contains(streamInfo.QuicTransport.Security) || !Global.KcpOrQuicFeignItems.Contains(streamInfo.QuicTransport.Feign))
+                            {
+                                throw new Exception();
+                            }
+                        }
+                        break;
+                    case "h2":
+                    case "http":
+                        {
+                            streamInfo.Transport = TransportType.http;
+                            streamInfo.H2Transport.Path = q["path"] ?? streamInfo.H2Transport.Path;
+                            streamInfo.H2Transport.Hosts = q["host"] ?? string.Empty;
+                        }
+                        break;
+                    case "ws":
+                        {
+                            streamInfo.WsTransport.Path = q["path"] ?? streamInfo.WsTransport.Path;
+                            if (q["host"] is not null)
+                            {
+                                streamInfo.WsTransport.Headers = new Dictionary<string, string>()
+                                {
+                                    {"host",q["host"]! }
+                                };
+                            }
+                        }
+                        break;
+                    default: throw new Exception();
+                }
+                ret.SetProtocolInfoObj(vmessInfo);
+                ret.SetStreamInfo(streamInfo);
+                return ret;
+            }
+            catch(Exception)
+            {
+                return null;
+            }
         }
     }
 }
