@@ -7,6 +7,7 @@ using NetProxyController.Modle.Server;
 using NetProxyController.Modle;
 using NetProxyController.View;
 using XrayCoreConfigModle;
+using Vanara.Extensions.Reflection;
 
 namespace NetProxyController.Handler.SubResolve
 {
@@ -77,14 +78,66 @@ namespace NetProxyController.Handler.SubResolve
                         }break;
                     case TransportType.ws:
                         {
-                            
+                            if(!string.IsNullOrEmpty(jsonObj.host))
+                            {
+                                StreamInfo.WsTransport.Headers = new Dictionary<string, string>
+                                {
+                                    {"Host",jsonObj.host }
+                                };
+                            }
+                            StreamInfo.WsTransport.Path = jsonObj.path;
+                        }break;
+                    case TransportType.kcp:
+                        {
+                            if (!Global.KcpOrQuicFeignItems.Contains(feign))
+                            {
+                                throw new Exception();
+                            }
+                            StreamInfo.KcpTransport.Feign = feign;
+                            StreamInfo.KcpTransport.Seed = jsonObj.path;
+                        }
+                        break;
+                    case TransportType.http:
+                        {
+                            StreamInfo.H2Transport.Hosts = jsonObj.host;
+                            StreamInfo.H2Transport.Path = jsonObj.path;
+                        }break;
+                    case TransportType.grpc:
+                        {
+                            StreamInfo.GrpcTranport.ServiceName = jsonObj.path;
                         }break;
                 }
+                switch(StreamInfo.Security)
+                {
+                    case TransportSecurity.tls:
+                        {
+                            StreamInfo.TlsPolicy.FingerPrint = string.IsNullOrEmpty(jsonObj.fp) ? TlsFingerPrint.none : EnumExtensions.ParseEunmEx<TlsFingerPrint>(jsonObj.fp);
+                            StreamInfo.TlsPolicy.ServerName = jsonObj.sni;
+                            if(!string.IsNullOrEmpty(jsonObj.alpn))
+                            {
+                                StreamInfo.TlsPolicy.Alpn = jsonObj.alpn.Split(',').ToList();
+                            }
+                        }break;
+                    case TransportSecurity.xtls:
+                        {
+                            StreamInfo.XTlsPolicy.FingerPrint = string.IsNullOrEmpty(jsonObj.fp) ? TlsFingerPrint.none : EnumExtensions.ParseEunmEx<TlsFingerPrint>(jsonObj.fp);
+                            if (!string.IsNullOrEmpty(jsonObj.alpn))
+                            {
+                                StreamInfo.XTlsPolicy.Alpn = jsonObj.alpn.Split(',').ToList();
+                            }
+                        }break;
+                }
+                ret.SetProtocolInfoObj(userVerific);
+                ret.SetStreamInfo(StreamInfo);
+                return ret;
             }
             catch(Exception)
             {
                 return null;
             }
+        }
+        public static ServerItem? ResoveByJsonBase64(string subContent)
+        {
 
         }
     }
