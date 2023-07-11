@@ -76,7 +76,7 @@ namespace NetProxyController.Handler.SubResolve
                 ShadowSocksInfo shadowSocksInfo = new();
                 shadowSocksInfo.Method = EnumExtensions.ParseEunmEx<SS_Ecrept>(userInfoParts[0]);
                 string pwd = Tools.EncodeHelper.TryDecodeFromUrlCode(userInfoParts[1], out string decoded) ? decoded : userInfoParts[1];
-                shadowSocksInfo.Password = pwd;
+                shadowSocksInfo.Password = !string.IsNullOrEmpty(pwd) ? pwd : throw new Exception();
                 ret.SetProtocolInfoObj(shadowSocksInfo);
                 NameValueCollection queryParameters = HttpUtility.ParseQueryString(u.Query);
                 if(queryParameters["plugin"] != null)
