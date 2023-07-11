@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using static System.Net.Mime.MediaTypeNames;
+using static Vanara.PInvoke.User32;
 
 namespace NetProxyController.Tools
 {
@@ -33,8 +36,23 @@ namespace NetProxyController.Tools
             catch (Exception)
             {
                 return false;
+            }           
+        }
+        public static bool TryDecodeFromUrlCode(string urlCodeText, out string decodedText)
+        {
+            decodedText = string.Empty;
+            string pattern = @"(%[0-9A-Fa-f]{2})+";
+            MatchCollection matches = Regex.Matches(urlCodeText, pattern);
+            var ret = matches.Count == urlCodeText.Length;
+            try
+            {
+                if (ret)
+                {
+                    decodedText = HttpUtility.UrlDecode(urlCodeText);
+                }
+                return ret;
             }
-            
+            catch(Exception) { return false; }
         }
     }
 }

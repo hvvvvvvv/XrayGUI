@@ -150,6 +150,7 @@ namespace NetProxyController.Handler.SubResolve
 
         public static ServerItem? ResolveByStdUrl(string SubContent)
         {
+            if(!SubContent.StartsWith(PrefixMatch)) return null;
             try
             {
                 Uri u = new(SubContent);
