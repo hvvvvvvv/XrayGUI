@@ -11,6 +11,7 @@ using System.DirectoryServices;
 using System.Collections.Specialized;
 using System.Web;
 using NetProxyController.Modle.Subscription;
+using XrayCoreConfigModle;
 
 namespace NetProxyController.Handler.SubResolve
 {
@@ -105,7 +106,44 @@ namespace NetProxyController.Handler.SubResolve
 
         public static List<ServerItem>? ResolveByJson(string subcontent)
         {
-            List<ShadowSocksItem>? serverItems;
+            List<ShadowSocksItem>? SSserverItems;
+            if(JsonHandler.TryJsonDeserializeFromText<List<ShadowSocksItem>>(subcontent, out var outPut))
+            {
+                SSserverItems = outPut;
+            }
+            else if(JsonHandler.TryJsonDeserializeFromText<ShadowSokcsJson>(subcontent, out var json))
+            {
+                SSserverItems = json.servers;
+            }
+            else
+            {
+                return null;
+            }
+            List<ServerItem> ret = new();
+            foreach (var item in SSserverItems!)
+            {
+                try
+                {
+                    ServerItem server = new()
+                    {
+                        Address = !string.IsNullOrEmpty(item.server) ? item.server : throw new Exception(),
+                        Remarks = !string.IsNullOrEmpty(item.remarks) ? item.remarks : throw new Exception(),
+                        Port = Convert.ToInt32(item.server_port)
+                    };
+                    ShadowSocksInfo shadowSocksInfo = new()
+                    {
+                        Method = EnumExtensions.ParseEunmEx<SS_Ecrept>(item.method),
+                        Password = !string.IsNullOrEmpty(item.password) ? item.password : throw new Exception(),
+                    };
+                    server.SetProtocolInfoObj(shadowSocksInfo);
+                    ret.Add(server);
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
+            }
+            return ret;
         }
     }
 }
