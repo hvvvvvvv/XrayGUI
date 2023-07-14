@@ -11,7 +11,7 @@ using XrayCoreConfigModle.ProtocolSetting;
 
 namespace NetProxyController.Modle.Server
 {
-    internal class TcpInfo
+    public class TcpInfo
     {
         public bool AcceptProxyProtocol { get; set; } = false;
         public FeignType Feign { get; set; }
@@ -44,7 +44,7 @@ namespace NetProxyController.Modle.Server
             };
         }
     }
-    internal class KcpInfo
+    public class KcpInfo
     {
         public int Mtu { get; set; } = 1350;
         public int TTI { get; set; } = 20;
@@ -75,7 +75,7 @@ namespace NetProxyController.Modle.Server
             };
         }
     }
-    internal class WebSocketInfo
+    public class WebSocketInfo
     {
         public bool AcceptProxyProtocol { get; set; } = false;
         public string Path { get; set; } = "/";
@@ -91,7 +91,7 @@ namespace NetProxyController.Modle.Server
         }
     }
 
-    internal class H2Info
+    public class H2Info
     {
         public string Hosts { get; set; } = string.Empty;
         public string Path { get; set; } = "/";
@@ -112,7 +112,7 @@ namespace NetProxyController.Modle.Server
             };
         }
     }
-    internal class QuicInfo
+    public class QuicInfo
     {
         public SecurityMode Security { get; set; } = SecurityMode.None;
         public string Key { get; set; } = string.Empty;
@@ -130,7 +130,7 @@ namespace NetProxyController.Modle.Server
             };
         }
     }
-    internal class GrpcInfo
+    public class GrpcInfo
     {
         public string ServiceName { get; set; } = string.Empty;
         public int IdleTimeout { get; set; } = 10;

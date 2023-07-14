@@ -15,7 +15,7 @@ using XrayCoreConfigModle;
 
 namespace NetProxyController.Handler.SubResolve
 {
-    internal static class ShadowSocksResolver
+    public static class ShadowSocksResolver
     {
         public const string PrefixMatch = "ss://";
         private static readonly Regex SSUrlRegex = new(PrefixMatch + @"(?<base64>[A-Za-z0-9+-/=_]+)(?:#(?<tag>\S+))?", RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -80,8 +80,8 @@ namespace NetProxyController.Handler.SubResolve
                 ret.SetProtocolInfoObj(shadowSocksInfo);
                 NameValueCollection queryParameters = HttpUtility.ParseQueryString(u.Query);
                 if(queryParameters["plugin"] != null)
-                {                   
-                    var obfsHost = queryParameters["plugin"]!.Split(';').FirstOrDefault(t => t.Contains("obfs-host"));
+                {
+                    var obfsHost = queryParameters["plugin"]!.Split(';').FirstOrDefault(t => t.Contains("obfs-host="));
                     if(queryParameters["plugin"]!.Contains("obfs=http") && !string.IsNullOrEmpty(obfsHost))
                     {
                         obfsHost = obfsHost.Replace("obfs-host=", string.Empty);

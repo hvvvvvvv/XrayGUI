@@ -36,7 +36,7 @@ namespace NetProxyController.Modle.Subscription
         /// <summary>
         ///
         /// </summary>
-        public string aid { get; set; } = string.Empty;
+        public int aid { get; set; } = 0;
 
         /// <summary>
         ///

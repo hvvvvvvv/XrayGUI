@@ -14,7 +14,7 @@ using System.Drawing;
 
 namespace NetProxyController.Handler.SubResolve
 {
-    internal static class VmessResolver
+    public static class VmessResolver
     {
         public const string PrefixMatch = "vmess://";
         public static ServerItem? ResolveByJson(string subContent)
@@ -45,7 +45,7 @@ namespace NetProxyController.Handler.SubResolve
                 {
                     Security = string.IsNullOrEmpty(jsonObj.scy) ? SecurityMode.Auto : EnumExtensions.ParseEunmEx<SecurityMode>(jsonObj.scy),
                     Id = jsonObj.id,
-                    AlterId = Convert.ToInt32(jsonObj.aid)
+                    AlterId = jsonObj.aid
                 };
                 var StreamInfo = new StreamInfo()
                 {

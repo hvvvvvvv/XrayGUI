@@ -9,7 +9,7 @@ using SQLite;
 using XrayCoreConfigModle.ProtocolSetting;
 namespace NetProxyController.Modle.Server
 {
-    internal class TlsInfo
+    public class TlsInfo
     {
         public string ServerName { get; set; } = string.Empty;
         public TlsFingerPrint FingerPrint { get; set; }
@@ -26,7 +26,7 @@ namespace NetProxyController.Modle.Server
             };
         }
     }
-    internal class RealityInfo
+    public class RealityInfo
     {
         public string ServerName { get; set; } = string.Empty;
         public TlsFingerPrint FingerPrint { get; set; }

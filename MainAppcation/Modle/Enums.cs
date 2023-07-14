@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -51,7 +52,10 @@ namespace NetProxyController.Modle
         Blake3_chacha20_poly1305_2022 = 3,
         Aes_128_gcm = 4,
         Aes_256_gcm = 5,
-        Chacha20_poly1305 = 6
+        Chacha20_poly1305 = 6,
+        Xchacha20_poly1305 = 7,
+        Chacha20_ietf_poly1305 = 8,
+        Xchacha20_ietf_poly1305 = 9
     }
 
     public enum TransportType
@@ -106,7 +110,7 @@ namespace NetProxyController.Modle
         randomized = 9
     }
 
-    internal static class EnumExtensions
+    public static class EnumExtensions
     {
         public static string GetStringValue(this FeignType value)
         {
@@ -150,15 +154,26 @@ namespace NetProxyController.Modle
                 SS_Ecrept.Aes_128_gcm => "aes-128-gcm",
                 SS_Ecrept.Aes_256_gcm => "aes-256-gcm",
                 SS_Ecrept.Chacha20_poly1305 => "chacha20-poly1305",
+                SS_Ecrept.Xchacha20_poly1305 => "xchacha20-poly1305",
+                SS_Ecrept.Chacha20_ietf_poly1305 => "chacha20-ietf-poly1305",
+                SS_Ecrept.Xchacha20_ietf_poly1305 => "xchacha20-ietf-poly1305",
                 _ => "none"
             };
         }
-        public static T ParseEunmEx<T>(string text) where T : Enum
+        public static T ParseEunmEx<T>(string? text) where T : struct
         {
-            var text_ = text.Replace("-", "_");
+            if (text is null) return default;
             foreach(var item in Enum.GetValues(typeof(T)).Cast<T>())
-            {
-                if (string.Equals(text_, item.ToString()))
+            {               
+                string? compareText = item switch
+                {
+                    SS_Ecrept i => i.GetStringValue(),
+                    SecurityMode i => i.GetStringValue(),
+                    XtlsFlow i => i.GetStringValue(),
+                    FeignType i => i.GetStringValue(),
+                    _ => item.ToString()
+                };
+                if (string.Equals(compareText, text, StringComparison.OrdinalIgnoreCase))
                 {
                     return item;
                 }

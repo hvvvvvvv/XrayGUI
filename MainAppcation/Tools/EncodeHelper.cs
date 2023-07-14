@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
+using Vanara.PInvoke;
 using static System.Net.Mime.MediaTypeNames;
 using static Vanara.PInvoke.User32;
 
 namespace NetProxyController.Tools
 {
-    internal static class EncodeHelper
+    public static class EncodeHelper
     {
         public static string GetMD5(string str)
         {
@@ -24,13 +26,17 @@ namespace NetProxyController.Tools
             }
             return sb.ToString();
         }
+        public static string DecodeBase64(string inputText)
+        {
+            byte[] decodedBytes = Convert.FromBase64String(inputText);
+            return Encoding.UTF8.GetString(decodedBytes);
+        }
         public static bool TryConvertFromBase64(string base64Text, out string convertOutput)
         {
             convertOutput = string.Empty;
             try
             {
-                byte[] decodedBytes = Convert.FromBase64String(base64Text);
-                convertOutput = Encoding.UTF8.GetString(decodedBytes);
+                convertOutput = DecodeBase64(base64Text);
                 return base64Text.Equals(Convert.ToBase64String(Encoding.UTF8.GetBytes(convertOutput)));
             }
             catch (Exception)
@@ -53,6 +59,26 @@ namespace NetProxyController.Tools
                 return ret;
             }
             catch(Exception) { return false; }
+        }
+        public static string GetClipboardText()
+        {
+            string ret = string.Empty;
+            if (OpenClipboard(IntPtr.Zero))
+            {
+                var clipData = GetClipboardData(13);
+                var pData = Kernel32.GlobalLock(clipData);
+                var len = Kernel32.GlobalSize(pData);
+                if (len > 2)
+                {
+                    len -= 2;
+                    var buffer = new byte[len];
+                    Marshal.Copy(pData, buffer, 0, len);
+                    ret = Encoding.Unicode.GetString(buffer);
+                }
+                Kernel32.GlobalUnlock(clipData);
+                CloseClipboard();
+            }
+            return ret;
         }
     }
 }

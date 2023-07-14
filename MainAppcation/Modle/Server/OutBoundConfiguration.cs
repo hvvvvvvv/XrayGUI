@@ -7,7 +7,7 @@ using XrayCoreConfigModle.OutBound;
 
 namespace NetProxyController.Modle.Server
 {
-    internal abstract class OutBoundConfiguration
+    public abstract class OutBoundConfiguration
     {
         abstract public OutboundConfigurationObject ToOutboundConfigurationObject(string addr, int port);
     }

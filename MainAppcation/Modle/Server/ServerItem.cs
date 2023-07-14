@@ -10,7 +10,7 @@ using NetProxyController.Modle;
 
 namespace NetProxyController.Modle.Server
 {
-    internal class ServerItem
+    public class ServerItem
     {
         [PrimaryKey]
         [AutoIncrement]

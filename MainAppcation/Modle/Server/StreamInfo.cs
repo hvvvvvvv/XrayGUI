@@ -10,7 +10,7 @@ using XrayCoreConfigModle.ProtocolSetting;
 
 namespace NetProxyController.Modle.Server
 {
-    internal class StreamInfo
+    public class StreamInfo
     {
         public TransportType Transport { get; set; }
         private TcpInfo? _TcpTransport;
