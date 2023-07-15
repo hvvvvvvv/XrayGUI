@@ -26,7 +26,7 @@ namespace NetProxyController.Modle.Subscription
         /// <summary>
         ///
         /// </summary>
-        public string port { get; set; } = string.Empty;
+        public int port { get; set; } = 0;
 
         /// <summary>
         ///

@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 
 namespace NetProxyController.Modle
 {
-    internal static class Global
+    public static class Global
     {
         public const string AutoStartItemName = "NetProxyController";
         public const string LoopBcakAddress = "127.0.0.1";

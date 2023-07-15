@@ -24,7 +24,7 @@ namespace XrayCoreConfigModle
             try
             {
                 outPut = JsonDeserializeFromText<T>(text_)!;
-                return outPut is null;
+                return outPut is not null;
             }
             catch
             {
