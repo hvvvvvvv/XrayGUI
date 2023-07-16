@@ -27,8 +27,9 @@
         </ResourceDictionary>
     </Window.Resources>
     <StackPanel>
-        <hc:ButtonGroup Margin="0,5,50,5" HorizontalContentAlignment="Left">
+        <hc:ButtonGroup Margin="0,5,30,5" HorizontalContentAlignment="Left">
             <Button Content="新建服务器" Command="{Binding CreateProxyServerCmd}"/>
+            <Button Content="剪切板导入" Command="{Binding ImportServerFromClipboardCmd}"/>
             <Button Content="编辑" IsEnabled="{Binding SelectedItemsIsSingle, Mode=OneWay}" Command="{Binding EditServerCmd}"/>
             <Button Content="删除" IsEnabled="{Binding SelectedItemsIsMultiple, Mode=OneWay}" Command="{Binding DeleteServerCmd}"/>
             <Button Content="设为默认路由出口" IsEnabled="{Binding SelectedItemsIsSingle, Mode=OneWay}" Command="{Binding SetDefalutRoutingCmd}"/>

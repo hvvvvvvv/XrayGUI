@@ -20,6 +20,7 @@ namespace NetProxyController.Handler
         private const string SSPrefixMatch = "ss://";
         private const string TrojanPrefixMatch = "trojan://";
         private const string VmessPrefixMatch = "vmess://";
+        private const string VlessPrefixMatch = "vless://";
         private static readonly Regex SSUrlRegex = new(SSPrefixMatch + @"(?<base64>[A-Za-z0-9+-/=_]+)(?:#(?<tag>\S+))?", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private static readonly Regex SSDetailsRegex = new(@"^((?<method>.+?):(?<password>.*)@(?<hostname>.+?):(?<port>\d+?))$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private static readonly Regex StdVmessUserInfo = new(
@@ -108,7 +109,7 @@ namespace NetProxyController.Handler
         }
         private static List<ServerItem>? ResolveSSJson(string subcontent)
         {
-            List<ShadowSocksItem>? SSserverItems;
+            List<ShadowSocksItem>? SSserverItems = default;
             if (JsonHandler.TryJsonDeserializeFromText<List<ShadowSocksItem>>(subcontent, out var outPut))
             {
                 SSserverItems = outPut;
@@ -117,7 +118,7 @@ namespace NetProxyController.Handler
             {
                 SSserverItems = json.servers;
             }
-            else
+            if(SSserverItems is null)
             {
                 return null;
             }
@@ -180,6 +181,7 @@ namespace NetProxyController.Handler
         }
         private static ServerItem? ResolveVlessStdUrl(string subContent)
         {
+            if(!subContent.StartsWith(VlessPrefixMatch)) return null;
             try
             {
                 var u = new Uri(subContent);
@@ -352,7 +354,7 @@ namespace NetProxyController.Handler
                 var StreamInfo = new StreamInfo()
                 {
                     Transport = string.IsNullOrEmpty(jsonObj.net) ? TransportType.tcp : EnumExtensions.ParseEunmEx<TransportType>(jsonObj.net),
-                    Security = string.IsNullOrEmpty(jsonObj.tls) ? TransportSecurity.tls : EnumExtensions.ParseEunmEx<TransportSecurity>(jsonObj.tls)
+                    Security = string.IsNullOrEmpty(jsonObj.tls) ? TransportSecurity.none : EnumExtensions.ParseEunmEx<TransportSecurity>(jsonObj.tls)
                 };
                 var feign = string.IsNullOrEmpty(jsonObj.type) ? FeignType.none : EnumExtensions.ParseEunmEx<FeignType>(jsonObj.type);
                 switch (StreamInfo.Transport)
@@ -544,23 +546,30 @@ namespace NetProxyController.Handler
                 return null;
             }
         }
-        private static List<ServerItem>? ResolveSubFromSubctent(string subContent)
+        public static List<ServerItem> ResolveSubFromSubctent(string subContent)
         {
             List<ServerItem> ret = new();
             if(Tools.EncodeHelper.TryConvertFromBase64(subContent,out string base64DecodeText))
             {
                 subContent = base64DecodeText;
             }
-            foreach(var item in subContent.Split(Environment.NewLine))
+            foreach(string item in subContent.Split(Environment.NewLine.ToArray()).Where(t => !string.IsNullOrEmpty(t)))
             {
                 ServerItem? serverItem = GetPrefixText(item) switch
                 {
                     SSPrefixMatch => ResolveSSUrlType01(item) ?? ResolveSSUrlType02(item),
-                    VmessPrefixMatch => ResolveVlessStdUrl(item),
+                    VlessPrefixMatch => ResolveVlessStdUrl(item),
+                    TrojanPrefixMatch => ResolveTrojanStdUrl(item),
+                    VmessPrefixMatch => ResolveVmessStdUrl(item) ?? ResolveVmessJson(item),
                     _ => null
                 };
+                if(serverItem is not null) ret.Add(serverItem);
             }
-            return null;
+            if (ret.Count > 0) return ret;
+            else
+            {
+                return ResolveSSJson(subContent) ?? ret;
+            }
         }
         private static string GetPrefixText(string subItemText)
         {

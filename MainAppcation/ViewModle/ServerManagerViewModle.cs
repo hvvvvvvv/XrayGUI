@@ -32,6 +32,7 @@ namespace NetProxyController.ViewModle
             editServerCmd = new(EditProxyServerExcute);
             deleteServerCmd = new(DeleteProxyServerItemExcute);
             setDefalutRoutingCmd = new(SetDefalutRoutingExcute);
+            importServerFromClipboardCmd = new(ImportServerFromClipboardCmdExcute);
             if (serverItems.Count > 0 && serverItems.FirstOrDefault(i => i.Server.Index == ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex) is null)
             {
                 ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex = serverItems[0].Server.Index;
@@ -82,6 +83,12 @@ namespace NetProxyController.ViewModle
         public RelayCommand SetDefalutRoutingCmd
         {
             get => setDefalutRoutingCmd;
+            set => _ = value;
+        }
+        private RelayCommand importServerFromClipboardCmd;
+        public RelayCommand ImportServerFromClipboardCmd
+        {
+            get => importServerFromClipboardCmd;
             set => _ = value;
         }
         public bool SelectedItemsIsSingle
@@ -169,6 +176,21 @@ namespace NetProxyController.ViewModle
                 serverItemList.View.Refresh();
                 SelectionChangedCmdExcute();
                 XrayHanler.Instance.ReLoad();
+            }
+        }
+        private void ImportServerFromClipboardCmdExcute()
+        {
+            var inputText = Tools.EncodeHelper.GetClipboardText();
+            if (string.IsNullOrEmpty(inputText)) return;
+            var inputServers = SubscribeHandle.ResolveSubFromSubctent(inputText);
+            if (inputServers.Count > 0)
+            {
+                foreach (var item in inputServers)
+                {
+                    item.SaveToDataBase();
+                    serverItems.Add(new(item));
+                }
+                ServerItemList.View.Refresh();
             }
         }
 

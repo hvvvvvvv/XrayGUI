@@ -8,5 +8,15 @@ using System.Threading.Tasks;
 
 namespace NetProxyController.Handler.Tests
 {
-
+    [TestClass()]
+    public class SubscribeHandleTests
+    {
+        [TestMethod()]
+        public void ResolveSubFromSubctentTest()
+        {
+            string input = Tools.EncodeHelper.GetClipboardText();
+            var result = SubscribeHandle.ResolveSubFromSubctent(input);
+            Assert.AreNotEqual(result.Count, 0);
+        }
+    }
 }
