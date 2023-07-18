@@ -56,6 +56,25 @@
                                 </BeginStoryboard>
                             </EventTrigger.Actions>
                         </EventTrigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="ListBoxItem.IsSelected" Value="true" />
+                                <Condition Property="Selector.IsSelectionActive" Value="false" />
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" Value="{DynamicResource PrimaryBrush}" />
+                            <Setter Property="Foreground" Value="{DynamicResource TextIconBrush}" />
+                        </MultiTrigger>
+                        <DataTrigger Binding="{Binding DefaultRoutingFlag}" Value="=>">
+                            <Setter Property="Background" Value="#24b2eb"/>
+                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding DefaultRoutingFlag}" Value="=>"/>
+                                <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="true"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Background" Value="#2d9ce5 "/>
+                        </MultiDataTrigger>
+                        
                     </Style.Triggers>
                 </Style>
             </ListView.ItemContainerStyle>
