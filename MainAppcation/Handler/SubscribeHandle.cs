@@ -38,7 +38,7 @@ namespace NetProxyController.Handler
                 var addr = detailMatch.Groups["hostname"].Value;
                 var ret = new ServerItem()
                 {
-
+                    Protocol = OutboundProtocol.shadowsocks,
                     Address = !string.IsNullOrEmpty(addr) ? addr : throw new Exception(),
                     Port = port,
                     Remarks = !string.IsNullOrEmpty(tag) ? tag : $"UnknownName_{addr}"
@@ -67,6 +67,7 @@ namespace NetProxyController.Handler
                 var addr = u.IdnHost;
                 var ret = new ServerItem()
                 {
+                    Protocol = OutboundProtocol.shadowsocks,
                     Address = u.IdnHost,
                     Port = u.Port == -1 ? throw new Exception() : u.Port,
                     Remarks = string.IsNullOrEmpty(name) ? $"UnknownName_{addr}" : name
@@ -129,9 +130,10 @@ namespace NetProxyController.Handler
                 {
                     ServerItem server = new()
                     {
+                        Protocol = OutboundProtocol.shadowsocks,
                         Address = !string.IsNullOrEmpty(item.server) ? item.server : throw new Exception(),
                         Remarks = !string.IsNullOrEmpty(item.remarks) ? item.remarks : throw new Exception(),
-                        Port = Convert.ToInt32(item.server_port)
+                        Port = item.server_port == default ? throw new Exception() : item.server_port
                     };
                     ShadowSocksInfo shadowSocksInfo = new()
                     {
@@ -170,8 +172,10 @@ namespace NetProxyController.Handler
                 {
                     Password = !string.IsNullOrEmpty(id) ? id : throw new Exception()
                 };
+                q["security"] = q["security"] ?? "tls";
+                StreamInfo streamInfo = ResolveStreamInfo(q) ?? throw new Exception();
                 ret.SetProtocolInfoObj(trojanInfo);
-                ret.SetStreamInfo(ResolveStreamInfo(q) ?? throw new Exception());
+                ret.SetStreamInfo(streamInfo);
                 return ret;
             }
             catch (Exception)
@@ -233,14 +237,14 @@ namespace NetProxyController.Handler
                         break;
                     case TransportSecurity.tls:
                         {
-                            streamInfo.TlsPolicy.ServerName = query["sni"] ?? throw new Exception();
+                            streamInfo.TlsPolicy.ServerName = query["sni"] ?? string.Empty;
                             streamInfo.TlsPolicy.FingerPrint = EnumExtensions.ParseEunmEx<TlsFingerPrint>(HttpUtility.UrlDecode(query["fp"]));
                             streamInfo.TlsPolicy.Alpn = HttpUtility.UrlDecode(query["alpn"])?.Split(",").ToList();
                         }
                         break;
                     case TransportSecurity.xtls:
                         {
-                            streamInfo.XTlsPolicy.ServerName = query["sni"] ?? throw new Exception();
+                            streamInfo.XTlsPolicy.ServerName = query["sni"] ?? string.Empty;
                             streamInfo.XTlsPolicy.Alpn = HttpUtility.UrlDecode(query["alpn"])?.Split(",").ToList();
                         }
                         break;
@@ -428,22 +432,19 @@ namespace NetProxyController.Handler
                 switch (StreamInfo.Security)
                 {
                     case TransportSecurity.tls:
+                    case TransportSecurity.xtls:
                         {
-                            StreamInfo.TlsPolicy.FingerPrint = string.IsNullOrEmpty(jsonObj.fp) ? TlsFingerPrint.none : EnumExtensions.ParseEunmEx<TlsFingerPrint>(jsonObj.fp);
+                            StreamInfo.TlsPolicy.FingerPrint = string.IsNullOrEmpty(jsonObj.fp) || StreamInfo.Security == TransportSecurity.xtls ? TlsFingerPrint.none : EnumExtensions.ParseEunmEx<TlsFingerPrint>(jsonObj.fp);
                             StreamInfo.TlsPolicy.ServerName = jsonObj.sni;
                             if (!string.IsNullOrEmpty(jsonObj.alpn))
                             {
                                 StreamInfo.TlsPolicy.Alpn = jsonObj.alpn.Split(',').ToList();
                             }
-                        }
-                        break;
-                    case TransportSecurity.xtls:
-                        {
-                            StreamInfo.XTlsPolicy.FingerPrint = string.IsNullOrEmpty(jsonObj.fp) ? TlsFingerPrint.none : EnumExtensions.ParseEunmEx<TlsFingerPrint>(jsonObj.fp);
-                            if (!string.IsNullOrEmpty(jsonObj.alpn))
+                            if(string.IsNullOrEmpty(StreamInfo.TlsPolicy.ServerName))
                             {
-                                StreamInfo.XTlsPolicy.Alpn = jsonObj.alpn.Split(',').ToList();
+                                StreamInfo.TlsPolicy.ServerName = jsonObj.host;
                             }
+                            StreamInfo.XTlsPolicy = StreamInfo.TlsPolicy;
                         }
                         break;
                 }
@@ -546,7 +547,7 @@ namespace NetProxyController.Handler
                 return null;
             }
         }
-        public static List<ServerItem> ResolveSubFromSubctent(string subContent)
+        public static List<ServerItem> ResolveSubFromSubContent(string subContent)
         {
             List<ServerItem> ret = new();
             if(Tools.EncodeHelper.TryConvertFromBase64(subContent,out string base64DecodeText))

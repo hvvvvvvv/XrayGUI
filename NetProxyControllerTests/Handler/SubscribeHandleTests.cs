@@ -15,7 +15,7 @@ namespace NetProxyController.Handler.Tests
         public void ResolveSubFromSubctentTest()
         {
             string input = Tools.EncodeHelper.GetClipboardText();
-            var result = SubscribeHandle.ResolveSubFromSubctent(input);
+            var result = SubscribeHandle.ResolveSubFromSubContent(input);
             Assert.AreNotEqual(result.Count, 0);
         }
     }

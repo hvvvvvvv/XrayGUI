@@ -27,6 +27,10 @@ namespace NetProxyController.View
         {
             InitializeComponent();
             Closing += (_, _) => IsClosed = true;
+            foreach(var i in listView.Items)
+            {
+                
+            }
         }
         private static ServerManager _instance = new ServerManager();
         public static ServerManager Instance
@@ -41,5 +45,15 @@ namespace NetProxyController.View
             }
         }
 
+        private void listView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            foreach(var i in listView.SelectedItems)
+            {
+                if(i is ServerItemViewModle vm)
+                {
+                    vm.IsSelected = true;
+                }
+            }
+        }
     }
 }

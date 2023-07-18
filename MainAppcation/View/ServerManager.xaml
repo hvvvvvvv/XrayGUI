@@ -8,7 +8,7 @@
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:vm="clr-namespace:NetProxyController.ViewModle"
         mc:Ignorable="d"
-        Title="代理服务器管理" Height="430" Width="600">
+        Title="代理服务器管理" Height="500" Width="600">
     <Window.DataContext>
         <vm:ServerManagerViewModle/>
     </Window.DataContext>
@@ -34,14 +34,15 @@
             <Button Content="删除" IsEnabled="{Binding SelectedItemsIsMultiple, Mode=OneWay}" Command="{Binding DeleteServerCmd}"/>
             <Button Content="设为默认路由出口" IsEnabled="{Binding SelectedItemsIsSingle, Mode=OneWay}" Command="{Binding SetDefalutRoutingCmd}"/>
         </hc:ButtonGroup>
-        <ListView x:Name="listView" Height="330" Width="auto" 
+        <ListView x:Name="listView" Height="500" Width="auto" 
                   ItemsSource="{Binding ServerItemList.View}" 
                   local:AttachProperties.SelectionChangedCommand="{Binding SelectionChangedCmd}"
+                  SelectionChanged="listView_SelectionChanged"
                   SelectedIndex="{Binding SelectedIndex}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemBaseStyle}">
                     <Setter Property="local:AttachProperties.DoubleClick" Value="{Binding Path=DataContext.EditServerCmd, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
-                    <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}"/>
                     <Setter Property="ContextMenu" Value="{StaticResource ItemRightClickMenu}"/>
                     <Style.Triggers>
                         <EventTrigger RoutedEvent="MouseRightButtonDown">

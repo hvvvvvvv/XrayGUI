@@ -19,7 +19,7 @@ namespace NetProxyController.Modle.Server
         {
             return new()
             {
-                serverName = ServerName,
+                serverName = string.IsNullOrEmpty(ServerName) ? null : ServerName,
                 fingerprint = FingerPrint == TlsFingerPrint.none ? null : FingerPrint.ToString(),
                 allowInsecure = AllowInsecure,
                 alpn = Alpn

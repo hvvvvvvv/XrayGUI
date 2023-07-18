@@ -10,7 +10,7 @@ namespace NetProxyController.Modle.Subscription
     {
         public string remarks { get; set; } = string.Empty;
         public string server { get; set; } = string.Empty;
-        public string server_port { get; set; } = string.Empty;
+        public int server_port { get; set; }
         public string method { get; set; } = string.Empty;
         public string password { get; set; } = string.Empty;
         public string plugin { get; set; } = string.Empty;

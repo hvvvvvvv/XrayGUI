@@ -142,7 +142,7 @@ namespace NetProxyController.ViewModle
         }
         private void DeleteProxyServerItemExcute()
         {
-            if(MessageBox.Show(messageBoxText:"是否删除选中项？",button: System.Windows.MessageBoxButton.YesNo,
+            if(MessageBox.Show(messageBoxText:$"是否删除选中项(共{serverItems.Where(item => item.IsSelected).Count()}项)？",button: System.Windows.MessageBoxButton.YesNo,
                 icon: System.Windows.MessageBoxImage.Question) == System.Windows.MessageBoxResult.Yes)
             {
                 for (int i = 0; i < serverItems.Count; i++)
@@ -159,6 +159,7 @@ namespace NetProxyController.ViewModle
             {
                 serverItems.ForEach(i => i.IsSelected = false);
                 SelectedIndex = -1;
+                return;
             }
             serverItemList.View.Refresh();
             SelectionChangedCmdExcute();
@@ -182,7 +183,7 @@ namespace NetProxyController.ViewModle
         {
             var inputText = Tools.EncodeHelper.GetClipboardText();
             if (string.IsNullOrEmpty(inputText)) return;
-            var inputServers = SubscribeHandle.ResolveSubFromSubctent(inputText);
+            var inputServers = SubscribeHandle.ResolveSubFromSubContent(inputText);
             if (inputServers.Count > 0)
             {
                 foreach (var item in inputServers)
