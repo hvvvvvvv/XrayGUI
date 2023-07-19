@@ -7,6 +7,7 @@
         xmlns:local="clr-namespace:NetProxyController.View"
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:vm="clr-namespace:NetProxyController.ViewModle"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         Title="代理服务器管理" Height="500" Width="600">
     <Window.DataContext>
@@ -19,9 +20,20 @@
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <ContextMenu x:Key="ItemRightClickMenu" Width="150">
-                <MenuItem Header="编辑" Command="{Binding Path=DataContext.EditServerCmd,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
-                <MenuItem Header="删除" Command="{Binding Path=DataContext.DeleteServerCmd,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
-                <MenuItem Header="设为默认路由" Command="{Binding Path=DataContext.SetDefalutRoutingCmd,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
+                <MenuItem Header="编辑" Command="{Binding EditServerCmd}"/>
+                <MenuItem Header="删除" Command="{Binding DeleteServerCmd}"/>
+                <MenuItem Header="设为默认服务器" Command="{Binding SetDefalutRoutingCmd}"/>
+                <MenuItem Header="取消默认服务器"
+                <MenuItem Header="设为活动服务器" Command="{Binding SetActivatedServersCmd}">
+                    <MenuItem.CommandParameter>
+                        <sys:Boolean>True</sys:Boolean>
+                    </MenuItem.CommandParameter>
+                </MenuItem>
+                <MenuItem Header="取消活动服务器" Command="{Binding SetActivatedServersCmd}">
+                    <MenuItem.CommandParameter>
+                        <sys:Boolean>False</sys:Boolean>
+                    </MenuItem.CommandParameter>
+                </MenuItem>
                 <MenuItem Header="路由策略"/>
             </ContextMenu>
         </ResourceDictionary>
@@ -39,23 +51,20 @@
                   local:AttachProperties.SelectionChangedCommand="{Binding SelectionChangedCmd}"
                   SelectionChanged="listView_SelectionChanged"
                   SelectedIndex="{Binding SelectedIndex}">
+            <ListView.Style>
+                <Style TargetType="ListView" BasedOn="{StaticResource ListViewBaseStyle}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsContainSelectedItems}" Value="true">
+                            <Setter Property="ContextMenu" Value="{StaticResource ItemRightClickMenu}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.Style>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemBaseStyle}">
                     <Setter Property="local:AttachProperties.DoubleClick" Value="{Binding Path=DataContext.EditServerCmd, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
                     <Setter Property="IsSelected" Value="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}"/>
-                    <Setter Property="ContextMenu" Value="{StaticResource ItemRightClickMenu}"/>
                     <Style.Triggers>
-                        <EventTrigger RoutedEvent="MouseRightButtonDown">
-                            <EventTrigger.Actions>
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <BooleanAnimationUsingKeyFrames Duration="0" Storyboard.TargetProperty="ContextMenu.IsOpen">
-                                            <DiscreteBooleanKeyFrame KeyTime="0" Value="True" />
-                                        </BooleanAnimationUsingKeyFrames>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger.Actions>
-                        </EventTrigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
                                 <Condition Property="ListBoxItem.IsSelected" Value="true" />
@@ -64,12 +73,12 @@
                             <Setter Property="Background" Value="{DynamicResource PrimaryBrush}" />
                             <Setter Property="Foreground" Value="{DynamicResource TextIconBrush}" />
                         </MultiTrigger>
-                        <DataTrigger Binding="{Binding DefaultRoutingFlag}" Value="=>">
+                        <DataTrigger Binding="{Binding IsActivated}" Value="true">
                             <Setter Property="Background" Value="#24b2eb"/>
                         </DataTrigger>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding DefaultRoutingFlag}" Value="=>"/>
+                                <Condition Binding="{Binding IsActivated}" Value="true"/>
                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsSelected}" Value="true"/>
                             </MultiDataTrigger.Conditions>
                             <Setter Property="Background" Value="#2d9ce5 "/>

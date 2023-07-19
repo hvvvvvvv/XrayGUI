@@ -18,6 +18,7 @@ namespace NetProxyController.Modle.Server
         public OutboundProtocol Protocol { get; set; }
         public string Address { get; set; } = string.Empty;
         public int Port { get; set; }
+        public bool IsActivated { get; set; }
         public string Remarks { get; set; } = string.Empty;
         private string protocolInfoContent = string.Empty;
         public string ProtocolInfoContent

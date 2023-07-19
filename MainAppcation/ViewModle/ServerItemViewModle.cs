@@ -33,6 +33,7 @@ namespace NetProxyController.ViewModle
             ProxyProtocol = Server.Protocol;
             TransportProtocol = Server.GetStreamInfo().Transport;
             SecurityPolicy = Server.GetStreamInfo().Security;
+            IsActivated = Server.IsActivated;
         }
         private void SetProperty<T>(ref T property, T value, [CallerMemberName]string? propertyName = null)
         {
@@ -91,6 +92,12 @@ namespace NetProxyController.ViewModle
                 }
                 return string.Empty;
             }
+        }
+        private bool isActivated;
+        public bool IsActivated
+        {
+            get => Server.Index == ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex || isActivated;
+            set => SetProperty(ref isActivated, value);
         }
         private RelayCommand doubleClickItemCmd;
         public RelayCommand DoubleClickItemCmd

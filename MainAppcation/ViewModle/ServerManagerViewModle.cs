@@ -14,6 +14,7 @@ using System.Windows.Input;
 using System.Diagnostics;
 using HandyControl.Controls;
 using NetProxyController.Handler;
+using System.Windows;
 
 namespace NetProxyController.ViewModle
 {
@@ -33,6 +34,7 @@ namespace NetProxyController.ViewModle
             deleteServerCmd = new(DeleteProxyServerItemExcute);
             setDefalutRoutingCmd = new(SetDefalutRoutingExcute);
             importServerFromClipboardCmd = new(ImportServerFromClipboardCmdExcute);
+            setActivatedServersCmd = new(SetActivatedServersExcute);
             if (serverItems.Count > 0 && serverItems.FirstOrDefault(i => i.Server.Index == ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex) is null)
             {
                 ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex = serverItems[0].Server.Index;
@@ -46,6 +48,7 @@ namespace NetProxyController.ViewModle
         }
         private List<ServerItemViewModle> serverItems;
         private CollectionViewSource serverItemList;
+        private int SelectedItemsConut;
         public CollectionViewSource ServerItemList
         {
             get => serverItemList;
@@ -91,6 +94,12 @@ namespace NetProxyController.ViewModle
             get => importServerFromClipboardCmd;
             set => _ = value;
         }
+        private RelayCommand<bool> setActivatedServersCmd;
+        public RelayCommand<bool> SetActivatedServersCmd
+        {
+            get => setActivatedServersCmd;
+            set => _ = value;
+        }
         public bool SelectedItemsIsSingle
         {
             get => serverItems.Where(item => item.IsSelected).Count() == 1;
@@ -99,6 +108,11 @@ namespace NetProxyController.ViewModle
         public bool SelectedItemsIsMultiple
         {
             get => serverItems.Where(item => item.IsSelected).Count() >= 1;
+            set => _ = value;
+        }
+        public bool IsContainSelectedItems
+        {
+            get => SelectedItemsConut > 0;
             set => _ = value;
         }
         private int selectedIndex = -1;
@@ -113,8 +127,10 @@ namespace NetProxyController.ViewModle
         }
         private void SelectionChangedCmdExcute()
         {
+            SelectedItemsConut = serverItems.Where(item => item.IsSelected).Count();
             OnPropertyChanged(nameof(SelectedItemsIsSingle));
             OnPropertyChanged(nameof(SelectedItemsIsMultiple));
+            OnPropertyChanged(nameof(IsContainSelectedItems));
         }
         private void CreateProxyServerExcute()
         {
@@ -142,7 +158,7 @@ namespace NetProxyController.ViewModle
         }
         private void DeleteProxyServerItemExcute()
         {
-            if(MessageBox.Show(messageBoxText:$"是否删除选中项(共{serverItems.Where(item => item.IsSelected).Count()}项)？",button: System.Windows.MessageBoxButton.YesNo,
+            if(HandyControl.Controls.MessageBox.Show(messageBoxText:$"是否删除选中项(共{serverItems.Where(item => item.IsSelected).Count()}项)？",button: System.Windows.MessageBoxButton.YesNo,
                 icon: System.Windows.MessageBoxImage.Question) == System.Windows.MessageBoxResult.Yes)
             {
                 for (int i = 0; i < serverItems.Count; i++)
@@ -192,6 +208,14 @@ namespace NetProxyController.ViewModle
                     serverItems.Add(new(item));
                 }
                 ServerItemList.View.Refresh();
+            }
+        }
+        private void SetActivatedServersExcute(bool isActive)
+        {
+            foreach (var item in serverItems.Where(i => i.IsSelected))
+            {
+                item.Server.IsActivated = isActive;
+                item.UpdateData();
             }
         }
 
