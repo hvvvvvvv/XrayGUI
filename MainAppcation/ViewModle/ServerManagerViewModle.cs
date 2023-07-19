@@ -125,6 +125,16 @@ namespace NetProxyController.ViewModle
                 OnPropertyChanged();
             }
         }
+        private bool defaultServerMenuItemChecked;
+        public bool DefaultServerMenuItemChecked
+        {
+            get => defaultServerMenuItemChecked;
+            set
+            {
+                defaultServerMenuItemChecked = value; 
+                OnPropertyChanged();
+            }
+        }
         private void SelectionChangedCmdExcute()
         {
             SelectedItemsConut = serverItems.Where(item => item.IsSelected).Count();
