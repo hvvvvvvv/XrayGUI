@@ -16,6 +16,8 @@ using HandyControl.Controls;
 using HandyControl.Data;
 using NetProxyController.Modle.Server;
 using XrayCoreConfigModle.OutBound;
+using NetProxyController.ViewModle;
+using System.Net;
 
 namespace NetProxyController.Handler
 {
@@ -135,6 +137,11 @@ namespace NetProxyController.Handler
            JsonHandler.JsonSerializeToFile(mainConfig, Global.XrayCoreConfigPath);       
             
         }
+        public void LoadTestConfig(List<ServerItemViewModle> serverVm)
+        {
+            var _inbounds = (from ServerItemViewModle item in serverVm select item.Server.ToOutboundServerItemObject()).ToList();
+            
+        }
 
         private void OnCoreProcessAccidentExted(object? sender, EventArgs e)
         {
@@ -156,7 +163,6 @@ namespace NetProxyController.Handler
             {
                 _ExitedEventPause = false;
             }
-
         }
         public void CoreStart()
         {
