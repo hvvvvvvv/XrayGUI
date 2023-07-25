@@ -35,10 +35,6 @@ namespace NetProxyController.ViewModle
             setDefalutRoutingCmd = new(SetDefalutRoutingExcute);
             importServerFromClipboardCmd = new(ImportServerFromClipboardCmdExcute);
             setActivatedServersCmd = new(SetActivatedServersExcute);
-            if (serverItems.Count > 0 && serverItems.FirstOrDefault(i => i.Server.Index == ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex) is null)
-            {
-                ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex = serverItems[0].Server.Index;
-            }
         }
         private static List<ServerItemViewModle> GetDateItemFromDataBase()
         {
@@ -125,15 +121,15 @@ namespace NetProxyController.ViewModle
                 OnPropertyChanged();
             }
         }
-        private bool defaultServerMenuItemChecked;
         public bool DefaultServerMenuItemChecked
         {
-            get => defaultServerMenuItemChecked;
-            set
-            {
-                defaultServerMenuItemChecked = value; 
-                OnPropertyChanged();
-            }
+            get => DefaultServerMenuItemEnabled && serverItems[selectedIndex].Server.Index == ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex;
+            set => _ = value;
+        }
+        public bool DefaultServerMenuItemEnabled
+        {
+            get => SelectedItemsConut == 1;
+            set => _ = value;
         }
         private void SelectionChangedCmdExcute()
         {
@@ -141,6 +137,8 @@ namespace NetProxyController.ViewModle
             OnPropertyChanged(nameof(SelectedItemsIsSingle));
             OnPropertyChanged(nameof(SelectedItemsIsMultiple));
             OnPropertyChanged(nameof(IsContainSelectedItems));
+            OnPropertyChanged(nameof(DefaultServerMenuItemChecked));
+            OnPropertyChanged(nameof(DefaultServerMenuItemEnabled));
         }
         private void CreateProxyServerExcute()
         {
@@ -196,7 +194,7 @@ namespace NetProxyController.ViewModle
             var selectedItem = serverItems.Where(i => i.IsSelected).FirstOrDefault();
             if (selectedItem != null)
             {
-                ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex = selectedItem.Server.Index;
+                ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex = DefaultServerMenuItemChecked ? -1 : selectedItem.Server.Index;
                 ConfigObject.Instance.Save();
                 serverItems.ForEach(i => i.IsSelected = false);
                 SelectedIndex = -1;
@@ -225,8 +223,10 @@ namespace NetProxyController.ViewModle
             foreach (var item in serverItems.Where(i => i.IsSelected))
             {
                 item.Server.IsActivated = isActive;
+                item.Server.SaveToDataBase();
                 item.UpdateData();
             }
+            XrayHanler.Instance.ReLoad();
         }
 
     }

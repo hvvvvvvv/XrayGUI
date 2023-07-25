@@ -15,6 +15,7 @@ using Windows.System.Profile;
 using HandyControl.Controls;
 using HandyControl.Data;
 using NetProxyController.Modle.Server;
+using XrayCoreConfigModle.OutBound;
 
 namespace NetProxyController.Handler
 {
@@ -73,7 +74,7 @@ namespace NetProxyController.Handler
                     protocol = "http",
                     port = _LocalPort.Http,
                     tag = "http",
-                    settings = new HttpConfigurationObject()
+                    settings = new XrayCoreConfigModle.Inbound.HttpConfigurationObject()
                     {
                         allowTransparent = true
                     }                    
@@ -84,7 +85,7 @@ namespace NetProxyController.Handler
                     protocol = "socks",
                     port = _LocalPort.Scoks,
                     tag = "scoks",
-                    settings =  new SocksConfigurationObject()
+                    settings =  new XrayCoreConfigModle.Inbound.SocksConfigurationObject()
                     {
                         auth = "none",
                         udp = true,
@@ -96,23 +97,25 @@ namespace NetProxyController.Handler
                     }
                 }
             };
-            var _outbounds = new List<OutboundServerItemObject>();
+            var _outbounds = new List<OutboundServerItemObject>()
+            {
+                 new()
+                 {
+                     protocol = "freedom",
+                     settings = new FreedomConfigurationObject()
+                 }
+            };
             foreach ( var item in ServerItem.GetItemsFromDataBase())
             {
                 if(item.Index == XrayConfig.DefaultOutboundServerIndex)
                 {
                     _outbounds.Insert(0, item.ToOutboundServerItemObject());
                 }
-                else
+                else if(item.IsActivated)
                 {
                     _outbounds.Add(item.ToOutboundServerItemObject());
                 }
             }
-            _outbounds.Add(new OutboundServerItemObject()
-            {
-                protocol = "Freedom",
-                tag = Global.XrayDirectTag,
-            });
             var routing = new RoutingObject()
             {
                 domainMatcher = XrayConfig.RouteMatchSetting.domainMatcher,
@@ -121,6 +124,10 @@ namespace NetProxyController.Handler
 
             var mainConfig = new MainConfiguration()
             {
+                log = new LogObject
+                {
+                    loglevel = "info"
+                },
                 inbounds = _inbounds,
                 outbounds = _outbounds,
                 routing = routing

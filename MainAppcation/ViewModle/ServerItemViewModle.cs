@@ -40,6 +40,8 @@ namespace NetProxyController.ViewModle
             property = value;
             OnPropertyChanged(propertyName);
         }
+        private int? TestProxyPort;
+        private string? TestProxyAddr;
         private bool isSelected;
         public bool IsSelected
         {

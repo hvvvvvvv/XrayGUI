@@ -86,11 +86,11 @@ namespace XrayCoreConfigModle.Routing
         /// </summary>
         public List<string>? protocol { get; set; }
         /// <summary>
-        /// 一段脚本，用于检测流量的属性值。当此脚本返回真值时，此规则生效。
-        /// 脚本语言为 Starlark，它的语法是 Python 的子集。脚本接受一个全局变量 attrs，其中包含了流量相关的属性。
+        /// 一个 json object，键名字和值皆为字符串，用于检测流量的属性值。
+        /// 当 HTTP headers 包含所有指定的键，并且值包含指定的子字符串，则命中此规则。键大小写不敏感。值支持使用正则表达式。
         /// 目前只有 http 入站代理会设置这一属性。
         /// </summary>
-        public string? attrs { get; set; }
+        public Dictionary<string,string>? attrs { get; set; }
         /// <summary>
         /// 对应一个 outbound 的标识
         /// </summary>

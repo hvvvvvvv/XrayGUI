@@ -22,8 +22,9 @@
             <ContextMenu x:Key="ItemRightClickMenu" Width="150">
                 <MenuItem Header="编辑" Command="{Binding EditServerCmd}"/>
                 <MenuItem Header="删除" Command="{Binding DeleteServerCmd}"/>
-                <MenuItem Header="设为默认服务器" Command="{Binding SetDefalutRoutingCmd}"/>
-                <MenuItem Header="取消默认服务器"
+                <MenuItem Header="设为默认服务器" Command="{Binding SetDefalutRoutingCmd}"
+                          IsChecked ="{Binding DefaultServerMenuItemChecked}"
+                          IsEnabled="{Binding DefaultServerMenuItemEnabled}"/>
                 <MenuItem Header="设为活动服务器" Command="{Binding SetActivatedServersCmd}">
                     <MenuItem.CommandParameter>
                         <sys:Boolean>True</sys:Boolean>
