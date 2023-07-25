@@ -18,6 +18,7 @@ using NetProxyController.Modle.Server;
 using XrayCoreConfigModle.OutBound;
 using NetProxyController.ViewModle;
 using System.Net;
+using System.Net.Http;
 
 namespace NetProxyController.Handler
 {
@@ -139,8 +140,47 @@ namespace NetProxyController.Handler
         }
         public void LoadTestConfig(List<ServerItemViewModle> serverVm)
         {
-            var _inbounds = (from ServerItemViewModle item in serverVm select item.Server.ToOutboundServerItemObject()).ToList();
-            
+            var _outbounds = (from ServerItemViewModle item in serverVm select item.Server.ToOutboundServerItemObject()).ToList();
+            _outbounds.Insert(0, new OutboundServerItemObject()
+            {
+                protocol = "blackhole"
+            });
+            var _inbounds = new List<InboundServerItemObject>()
+            {
+                new InboundServerItemObject()
+                {
+                    protocol = "http",
+                    listen = Global.LoopBcakAddress,
+                    port = _LocalPort.Http,
+                    settings = new XrayCoreConfigModle.Inbound.HttpConfigurationObject()
+                    {
+                        allowTransparent = true
+                    }
+                }
+            };
+            var routeRlues = new List<RuleObject>();
+            foreach(var item in serverVm)
+            {
+                routeRlues.Add(new RuleObject()
+                {
+                    attrs = new Dictionary<string, string>()
+                    {
+                        { nameof(item.ProxyTestTag),item.ProxyTestTag }
+                    }
+                });
+            }
+            if(Isrunning) CoreStop();
+            JsonHandler.JsonSerializeToFile(new MainConfiguration()
+            {
+                inbounds = _inbounds,
+                outbounds = _outbounds,
+                routing = new RoutingObject()
+                {
+                    rules = routeRlues
+                }
+            },
+            Global.XrayCoreConfigPath);
+            CoreStart();
         }
 
         private void OnCoreProcessAccidentExted(object? sender, EventArgs e)
@@ -176,8 +216,7 @@ namespace NetProxyController.Handler
             Isrunning = true;
             Kernel32.AssignProcessToJobObject(Global.ProcessJobs, _coreProcess);
         }
-
-        public void ReLoad()
+        public void ReloadConfig()
         {
             var _isRunning = Isrunning;
             CoreStop();

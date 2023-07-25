@@ -8,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace NetProxyController.ViewModle
@@ -20,6 +21,7 @@ namespace NetProxyController.ViewModle
             Server = server;
             UpdateData();
             doubleClickItemCmd = new RelayCommand(EditServerItem);
+            ProxyTestTag = Guid.NewGuid().ToString();
         }
         public ServerItemViewModle() : this(new())
         {
@@ -40,8 +42,7 @@ namespace NetProxyController.ViewModle
             property = value;
             OnPropertyChanged(propertyName);
         }
-        private int? TestProxyPort;
-        private string? TestProxyAddr;
+        public readonly string ProxyTestTag;
         private bool isSelected;
         public bool IsSelected
         {

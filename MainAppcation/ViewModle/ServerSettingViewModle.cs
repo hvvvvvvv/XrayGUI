@@ -110,7 +110,7 @@ namespace NetProxyController.ViewModle
             Server.SetProtocolInfoObj(ProtocolModles[Server.Protocol]);
             Server.SetStreamInfo(StreaminfoObj);
             Server.SaveToDataBase();
-            XrayHanler.Instance.ReLoad();
+            XrayHanler.Instance.ReloadConfig();
             win.DialogResult = true;
             win.Close();
         }

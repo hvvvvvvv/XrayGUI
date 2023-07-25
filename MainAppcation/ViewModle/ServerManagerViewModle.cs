@@ -187,7 +187,7 @@ namespace NetProxyController.ViewModle
             }
             serverItemList.View.Refresh();
             SelectionChangedCmdExcute();
-            XrayHanler.Instance.ReLoad();
+            XrayHanler.Instance.ReloadConfig();
         }
         private void SetDefalutRoutingExcute()
         {
@@ -200,7 +200,7 @@ namespace NetProxyController.ViewModle
                 SelectedIndex = -1;
                 serverItemList.View.Refresh();
                 SelectionChangedCmdExcute();
-                XrayHanler.Instance.ReLoad();
+                XrayHanler.Instance.ReloadConfig();
             }
         }
         private void ImportServerFromClipboardCmdExcute()
@@ -226,7 +226,7 @@ namespace NetProxyController.ViewModle
                 item.Server.SaveToDataBase();
                 item.UpdateData();
             }
-            XrayHanler.Instance.ReLoad();
+            XrayHanler.Instance.ReloadConfig();
         }
 
     }

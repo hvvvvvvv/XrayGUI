@@ -141,7 +141,7 @@ namespace NetProxyController.ViewModle
             ConfigObject.Instance.SystemProxySetting.ByPassUrl = sysProxyByPass;
             ConfigObject.Instance.HotkeySetting.Hotkey = Hotkey;
             HotkeyHandler.Instance.LoadConfig();
-            XrayHanler.Instance.ReLoad();
+            XrayHanler.Instance.ReloadConfig();
             SystemProxyHanler.Instance.LoadConfig();
             ConfigObject.Instance.Save();
             win.Close();
