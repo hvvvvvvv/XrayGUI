@@ -13,7 +13,7 @@ namespace NetProxyController.Modle.Server
     {
         public string ServerName { get; set; } = string.Empty;
         public TlsFingerPrint FingerPrint { get; set; }
-        public bool AllowInsecure { get; set; }
+        public bool AllowInsecure { get; set; } = true;
         public List<string>? Alpn { get; set; }
         public TLSObject ToTLSObject()
         {

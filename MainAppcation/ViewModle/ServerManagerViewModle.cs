@@ -35,6 +35,7 @@ namespace NetProxyController.ViewModle
             setDefalutRoutingCmd = new(SetDefalutRoutingExcute);
             importServerFromClipboardCmd = new(ImportServerFromClipboardCmdExcute);
             setActivatedServersCmd = new(SetActivatedServersExcute);
+            testNetRelayCmd = new(TestNetRelayExcute);
         }
         private static List<ServerItemViewModle> GetDateItemFromDataBase()
         {
@@ -94,6 +95,12 @@ namespace NetProxyController.ViewModle
         public RelayCommand<bool> SetActivatedServersCmd
         {
             get => setActivatedServersCmd;
+            set => _ = value;
+        }
+        private RelayCommand testNetRelayCmd;
+        public RelayCommand TestNetRelayCmd
+        {
+            get => testNetRelayCmd;
             set => _ = value;
         }
         public bool SelectedItemsIsSingle
@@ -227,6 +234,23 @@ namespace NetProxyController.ViewModle
                 item.UpdateData();
             }
             XrayHanler.Instance.ReloadConfig();
+        }
+        private void TestNetRelayExcute()
+        {
+            var selectedItems = serverItems.Where(i => i.IsSelected).ToList();
+            var tasks = new List<Task>();
+            if (selectedItems.Count <= 0) return;
+            XrayHanler.Instance.LoadTestConfig(selectedItems);
+            selectedItems.ForEach(i => i.NetDelay = -2);
+            Task.Run(() =>
+            {
+                foreach(var item in selectedItems)
+                {
+                    tasks.Add(Task.Run(item.StartTestNetDelay));
+                }
+                Task.WaitAll(tasks.ToArray());
+                XrayHanler.Instance.ReloadConfig();
+            });
         }
 
     }

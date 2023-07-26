@@ -4,9 +4,14 @@ using NetProxyController.Modle.Server;
 using NetProxyController.View;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
+using System.Security.Policy;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -21,7 +26,7 @@ namespace NetProxyController.ViewModle
             Server = server;
             UpdateData();
             doubleClickItemCmd = new RelayCommand(EditServerItem);
-            ProxyTestTag = Guid.NewGuid().ToString();
+            netDelay = -1;
         }
         public ServerItemViewModle() : this(new())
         {
@@ -42,7 +47,30 @@ namespace NetProxyController.ViewModle
             property = value;
             OnPropertyChanged(propertyName);
         }
-        public readonly string ProxyTestTag;
+        public int TestProxyPort;
+        private int netDelay;
+        public int NetDelay
+        {
+            get => netDelay;
+            set
+            {
+                netDelay = value; 
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(TestDelayDisplay));
+            }
+        }
+        public string TestDelayDisplay
+        {
+            get => netDelay switch
+            {
+                -1 => string.Empty,
+                -2 => "测试中",
+                -3 => "错误",
+                -4 => "超时",
+                _ => $"{netDelay}ms"
+            };
+            set => _ = value;
+        }
         private bool isSelected;
         public bool IsSelected
         {
@@ -73,8 +101,8 @@ namespace NetProxyController.ViewModle
             get => proxyProtocol;
             set => SetProperty(ref proxyProtocol, value);
         }
-        private TransportType transportProtocol;
-        public TransportType TransportProtocol
+        private Modle.TransportType transportProtocol;
+        public Modle.TransportType TransportProtocol
         {
             get => transportProtocol;
             set => SetProperty(ref transportProtocol, value);
@@ -112,6 +140,38 @@ namespace NetProxyController.ViewModle
         {
             new ServerSettingWindow(Server).ShowDialog();
             UpdateData();
+        }
+        public void StartTestNetDelay()
+        {
+            NetDelay = -2;
+            try
+            {
+                int timeOut = 10;
+                using var cts = new CancellationTokenSource();
+                cts.CancelAfter(TimeSpan.FromSeconds(timeOut));
+                WebProxy webProxy = new WebProxy(Global.LoopBcakAddress, TestProxyPort);
+                using var client = new HttpClient(new SocketsHttpHandler()
+                {
+                    Proxy = webProxy,
+                    UseProxy = true
+                });
+                Stopwatch stopwatch = Stopwatch.StartNew();
+                client.GetAsync("https://www.google.com", cts.Token).Wait();
+                stopwatch.Stop();
+                NetDelay = stopwatch.Elapsed.Milliseconds;
+            }
+            catch(AggregateException ex)
+            {
+                foreach (var innerEx in ex.Flatten().InnerExceptions)
+                {
+                    if(innerEx is TaskCanceledException)
+                    {
+                        NetDelay = -4;
+                        return;
+                    }
+                }
+                NetDelay = -3;
+            }
         }
     }
 }

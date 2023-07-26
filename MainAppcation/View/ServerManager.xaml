@@ -9,7 +9,7 @@
         xmlns:vm="clr-namespace:NetProxyController.ViewModle"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="代理服务器管理" Height="500" Width="600">
+        Title="代理服务器管理" Height="580" Width="680">
     <Window.DataContext>
         <vm:ServerManagerViewModle/>
     </Window.DataContext>
@@ -35,7 +35,7 @@
                         <sys:Boolean>False</sys:Boolean>
                     </MenuItem.CommandParameter>
                 </MenuItem>
-                <MenuItem Header="路由策略"/>
+                <MenuItem Header="测试延迟" Command="{Binding TestNetRelayCmd}"/>
             </ContextMenu>
         </ResourceDictionary>
     </Window.Resources>
@@ -98,6 +98,7 @@
                     <GridViewColumn Width="80" Header="代理协议" DisplayMemberBinding="{Binding ProxyProtocol}"/>
                     <GridViewColumn Width="80" Header="传输协议" DisplayMemberBinding="{Binding TransportProtocol}"/>
                     <GridViewColumn Width="80" Header="安全策略" DisplayMemberBinding="{Binding SecurityPolicy}"/>
+                    <GridViewColumn Width="80" Header="延迟" DisplayMemberBinding="{Binding TestDelayDisplay}"/>
                 </GridView>
             </ListView.View>
         </ListView>

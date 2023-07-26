@@ -18,7 +18,7 @@ namespace XrayCoreConfigModle.Routing
         /// <summary>
         /// 目前只支持"field"这一个选项。
         /// </summary>
-        public string? type { get; set; }
+        public string type { get; set; } = "field";
         /// <summary>
         /// 一个数组，数组每一项是一个域名的匹配。有以下几种形式：
         /// 纯字符串：当此字符串匹配目标域名中任意部分，该规则生效。比如 "sina.com" 

@@ -19,6 +19,7 @@ using XrayCoreConfigModle.OutBound;
 using NetProxyController.ViewModle;
 using System.Net;
 using System.Net.Http;
+using System.Net.Sockets;
 
 namespace NetProxyController.Handler
 {
@@ -145,28 +146,34 @@ namespace NetProxyController.Handler
             {
                 protocol = "blackhole"
             });
-            var _inbounds = new List<InboundServerItemObject>()
+            var _inbounds = new List<InboundServerItemObject>();
+            var routeRlues = new List<RuleObject>();
+            var sockets = new List<Socket>();
+            foreach(var item in serverVm)
             {
-                new InboundServerItemObject()
+                Socket socket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                socket.Bind(new IPEndPoint(IPAddress.Loopback, 0));
+                int port = ((IPEndPoint)socket.LocalEndPoint!).Port;
+                item.TestProxyPort = port;
+                sockets.Add(socket);
+                _inbounds.Add(new InboundServerItemObject()
                 {
                     protocol = "http",
                     listen = Global.LoopBcakAddress,
-                    port = _LocalPort.Http,
+                    port = port,
                     settings = new XrayCoreConfigModle.Inbound.HttpConfigurationObject()
                     {
                         allowTransparent = true
-                    }
-                }
-            };
-            var routeRlues = new List<RuleObject>();
-            foreach(var item in serverVm)
-            {
+                    },
+                    tag = item.Server.Index.ToString()
+                });
                 routeRlues.Add(new RuleObject()
                 {
-                    attrs = new Dictionary<string, string>()
+                    inboundTag = new()
                     {
-                        { nameof(item.ProxyTestTag),item.ProxyTestTag }
-                    }
+                        item.Server.Index.ToString()
+                    },
+                    outboundTag = item.Server.Index.ToString()
                 });
             }
             if(Isrunning) CoreStop();
@@ -180,6 +187,7 @@ namespace NetProxyController.Handler
                 }
             },
             Global.XrayCoreConfigPath);
+            sockets.ForEach(i => i.Dispose());
             CoreStart();
         }
 
