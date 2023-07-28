@@ -40,7 +40,7 @@ namespace NetProxyController.ViewModle
         private static List<ServerItemViewModle> GetDateItemFromDataBase()
         {
             var ret = new List<ServerItemViewModle>();
-            Global.DBService.Table<ServerItem>().ToList().ForEach(item => ret.Add(new(item)));
+            ServerItem.ServerItemsDataList.ToList().ForEach(item => ret.Add(new(item)));
             return ret;
         }
         private List<ServerItemViewModle> serverItems;
@@ -203,10 +203,7 @@ namespace NetProxyController.ViewModle
             {
                 ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex = DefaultServerMenuItemChecked ? -1 : selectedItem.Server.Index;
                 ConfigObject.Instance.Save();
-                serverItems.ForEach(i => i.IsSelected = false);
-                SelectedIndex = -1;
                 serverItemList.View.Refresh();
-                SelectionChangedCmdExcute();
                 XrayHanler.Instance.ReloadConfig();
             }
         }

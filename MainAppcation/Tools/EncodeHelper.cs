@@ -28,8 +28,24 @@ namespace NetProxyController.Tools
         }
         public static string DecodeBase64(string inputText)
         {
-            byte[] decodedBytes = Convert.FromBase64String(inputText);
-            return Encoding.UTF8.GetString(decodedBytes);
+            inputText = inputText.Trim()
+                  .Replace(Environment.NewLine, "")
+                  .Replace("\n", "")
+                  .Replace("\r", "")
+                  .Replace('_', '/')
+                  .Replace('-', '+')
+                  .Replace(" ", "");
+            if (inputText.Length % 4 > 0)
+            {
+                inputText = inputText.PadRight(inputText.Length + 4 - inputText.Length % 4, '=');
+            }
+            byte[] decodedBytes = Convert.FromBase64String(inputText);          
+            string ret = Encoding.UTF8.GetString(decodedBytes);
+            if(!inputText.Equals(Convert.ToBase64String(Encoding.UTF8.GetBytes(ret))))
+            {
+                throw new Exception();
+            }
+            return ret;
         }
         public static bool TryConvertFromBase64(string base64Text, out string convertOutput)
         {
@@ -37,7 +53,7 @@ namespace NetProxyController.Tools
             try
             {
                 convertOutput = DecodeBase64(base64Text);
-                return base64Text.Equals(Convert.ToBase64String(Encoding.UTF8.GetBytes(convertOutput)));
+                return true;
             }
             catch (Exception)
             {

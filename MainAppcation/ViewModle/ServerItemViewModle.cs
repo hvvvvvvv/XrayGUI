@@ -41,6 +41,7 @@ namespace NetProxyController.ViewModle
             TransportProtocol = Server.GetStreamInfo().Transport;
             SecurityPolicy = Server.GetStreamInfo().Security;
             IsActivated = Server.IsActivated;
+            OnPropertyChanged(nameof(DefaultRoutingFlag));
         }
         private void SetProperty<T>(ref T property, T value, [CallerMemberName]string? propertyName = null)
         {

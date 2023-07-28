@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using XrayCoreConfigModle;
 using NetProxyController.Modle;
+using System.Collections.ObjectModel;
 
 namespace NetProxyController.Modle.Server
 {
@@ -86,6 +87,7 @@ namespace NetProxyController.Modle.Server
             if(Index == -1)
             {
                 Global.DBService.Insert(this);
+                serverItemsDataList.Add(this);
                 return;
             }
             Global.DBService.InsertOrReplace(this);
@@ -94,11 +96,14 @@ namespace NetProxyController.Modle.Server
         {
             if (Index == -1) return;
             Global.DBService.Delete<ServerItem>(Index);
+            serverItemsDataList.Remove(this);
         }
-
-        public static List<ServerItem> GetItemsFromDataBase()
+        private static List<ServerItem> serverItemsDataList = GetItemsFromDataBase();
+        public static ReadOnlyCollection<ServerItem> ServerItemsDataList { get; } = new ReadOnlyCollection<ServerItem>(serverItemsDataList);
+        private static List<ServerItem> GetItemsFromDataBase()
         {
             return Global.DBService.Table<ServerItem>().ToList();
+            
         }
     }
 }

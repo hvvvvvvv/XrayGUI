@@ -70,6 +70,10 @@ namespace NetProxyController.Handler
         }
         private void LoadConfig()
         {
+            LoadConfig(ServerItem.ServerItemsDataList);   
+        }
+        private void LoadConfig(IEnumerable<ServerItem> serverItems)
+        {
             var _inbounds = new List<InboundServerItemObject>
             {
                 new()
@@ -81,7 +85,7 @@ namespace NetProxyController.Handler
                     settings = new XrayCoreConfigModle.Inbound.HttpConfigurationObject()
                     {
                         allowTransparent = true
-                    }                    
+                    }
                 },
                 new()
                 {
@@ -109,13 +113,13 @@ namespace NetProxyController.Handler
                      settings = new FreedomConfigurationObject()
                  }
             };
-            foreach ( var item in ServerItem.GetItemsFromDataBase())
+            foreach (var item in serverItems)
             {
-                if(item.Index == XrayConfig.DefaultOutboundServerIndex)
+                if (item.Index == XrayConfig.DefaultOutboundServerIndex)
                 {
                     _outbounds.Insert(0, item.ToOutboundServerItemObject());
                 }
-                else if(item.IsActivated)
+                else if (item.IsActivated)
                 {
                     _outbounds.Add(item.ToOutboundServerItemObject());
                 }
@@ -136,8 +140,8 @@ namespace NetProxyController.Handler
                 outbounds = _outbounds,
                 routing = routing
             };
-           JsonHandler.JsonSerializeToFile(mainConfig, Global.XrayCoreConfigPath);       
-            
+            JsonHandler.JsonSerializeToFile(mainConfig, Global.XrayCoreConfigPath);
+
         }
         public void LoadTestConfig(List<ServerItemViewModle> serverVm)
         {
