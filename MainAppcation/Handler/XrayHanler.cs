@@ -32,12 +32,13 @@ namespace NetProxyController.Handler
         private Process _coreProcess;
         private LocalPortObect _LocalPort;
         private bool _ExitedEventPause = false;
+        protected string coreConfigPath;
         private ProcessStartInfo _CoreProcessStartInfo
         {
             get => new()
             {
                 FileName = Global.XrayCoreApplictionPath,
-                Arguments = $"-c {Global.XrayCoreConfigPath}",
+                Arguments = $"-c {coreConfigPath}",
                 UseShellExecute = false,
                 RedirectStandardError = true,
                 RedirectStandardOutput = true,
@@ -49,6 +50,7 @@ namespace NetProxyController.Handler
             
         public XrayHanler()
         {
+            coreConfigPath = Global.XrayCoreConfigPath;
             XrayConfig = ConfigObject.Instance.XrayCoreSetting;
             _LocalPort = ConfigObject.Instance.localPort;
             _coreProcess = new()
@@ -68,7 +70,7 @@ namespace NetProxyController.Handler
                 throw new Exception($"未找到XrayCore程序，请将{Path.GetFileName(Global.XrayCoreApplictionPath)}文件放在{Path.GetDirectoryName(Global.XrayCoreApplictionPath)}目录下");
             }
         }
-        private void LoadConfig()
+        protected virtual void LoadConfig()
         {
             LoadConfig(ServerItem.ServerItemsDataList);   
         }
