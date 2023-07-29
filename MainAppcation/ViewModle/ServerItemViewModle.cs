@@ -48,7 +48,7 @@ namespace NetProxyController.ViewModle
             property = value;
             OnPropertyChanged(propertyName);
         }
-        public int TestProxyPort;
+        public int ProxyTestPort;
         private int netDelay;
         public int NetDelay
         {
@@ -147,10 +147,11 @@ namespace NetProxyController.ViewModle
             NetDelay = -2;
             try
             {
+                if (ProxyTestPort <= 0) throw new Exception();
                 int timeOut = 10;
                 using var cts = new CancellationTokenSource();
                 cts.CancelAfter(TimeSpan.FromSeconds(timeOut));
-                WebProxy webProxy = new WebProxy(Global.LoopBcakAddress, TestProxyPort);
+                WebProxy webProxy = new WebProxy(Global.LoopBcakAddress, ProxyTestPort);
                 using var client = new HttpClient(new SocketsHttpHandler()
                 {
                     Proxy = webProxy,

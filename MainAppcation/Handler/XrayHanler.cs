@@ -160,7 +160,7 @@ namespace NetProxyController.Handler
                 Socket socket = new(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 socket.Bind(new IPEndPoint(IPAddress.Loopback, 0));
                 int port = ((IPEndPoint)socket.LocalEndPoint!).Port;
-                item.TestProxyPort = port;
+                item.ProxyTestPort = port;
                 sockets.Add(socket);
                 _inbounds.Add(new InboundServerItemObject()
                 {

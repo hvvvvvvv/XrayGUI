@@ -237,8 +237,8 @@ namespace NetProxyController.ViewModle
             var selectedItems = serverItems.Where(i => i.IsSelected).ToList();
             var tasks = new List<Task>();
             if (selectedItems.Count <= 0) return;
+            selectedItems.ForEach(i => { i.NetDelay = -2; i.ProxyTestPort = default; });
             XrayHanler.Instance.LoadTestConfig(selectedItems);
-            selectedItems.ForEach(i => i.NetDelay = -2);
             Task.Run(() =>
             {
                 foreach(var item in selectedItems)
