@@ -9,7 +9,7 @@
         xmlns:vm="clr-namespace:NetProxyController.ViewModle"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="代理服务器管理" Height="580" Width="680">
+        Title="代理服务器管理" Height="580" Width="700">
     <Window.DataContext>
         <vm:ServerManagerViewModle/>
     </Window.DataContext>

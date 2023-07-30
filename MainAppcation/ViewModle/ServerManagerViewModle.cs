@@ -238,7 +238,9 @@ namespace NetProxyController.ViewModle
             var tasks = new List<Task>();
             if (selectedItems.Count <= 0) return;
             selectedItems.ForEach(i => { i.NetDelay = -2; i.ProxyTestPort = default; });
-            XrayHanler.Instance.LoadTestConfig(selectedItems);
+            XrayTestServerHandle.Instance.SetTestServerItems(selectedItems);
+            XrayTestServerHandle.Instance.ReloadConfig();
+            XrayTestServerHandle.Instance.CoreStart();
             Task.Run(() =>
             {
                 foreach(var item in selectedItems)
@@ -246,7 +248,7 @@ namespace NetProxyController.ViewModle
                     tasks.Add(Task.Run(item.StartTestNetDelay));
                 }
                 Task.WaitAll(tasks.ToArray());
-                XrayHanler.Instance.ReloadConfig();
+                XrayTestServerHandle.Instance.CoreStop();
             });
         }
 

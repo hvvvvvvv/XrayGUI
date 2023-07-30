@@ -16,6 +16,7 @@ namespace NetProxyController.Modle
         public const string XrayDirectTag = "direct";
         public static readonly string AppConfigPath = AppContext.BaseDirectory + @"Config\AppCofing.json";
         public static readonly string XrayCoreConfigPath = AppContext.BaseDirectory + @"Config\XrayCoreConfig.json";
+        public static readonly string XrayCoreTestConfigPath = AppContext.BaseDirectory + @"Config\XrayCoreTestConfig.json";
         public static readonly string XrayCoreApplictionPath = AppContext.BaseDirectory + @"bin\xray.exe";
         public static readonly string DbPath = AppContext.BaseDirectory + @"config\ServerConfig.db";
         public static readonly Kernel32.SafeHJOB ProcessJobs = Kernel32.CreateJobObject();

@@ -47,11 +47,18 @@ namespace NetProxyController.View
 
         private void listView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            foreach(var i in listView.SelectedItems)
+            foreach(var i in e.AddedItems)
             {
                 if(i is ServerItemViewModle vm)
                 {
-                    vm.IsSelected = true;
+                   vm.IsSelected = true;
+                }
+            }
+            foreach(var i in e.RemovedItems)
+            {
+                if (i is ServerItemViewModle vm)
+                {
+                    vm.IsSelected = false;
                 }
             }
         }

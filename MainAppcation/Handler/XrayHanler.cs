@@ -32,6 +32,7 @@ namespace NetProxyController.Handler
         private Process _coreProcess;
         private LocalPortObect _LocalPort;
         private bool _ExitedEventPause = false;
+        private ServerItemViewModle? testServeItems;
         protected string coreConfigPath;
         private ProcessStartInfo _CoreProcessStartInfo
         {
@@ -142,7 +143,7 @@ namespace NetProxyController.Handler
                 outbounds = _outbounds,
                 routing = routing
             };
-            JsonHandler.JsonSerializeToFile(mainConfig, Global.XrayCoreConfigPath);
+            JsonHandler.JsonSerializeToFile(mainConfig, coreConfigPath);
 
         }
         public void LoadTestConfig(List<ServerItemViewModle> serverVm)

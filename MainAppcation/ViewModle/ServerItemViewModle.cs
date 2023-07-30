@@ -5,6 +5,7 @@ using NetProxyController.View;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -151,16 +152,16 @@ namespace NetProxyController.ViewModle
                 int timeOut = 10;
                 using var cts = new CancellationTokenSource();
                 cts.CancelAfter(TimeSpan.FromSeconds(timeOut));
-                WebProxy webProxy = new WebProxy(Global.LoopBcakAddress, ProxyTestPort);
+                WebProxy webProxy = new(Global.LoopBcakAddress, ProxyTestPort);
                 using var client = new HttpClient(new SocketsHttpHandler()
                 {
                     Proxy = webProxy,
                     UseProxy = true
                 });
-                Stopwatch stopwatch = Stopwatch.StartNew();
+                var counter = DateTime.Now.Ticks;
                 client.GetAsync("https://www.google.com", cts.Token).Wait();
-                stopwatch.Stop();
-                NetDelay = stopwatch.Elapsed.Milliseconds;
+                var elapsed = (int)((DateTime.Now.Ticks - counter) / 10000);
+                NetDelay = elapsed;
             }
             catch(AggregateException ex)
             {
