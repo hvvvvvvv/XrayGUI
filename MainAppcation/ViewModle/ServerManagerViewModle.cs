@@ -22,7 +22,6 @@ namespace NetProxyController.ViewModle
     {
         public ServerManagerViewModle()
         {
-            serverItemList = new();
             serverItems = GetDateItemFromDataBase();
             serverItemList = new CollectionViewSource()
             {
@@ -36,6 +35,7 @@ namespace NetProxyController.ViewModle
             importServerFromClipboardCmd = new(ImportServerFromClipboardCmdExcute);
             setActivatedServersCmd = new(SetActivatedServersExcute);
             testNetRelayCmd = new(TestNetRelayExcute);
+            subManagerCmd = new(SubManagerExcute);
         }
         private static List<ServerItemViewModle> GetDateItemFromDataBase()
         {
@@ -101,6 +101,12 @@ namespace NetProxyController.ViewModle
         public RelayCommand TestNetRelayCmd
         {
             get => testNetRelayCmd;
+            set => _ = value;
+        }
+        private RelayCommand subManagerCmd;
+        public RelayCommand SubManagerCmd
+        {
+            get => subManagerCmd;
             set => _ = value;
         }
         public bool SelectedItemsIsSingle
@@ -250,6 +256,10 @@ namespace NetProxyController.ViewModle
                 Task.WaitAll(tasks.ToArray());
                 XrayTestServerHandle.Instance.CoreStop();
             });
+        }
+        private void SubManagerExcute()
+        {
+            new SubcriptionManagerView().ShowDialog();
         }
 
     }

@@ -20,6 +20,7 @@ namespace NetProxyController.Modle.Server
         public string Address { get; set; } = string.Empty;
         public int Port { get; set; }
         public bool IsActivated { get; set; }
+        public Guid? SubGroupId { get; set; }
         public string Remarks { get; set; } = string.Empty;
         private string protocolInfoContent = string.Empty;
         public string ProtocolInfoContent
@@ -90,7 +91,7 @@ namespace NetProxyController.Modle.Server
                 serverItemsDataList.Add(this);
                 return;
             }
-            Global.DBService.InsertOrReplace(this);
+            Global.DBService.Update(this);
         }
         public void DeleteFromDataBase()
         {

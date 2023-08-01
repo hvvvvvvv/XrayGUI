@@ -1,0 +1,14 @@
+﻿<Window x:Class="NetProxyController.View.EditSubcriptionItemView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NetProxyController.View"
+        xmlns:hc="https://handyorg.github.io/handycontrol"
+        mc:Ignorable="d"
+        Title="EditSubcriptionItemView" Height="450" Width="500">
+    <StackPanel>
+        <TextBox hc:TitleElement.Title="订阅名称：" hc:TitleElement.TitlePlacement="Left" Style="{StaticResource TextBoxExtend}"
+                 hc:TitleElement.TitleWidth="200" VerticalAlignment="Center" Width="400" Margin="15" FontSize="18"/>
+    </StackPanel>
+</Window>

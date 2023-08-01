@@ -13,6 +13,7 @@ using NetProxyController.Modle.Server;
 using NetProxyController.Tools;
 using XrayCoreConfigModle;
 using XrayCoreConfigModle.Inbound;
+using SQLite;
 
 namespace NetProxyController
 {
@@ -53,6 +54,7 @@ namespace NetProxyController
         static void InitDataBase()
         {
             Global.DBService.CreateTable<ServerItem>();
+            Global.DBService.CreateTable<SubscriptionItem>(CreateFlags.AutoIncPK);
         }
 	}
 }

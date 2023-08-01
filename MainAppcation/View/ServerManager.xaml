@@ -9,7 +9,7 @@
         xmlns:vm="clr-namespace:NetProxyController.ViewModle"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="代理服务器管理" Height="580" Width="700">
+        Title="代理服务器管理" Height="700" Width="760">
     <Window.DataContext>
         <vm:ServerManagerViewModle/>
     </Window.DataContext>
@@ -43,11 +43,12 @@
         <hc:ButtonGroup Margin="0,5,30,5" HorizontalContentAlignment="Left">
             <Button Content="新建服务器" Command="{Binding CreateProxyServerCmd}"/>
             <Button Content="剪切板导入" Command="{Binding ImportServerFromClipboardCmd}"/>
-            <Button Content="编辑" IsEnabled="{Binding SelectedItemsIsSingle, Mode=OneWay}" Command="{Binding EditServerCmd}"/>
+            <!--<Button Content="编辑" IsEnabled="{Binding SelectedItemsIsSingle, Mode=OneWay}" Command="{Binding EditServerCmd}"/>
             <Button Content="删除" IsEnabled="{Binding SelectedItemsIsMultiple, Mode=OneWay}" Command="{Binding DeleteServerCmd}"/>
-            <Button Content="设为默认路由出口" IsEnabled="{Binding SelectedItemsIsSingle, Mode=OneWay}" Command="{Binding SetDefalutRoutingCmd}"/>
+            <Button Content="设为默认路由出口" IsEnabled="{Binding SelectedItemsIsSingle, Mode=OneWay}" Command="{Binding SetDefalutRoutingCmd}"/>-->
+            <Button Content="订阅管理" Command="{Binding SubManagerCmd}"/>
         </hc:ButtonGroup>
-        <ListView x:Name="listView" Height="500" Width="auto" 
+        <ListView x:Name="listView" Height="700" Width="auto" 
                   ItemsSource="{Binding ServerItemList.View}" 
                   local:AttachProperties.SelectionChangedCommand="{Binding SelectionChangedCmd}"
                   SelectionChanged="listView_SelectionChanged"
@@ -98,6 +99,7 @@
                     <GridViewColumn Width="80" Header="代理协议" DisplayMemberBinding="{Binding ProxyProtocol}"/>
                     <GridViewColumn Width="80" Header="传输协议" DisplayMemberBinding="{Binding TransportProtocol}"/>
                     <GridViewColumn Width="80" Header="安全策略" DisplayMemberBinding="{Binding SecurityPolicy}"/>
+                    <GridViewColumn Width="100" Header="订阅分组" DisplayMemberBinding="{Binding SubGroupName}"/>
                     <GridViewColumn Width="80" Header="延迟" DisplayMemberBinding="{Binding TestDelayDisplay}"/>
                 </GridView>
             </ListView.View>

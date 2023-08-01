@@ -43,6 +43,7 @@ namespace NetProxyController.ViewModle
             SecurityPolicy = Server.GetStreamInfo().Security;
             IsActivated = Server.IsActivated;
             OnPropertyChanged(nameof(DefaultRoutingFlag));
+            OnPropertyChanged(nameof(SubGroupName));
         }
         private void SetProperty<T>(ref T property, T value, [CallerMemberName]string? propertyName = null)
         {
@@ -96,6 +97,10 @@ namespace NetProxyController.ViewModle
         {
             get => port;
             set => SetProperty(ref port, value);
+        }
+        public string SubGroupName
+        {
+            get => SubscriptionItem.GetSubcriptionName(Server.SubGroupId);
         }
         private OutboundProtocol proxyProtocol;
         public OutboundProtocol ProxyProtocol
