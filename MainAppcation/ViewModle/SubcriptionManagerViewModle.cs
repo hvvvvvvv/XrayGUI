@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
+using CommunityToolkit.Mvvm.Input;
 using NetProxyController.Modle;
+using NetProxyController.View;
 
 namespace NetProxyController.ViewModle
 {
@@ -23,6 +25,17 @@ namespace NetProxyController.ViewModle
             {
                 Source = ListViewItems
             };
+            editSubcriptionItemCmd = new(EditSubcriptionItemExcute);
+        }
+        private RelayCommand editSubcriptionItemCmd;
+        public RelayCommand EditSubcriptionItemCmd
+        {
+            get => editSubcriptionItemCmd;
+            set => _ = value;
+        }
+        public void EditSubcriptionItemExcute()
+        {
+            new EditSubcriptionItemView().ShowDialog();
         }
     }
 }
