@@ -14,6 +14,7 @@ namespace NetProxyController.ViewModle
     {
         private List<SubcriptionItemViewModle> ListViewItems;
         private CollectionViewSource listViewDataSource;
+        public List<SubcriptionItemViewModle> SelectedItems;
         public CollectionViewSource ListViewDataSource
         {
             get => listViewDataSource;
@@ -25,6 +26,7 @@ namespace NetProxyController.ViewModle
             {
                 Source = ListViewItems
             };
+            SelectedItems = new();
             editSubcriptionItemCmd = new(EditSubcriptionItemExcute);
         }
         private RelayCommand editSubcriptionItemCmd;
@@ -33,9 +35,20 @@ namespace NetProxyController.ViewModle
             get => editSubcriptionItemCmd;
             set => _ = value;
         }
+        private RelayCommand createSubcriptionItemCmd;
+        public RelayCommand CreateSubcriptionCmd
+        {
+            get => createSubcriptionItemCmd;
+            set => _ = value;
+        }
         public void EditSubcriptionItemExcute()
         {
-            new EditSubcriptionItemView().ShowDialog();
+            var itemVm = new SubcriptionItemViewModle(new());
+            if (new EditSubcriptionItemView(itemVm).ShowDialog() == true)
+            {
+                ListViewItems.Add(itemVm);
+                listViewDataSource.View.Refresh();
+            }                       
         }
     }
 }

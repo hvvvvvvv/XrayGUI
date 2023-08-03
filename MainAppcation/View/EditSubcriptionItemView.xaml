@@ -1,4 +1,5 @@
 ﻿<Window x:Class="NetProxyController.View.EditSubcriptionItemView"
+        x:ClassModifier="internal"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -19,18 +20,18 @@
                 <Setter Property="Template" Value="{StaticResource TextBoxExtendLeftTemplate}"/>
             </Style>
         </StackPanel.Resources>
-        <TextBox hc:TitleElement.Title="订阅名称："/>
-        <TextBox hc:TitleElement.Title="订阅地址(url)："/>
-        
-        <TextBox hc:TitleElement.Title="更新间隔(分钟)："/>
+        <TextBox hc:TitleElement.Title="订阅名称：" Text="{Binding SubName, ValidatesOnDataErrors=True}"/>
+        <TextBox hc:TitleElement.Title="订阅地址(url)：" Text="{Binding SubUrl, ValidatesOnDataErrors=True}"/>
+
+        <TextBox hc:TitleElement.Title="更新间隔(分钟)：" Text="{Binding AutoUpdateInterval}"/>
         <Grid Margin="12">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="启用自动更新：" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0"/>
-            <ToggleButton IsChecked="True" Style="{StaticResource ToggleButtonCustom}" hc:StatusSwitchElement.HideUncheckedElement="True"  Grid.Column="1" 
-                          HorizontalAlignment="Left" Height="20" Width="70" Margin="0,0,0,0">
+            <ToggleButton IsChecked="{Binding IsAutoUpdate}" Style="{StaticResource ToggleButtonCustom}" hc:StatusSwitchElement.HideUncheckedElement="True"  Grid.Column="1" 
+                          HorizontalAlignment="Left" Height="20" Width="70">
                 <hc:StatusSwitchElement.CheckedElement>
                     <Border Width="70" Height="20" CornerRadius="4" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
                         <Ellipse Width="15" Height="15" Fill="{DynamicResource InfoBrush}" StrokeThickness="1" Stroke="{DynamicResource BorderBrush}"/>
@@ -41,6 +42,7 @@
                 </Border>
             </ToggleButton>
         </Grid>
-        <Button Style="{StaticResource ButtonGroupItemSingle}" Content="保存设置" Width="200" Margin="20" Height="25"/>
+        <Button Style="{StaticResource ButtonGroupItemSingle}" Content="保存设置" Width="200" Margin="20" Height="25" 
+                Command="{Binding SaveBtnCmd}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Window}}"/>
     </StackPanel>
 </Window>

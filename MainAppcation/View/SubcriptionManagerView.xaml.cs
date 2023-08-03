@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetProxyController.ViewModle;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,24 @@ namespace NetProxyController.View
         public SubcriptionManagerView()
         {
             InitializeComponent();
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(sender is ListView view)
+            {
+                if(view.DataContext is SubcriptionManagerViewModle vm)
+                {
+                    vm.SelectedItems.Clear();
+                    foreach(var i in view.SelectedItems)
+                    {
+                        if(i is SubcriptionItemViewModle item)
+                        {
+                            vm.SelectedItems.Add(item);
+                        }
+                    }
+                }
+            }
         }
     }
 }

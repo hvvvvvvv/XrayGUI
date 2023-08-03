@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NetProxyController.ViewModle;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,11 +18,17 @@ namespace NetProxyController.View
     /// <summary>
     /// EditSubcriptionItemView.xaml 的交互逻辑
     /// </summary>
-    public partial class EditSubcriptionItemView : Window
+    internal partial class EditSubcriptionItemView : Window
     {
-        public EditSubcriptionItemView()
+        public EditSubcriptionItemView(SubcriptionItemViewModle itemVm)
         {
+            DataContext = new EditSubcriptionItemViewMdole(itemVm);
             InitializeComponent();
         }
+        public EditSubcriptionItemView() : this(new SubcriptionItemViewModle(new()))
+        {
+           
+        }
+
     }
 }
