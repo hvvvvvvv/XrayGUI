@@ -20,7 +20,7 @@ namespace NetProxyController.ViewModle
             IsAutoUpdate = SubItem.IsAutoUpdate.ToString();
             Url = SubItem.Url;
             AutoUpdateInterval = SubItem.AutoUpdateInterval;
-            lastUpdateTime = SubItem.LastUpdateTime.ToString();
+            lastUpdateTime = SubItem.LastUpdateTime == default ? "--" : SubItem.LastUpdateTime.ToString();
         }
         private string subName = default!;
         public string SubName
@@ -71,10 +71,6 @@ namespace NetProxyController.ViewModle
                 LastUpdateTime = value;
                 OnPropertyChanged();
             }
-        }
-        public void Edit()
-        {
-            
         }
 
     }
