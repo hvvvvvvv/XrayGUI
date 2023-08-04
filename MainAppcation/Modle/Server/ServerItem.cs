@@ -85,13 +85,16 @@ namespace NetProxyController.Modle.Server
         {
             protocolInfoContent = protocolInfoObj is null ? string.Empty : JsonSerializer.Serialize(protocolInfoObj,protocolInfoObj.GetType());
             streamInfoContent = streamInfoObj is null ? string.Empty : JsonSerializer.Serialize(streamInfoObj);
-            if(Index == -1)
+            if(serverItemsDataList.Any(i => i.Index == Index))
+            {
+                Global.DBService.Update(this);
+            }
+            else
             {
                 Global.DBService.Insert(this);
                 serverItemsDataList.Add(this);
-                return;
             }
-            Global.DBService.Update(this);
+                
         }
         public void DeleteFromDataBase()
         {

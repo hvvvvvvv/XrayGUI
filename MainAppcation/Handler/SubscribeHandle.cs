@@ -15,7 +15,7 @@ using static Vanara.PInvoke.User32;
 
 namespace NetProxyController.Handler
 {
-    public class SubscribeHandle
+    public class SubscriptionResolveHandle
     {
         private const string SSPrefixMatch = "ss://";
         private const string TrojanPrefixMatch = "trojan://";

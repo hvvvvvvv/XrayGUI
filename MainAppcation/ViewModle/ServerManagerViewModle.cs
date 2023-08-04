@@ -217,7 +217,7 @@ namespace NetProxyController.ViewModle
         {
             var inputText = Tools.EncodeHelper.GetClipboardText();
             if (string.IsNullOrEmpty(inputText)) return;
-            var inputServers = SubscribeHandle.ResolveSubFromSubContent(inputText);
+            var inputServers = SubscriptionResolveHandle.ResolveSubFromSubContent(inputText);
             if (inputServers.Count > 0)
             {
                 foreach (var item in inputServers)
