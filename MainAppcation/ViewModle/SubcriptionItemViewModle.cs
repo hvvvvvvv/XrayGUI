@@ -1,7 +1,10 @@
-﻿using System;
+﻿using NetProxyController.Handler;
+using NetProxyController.Modle.Server;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NetProxyController.ViewModle
@@ -9,6 +12,9 @@ namespace NetProxyController.ViewModle
     internal class SubcriptionItemViewModle : ViewModleBase
     {
         public Modle.SubscriptionItem SubItem { get; private set; }
+        private Task<bool>? updateItemTask;
+        private bool isUpdating;
+        private CancellationTokenSource? cts;
         public SubcriptionItemViewModle(Modle.SubscriptionItem subscription)
         {
             SubItem = subscription;
@@ -20,7 +26,7 @@ namespace NetProxyController.ViewModle
             IsAutoUpdate = SubItem.IsAutoUpdate.ToString();
             Url = SubItem.Url;
             AutoUpdateInterval = SubItem.AutoUpdateInterval;
-            lastUpdateTime = SubItem.LastUpdateTime == default ? "--" : SubItem.LastUpdateTime.ToString();
+            LastUpdateTime = SubItem.LastUpdateTime == default ? "--" : SubItem.LastUpdateTime.ToString();
         }
         private string subName = default!;
         public string SubName
@@ -68,9 +74,30 @@ namespace NetProxyController.ViewModle
             get => lastUpdateTime;
             private set
             {
-                LastUpdateTime = value;
+                lastUpdateTime = value;
                 OnPropertyChanged();
             }
+        }
+        public async void UpdateSubItem()
+        {
+            if (isUpdating) return;
+            isUpdating = true;
+            try
+            {
+                if (await SubcriptionUpdateHandle.Instance.UpdateSubcriptionItem(SubItem, (cts ??= new()).Token))
+                {
+                    UpdateData();
+                }
+            } catch (Exception) { }
+            cts = null;
+            isUpdating = false;
+        }
+        public async void DeleteSubItem()
+        {
+            cts?.Cancel();
+            while (isUpdating) await Task.Delay(20);
+            ServerItem.ServerItemsDataList.Where(i => i.SubGroupId == SubItem.SubcriptionId).ToList().ForEach(i => i.DeleteFromDataBase());
+            SubItem.DelateFormDataBase();
         }
 
     }

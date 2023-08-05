@@ -7,7 +7,7 @@
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:local="clr-namespace:NetProxyController.View"
         mc:Ignorable="d"
-        Title="SubcriptionManagerView" Height="450" Width="480">
+        Title="SubcriptionManagerView" Height="450" Width="500">
     <Window.DataContext>
         <vm:SubcriptionManagerViewModle/>
     </Window.DataContext>
@@ -39,7 +39,7 @@
                     <GridViewColumn Header="订阅地址" Width="100" DisplayMemberBinding="{Binding Url, Mode=OneWay}"/>
                     <GridViewColumn Header="自动更新" Width="80" DisplayMemberBinding="{Binding IsAutoUpdate, Mode=OneWay}"/>
                     <GridViewColumn Header="更新间隔" Width="80" DisplayMemberBinding="{Binding AutoUpdateInterval, Mode=OneWay}"/>
-                    <GridViewColumn Header="最近更新时间" Width="100" DisplayMemberBinding="{Binding LastUpdateTime, Mode=OneWay}"/>
+                    <GridViewColumn Header="最近更新时间" Width="120" DisplayMemberBinding="{Binding LastUpdateTime, Mode=OneWay}"/>
                 </GridView>
             </ListView.View>
         </ListView>

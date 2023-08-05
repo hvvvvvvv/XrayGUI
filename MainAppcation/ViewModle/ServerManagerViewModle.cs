@@ -259,7 +259,16 @@ namespace NetProxyController.ViewModle
         }
         private void SubManagerExcute()
         {
-            new SubcriptionManagerView().ShowDialog();
+            if(new SubcriptionManagerView().ShowDialog() == true)
+            {
+                serverItems.Clear();
+                GetDateItemFromDataBase().ForEach(item => serverItems.Add(item));
+                serverItemList.View.Refresh();
+                lock(XrayHanler.Instance)
+                {
+                    XrayHanler.Instance.ReloadConfig();
+                }
+            }
         }
 
     }

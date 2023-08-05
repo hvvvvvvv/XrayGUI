@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Formats.Asn1;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Forms;
 using CommunityToolkit.Mvvm.Input;
+using NetProxyController.Handler;
 using NetProxyController.Modle;
 using NetProxyController.Modle.Server;
 using NetProxyController.View;
@@ -100,9 +102,8 @@ namespace NetProxyController.ViewModle
             {
                 foreach (var item in SelectedItems)
                 {
-                    item.SubItem.DelateFormDataBase();
+                    item.DeleteSubItem();
                     ListViewItems.Remove(item);
-                    ServerItem.ServerItemsDataList.Where(i => i.SubGroupId == item.SubItem.SubcriptionId).ToList().ForEach(i => i.DeleteFromDataBase());
                 }               
                 listViewDataSource.View.Refresh();
                 DialogResult = true;
@@ -110,7 +111,11 @@ namespace NetProxyController.ViewModle
         }
         private void UpdateSubcriptionItemsExcute()
         {
-
+            foreach(var item in SelectedItems)
+            {
+                item.UpdateSubItem();
+            }
+            DialogResult = true;
         }
     }
 }

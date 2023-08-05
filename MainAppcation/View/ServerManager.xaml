@@ -64,7 +64,7 @@
             </ListView.Style>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemBaseStyle}">
-                    <Setter Property="local:AttachProperties.DoubleClick" Value="{Binding Path=DataContext.EditServerCmd, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
+                    <Setter Property="local:AttachProperties.DoubleClick" Value="{Binding DoubleClickItemCmd}"/>
                     <Setter Property="IsSelected" Value="{Binding IsSelected, UpdateSourceTrigger=PropertyChanged}"/>
                     <Style.Triggers>
                         <MultiTrigger>
