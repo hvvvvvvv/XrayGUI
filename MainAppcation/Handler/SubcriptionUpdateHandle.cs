@@ -14,34 +14,70 @@ namespace NetProxyController.Handler
     {
         private static SubcriptionUpdateHandle? instance;
         public static SubcriptionUpdateHandle Instance => instance ??= new SubcriptionUpdateHandle();
-        private List<(Task Task,CancellationTokenSource Cts)> AutoUpdateTasks;
+        private Dictionary<Guid, (Task Task, CancellationTokenSource Cts)> AutoUpdateTasks;
         public SubcriptionUpdateHandle()
         {
             AutoUpdateTasks = new();
         }
-        public void StartAutoUpdateTasks()
+        private void StartAutoUpdateTasks()
         {
             AutoUpdateTasks.Clear();
-            foreach(var item in SubscriptionItem.SubscriptionItemDataList.Where(i => i.IsAutoUpdate))
+            foreach(var item in SubscriptionItem.SubscriptionItemDataList.Where(i => i.IsAutoUpdate && i.AutoUpdateInterval > 0))
             {
                 (Task Task, CancellationTokenSource Cts) taskInfo;
                 taskInfo.Cts = new();
-                var updateCts = CancellationTokenSource.CreateLinkedTokenSource(taskInfo.Cts.Token);
-                updateCts.CancelAfter(TimeSpan.FromSeconds(10));
-                _ = UpdateSubcriptionItem(item, updateCts.Token);
+                taskInfo.Task = Task.Run(() =>
+                {
+                    while (!taskInfo.Cts.IsCancellationRequested)
+                    {
+                        try
+                        {
+                            var updateCts = CancellationTokenSource.CreateLinkedTokenSource(taskInfo.Cts.Token);
+                            updateCts.CancelAfter(TimeSpan.FromSeconds(10));
+                            if (DateTime.Now >= item.LastUpdateTime.AddMinutes(item.AutoUpdateInterval))
+                            {
+                                UpdateSubcriptionItem(item, updateCts.Token).Wait();
+                            }
+                            Task.Delay(TimeSpan.FromSeconds(item.AutoUpdateInterval), taskInfo.Cts.Token);
+                        }
+                        catch (Exception) { }
+                    }
+                });
+            }
+        }
+        private void AddAutoUpdateTask(SubscriptionItem SubItem)
+        {
+            if (!SubItem.IsAutoUpdate) return;
+            (Task Task, CancellationTokenSource Cts) taskInfo;
+            taskInfo.Cts = new();
+            if(SubItem.AutoUpdateInterval > 0)
+            {
                 taskInfo.Task = Task.Run(() =>
                 {
                     do
                     {
-                        
-                    } while (!taskInfo.Cts.IsCancellationRequested);
+                        try
+                        {
+                            var updateCts = CancellationTokenSource.CreateLinkedTokenSource(taskInfo.Cts.Token);
+                            updateCts.CancelAfter(TimeSpan.FromSeconds(10));
+                            if (DateTime.Now >= SubItem.LastUpdateTime.AddMinutes(SubItem.AutoUpdateInterval))
+                            {
+                                UpdateSubcriptionItem(SubItem, updateCts.Token).Wait();
+                            }
+                            Task.Delay(TimeSpan.FromSeconds(SubItem.AutoUpdateInterval), taskInfo.Cts.Token);
+                        }
+                        catch (Exception) { }
+                    } while (!taskInfo.Cts.IsCancellationRequested && SubItem.AutoUpdateInterval > 0);
                 });
-
-
+            }
+            else
+            {
+                
             }
         }
         public async Task<bool> UpdateSubcriptionItem(SubscriptionItem subItem, CancellationToken? token = null)
         {
+            subItem.LastUpdateTime = DateTime.Now;
             using HttpClient http = new()
             {
                 Timeout = TimeSpan.FromSeconds(10)
@@ -66,7 +102,6 @@ namespace NetProxyController.Handler
                 if(serverItems.Count > 0)
                 {
                     oldServerItems.ForEach(i => i.DeleteFromDataBase());
-                    subItem.LastUpdateTime = DateTime.Now;
                     return true;
                 }
             }
