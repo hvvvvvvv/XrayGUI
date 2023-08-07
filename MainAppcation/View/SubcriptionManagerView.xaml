@@ -31,6 +31,7 @@
                             <Setter Property="Foreground" Value="{DynamicResource TextIconBrush}" />
                         </MultiTrigger>
                     </Style.Triggers>
+                    <Setter Property="local:AttachProperties.DoubleClick" Value="{Binding DoubleClickCmd, Mode=OneWay}"/>
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.View>

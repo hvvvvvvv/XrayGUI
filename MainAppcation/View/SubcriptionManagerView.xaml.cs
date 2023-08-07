@@ -23,20 +23,7 @@ namespace NetProxyController.View
         public SubcriptionManagerView()
         {
             InitializeComponent();
-            Closing += SubcriptionManagerView_Closing;
         }
-
-        private void SubcriptionManagerView_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (sender is Window win)
-            {
-                if(win.DataContext is SubcriptionManagerViewModle vm)
-                {
-                    DialogResult = vm.DialogResult;
-                }
-            }
-        }
-
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if(sender is ListView view)

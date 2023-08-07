@@ -1,4 +1,5 @@
-﻿using NetProxyController.ViewModle;
+﻿using NetProxyController.Modle;
+using NetProxyController.ViewModle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,12 +21,12 @@ namespace NetProxyController.View
     /// </summary>
     internal partial class EditSubcriptionItemView : Window
     {
-        public EditSubcriptionItemView(SubcriptionItemViewModle itemVm)
+        public EditSubcriptionItemView(SubscriptionItem subItem)
         {
-            DataContext = new EditSubcriptionItemViewMdole(itemVm);
+            DataContext = new EditSubcriptionItemViewMdole(subItem);
             InitializeComponent();
         }
-        public EditSubcriptionItemView() : this(new SubcriptionItemViewModle(new()))
+        public EditSubcriptionItemView() : this(new())
         {
            
         }

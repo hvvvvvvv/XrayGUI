@@ -53,7 +53,6 @@ namespace NetProxyController.ViewModle
                 OnPropertyChanged();
             }
         }
-        public bool DialogResult { get;private set; }
         private RelayCommand editSubcriptionItemCmd;
         public RelayCommand EditSubcriptionItemCmd
         {
@@ -81,18 +80,17 @@ namespace NetProxyController.ViewModle
         private void CreateSubcriptionItemExcute()
         {
             var itemVm = new SubcriptionItemViewModle(new());
-            if (new EditSubcriptionItemView(itemVm).ShowDialog() == true)
+            if (itemVm.EditSubItem())
             {
                 ListViewItems.Add(itemVm);
                 listViewDataSource.View.Refresh();
-                DialogResult = true;
             }                       
         }
         private void EditSubcriptionItemExcute()
         {
             if(SelectedItems.Count > 0)
             {
-                DialogResult = new EditSubcriptionItemView(SelectedItems[0]).ShowDialog() ?? false;
+                SelectedItems[0].EditSubItem();
             }
         }
         private void DeleteSubcriptionItemsExcute()
@@ -106,7 +104,6 @@ namespace NetProxyController.ViewModle
                     ListViewItems.Remove(item);
                 }               
                 listViewDataSource.View.Refresh();
-                DialogResult = true;
             }
         }
         private void UpdateSubcriptionItemsExcute()
@@ -115,7 +112,6 @@ namespace NetProxyController.ViewModle
             {
                 item.UpdateSubItem();
             }
-            DialogResult = true;
         }
     }
 }

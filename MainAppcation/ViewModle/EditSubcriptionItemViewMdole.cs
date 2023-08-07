@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using NetProxyController.Modle;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,14 +12,14 @@ namespace NetProxyController.ViewModle
 {
     internal class EditSubcriptionItemViewMdole : ViewModleBase
     {
-        public SubcriptionItemViewModle subItemViewModle;
-        public EditSubcriptionItemViewMdole(SubcriptionItemViewModle itemVm)
+        public SubscriptionItem subItem;
+        public EditSubcriptionItemViewMdole(SubscriptionItem itemVm)
         {
-            subItemViewModle= itemVm;
-            subName = subItemViewModle.SubItem.SubcriptionName;
-            subUrl = subItemViewModle.SubItem.Url;
-            isAutoUpdate = subItemViewModle.SubItem.IsAutoUpdate;
-            autoUpdateInterval = subItemViewModle.SubItem.AutoUpdateInterval;
+            subItem = itemVm;
+            subName = subItem.SubcriptionName;
+            subUrl = subItem.Url;
+            isAutoUpdate = subItem.IsAutoUpdate;
+            autoUpdateInterval = subItem.AutoUpdateInterval;
             saveBtnCmd = new(SaveBtnExcute!);
         }
         private string subName;
@@ -78,12 +79,11 @@ namespace NetProxyController.ViewModle
         private void SaveBtnExcute(Window win)
         {
             if (!ValidationAllProperty()) return;
-            subItemViewModle.SubItem.SubcriptionName = subName;
-            subItemViewModle.SubItem.Url = subUrl;
-            subItemViewModle.SubItem.IsAutoUpdate = isAutoUpdate;
-            subItemViewModle.SubItem.AutoUpdateInterval = autoUpdateInterval;
-            subItemViewModle.SubItem.SaveToDataBase();
-            subItemViewModle.UpdateData();
+            subItem.SubcriptionName = subName;
+            subItem.Url = subUrl;
+            subItem.IsAutoUpdate = isAutoUpdate;
+            subItem.AutoUpdateInterval = autoUpdateInterval;
+            subItem.SaveToDataBase();
             win.DialogResult = true;
             win.Close();
         }

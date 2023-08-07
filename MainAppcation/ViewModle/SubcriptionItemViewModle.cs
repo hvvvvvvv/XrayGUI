@@ -1,5 +1,7 @@
-﻿using NetProxyController.Handler;
+﻿using CommunityToolkit.Mvvm.Input;
+using NetProxyController.Handler;
 using NetProxyController.Modle.Server;
+using NetProxyController.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +14,7 @@ namespace NetProxyController.ViewModle
     internal class SubcriptionItemViewModle : ViewModleBase
     {
         public Modle.SubscriptionItem SubItem { get; private set; }
-        private Task<bool>? updateItemTask;
-        private bool isUpdating;
-        private CancellationTokenSource? cts;
+        private (Task task, CancellationTokenSource cts)? UpdateTaskInfo;
         public SubcriptionItemViewModle(Modle.SubscriptionItem subscription)
         {
             SubItem = subscription;
@@ -78,26 +78,39 @@ namespace NetProxyController.ViewModle
                 OnPropertyChanged();
             }
         }
-        public async void UpdateSubItem()
+        public RelayCommand DoubleClickCmd => new(() => EditSubItem());
+        public void UpdateSubItem()
         {
-            if (isUpdating) return;
-            isUpdating = true;
-            try
+            if (UpdateTaskInfo is not null && !UpdateTaskInfo.Value.task.IsCompleted) return;
+            CancellationTokenSource cts = new();
+            cts.CancelAfter(TimeSpan.FromSeconds(10));
+            UpdateTaskInfo = (Task.Run(() =>
             {
-                if (await SubcriptionUpdateHandle.Instance.UpdateSubcriptionItem(SubItem, (cts ??= new()).Token))
+                if(SubcriptionUpdateHandle.Instance.UpdateSubcriptionItem(SubItem,cts.Token).Result)
                 {
                     UpdateData();
                 }
-            } catch (Exception) { }
-            cts = null;
-            isUpdating = false;
+            }), cts);
         }
         public async void DeleteSubItem()
         {
-            cts?.Cancel();
-            while (isUpdating) await Task.Delay(20);
+            if (UpdateTaskInfo is not null && !UpdateTaskInfo.Value.task.IsCompleted)
+            {
+                UpdateTaskInfo.Value.cts.Cancel();
+                await UpdateTaskInfo.Value.task;
+            }
             ServerItem.ServerItemsDataList.Where(i => i.SubGroupId == SubItem.SubcriptionId).ToList().ForEach(i => i.DeleteFromDataBase());
             SubItem.DelateFormDataBase();
+        }
+        public bool EditSubItem()
+        {
+            var IsEdited = new EditSubcriptionItemView(SubItem).ShowDialog() ?? false;
+            if(IsEdited)
+            {
+                UpdateData();
+                SubcriptionUpdateHandle.Instance.ReloadAutoUpdateTask(SubItem);
+            }
+            return IsEdited;
         }
 
     }
