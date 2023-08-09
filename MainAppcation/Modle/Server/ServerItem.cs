@@ -85,22 +85,28 @@ namespace NetProxyController.Modle.Server
         {
             protocolInfoContent = protocolInfoObj is null ? string.Empty : JsonSerializer.Serialize(protocolInfoObj,protocolInfoObj.GetType());
             streamInfoContent = streamInfoObj is null ? string.Empty : JsonSerializer.Serialize(streamInfoObj);
-            if(serverItemsDataList.Any(i => i.Index == Index))
+            lock (serverItemsDataList)
             {
-                Global.DBService.Update(this);
-            }
-            else
-            {
-                Global.DBService.Insert(this);
-                serverItemsDataList.Add(this);
+                if (serverItemsDataList.Any(i => i.Index == Index))
+                {
+                    Global.DBService.Update(this);
+                }
+                else
+                {
+                    Global.DBService.Insert(this);
+                    serverItemsDataList.Add(this);
+                }
             }
                 
         }
         public void DeleteFromDataBase()
         {
             if (Index == -1) return;
-            Global.DBService.Delete<ServerItem>(Index);
-            serverItemsDataList.Remove(this);
+            lock (serverItemsDataList)
+            {
+                Global.DBService.Delete<ServerItem>(Index);
+                serverItemsDataList.Remove(this);
+            }
         }
         private static List<ServerItem> serverItemsDataList = GetItemsFromDataBase();
         public static ReadOnlyCollection<ServerItem> ServerItemsDataList { get; } = new ReadOnlyCollection<ServerItem>(serverItemsDataList);

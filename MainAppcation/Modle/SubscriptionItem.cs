@@ -19,33 +19,27 @@ namespace NetProxyController.Modle
         public int AutoUpdateInterval { get; set; }
         public void SaveToDataBase()
         {
-            if(SubcriptionId == default)
+            lock (_SubscriptionItemDataList)
             {
-                Global.DBService.Insert(this);
-                _SubscriptionItemDataList.Add(this);
-            }
-            else
-            {
-                Global.DBService.Update(this);
+                if (SubcriptionId == default)
+                {
+                    Global.DBService.Insert(this);
+                    _SubscriptionItemDataList.Add(this);
+                }
+                else
+                {
+                    Global.DBService.Update(this);
+                }
             }
         }
         public void DelateFormDataBase()
         {
-            Global.DBService.Delete(this);
-            _SubscriptionItemDataList.Remove(this);
-        }
-        public static string GetSubcriptionName(Guid? pk)
-        {
-            var itemObj = _SubscriptionItemDataList.FirstOrDefault(i => i.SubcriptionId == pk, null);
-            if(itemObj is not null)
+            lock (_SubscriptionItemDataList)
             {
-                return itemObj.SubcriptionName;
+                Global.DBService.Delete(this);
+                _SubscriptionItemDataList.Remove(this);
             }
-            else
-            {
-                return "--";
-            }
-        }
+        }        
         private static List<SubscriptionItem> _SubscriptionItemDataList = Global.DBService.Table<SubscriptionItem>().ToList();
         public static readonly ReadOnlyCollection<SubscriptionItem> SubscriptionItemDataList = new(_SubscriptionItemDataList);
 

@@ -100,7 +100,7 @@ namespace NetProxyController.ViewModle
         }
         public string SubGroupName
         {
-            get => SubscriptionItem.GetSubcriptionName(Server.SubGroupId);
+            get => SubscriptionItem.SubscriptionItemDataList.FirstOrDefault(i => i.SubcriptionId == Server.SubGroupId)?.SubcriptionName ?? "--";
         }
         private OutboundProtocol proxyProtocol;
         public OutboundProtocol ProxyProtocol

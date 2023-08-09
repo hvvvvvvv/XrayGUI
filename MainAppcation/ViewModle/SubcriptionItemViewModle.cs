@@ -19,6 +19,13 @@ namespace NetProxyController.ViewModle
         {
             SubItem = subscription;
             UpdateData();
+            SubcriptionUpdateHandle.Instance.UpdateEvent += (e) =>
+            {
+                if (e.Subscription.SubcriptionId == SubItem.SubcriptionId && e.IsCompeleteUpdate)
+                {
+                    LastUpdateTime = SubItem.LastUpdateTime.ToString();
+                }
+            };
         }
         public void UpdateData()
         {
@@ -83,14 +90,7 @@ namespace NetProxyController.ViewModle
         {
             if (UpdateTaskInfo is not null && !UpdateTaskInfo.Value.task.IsCompleted) return;
             CancellationTokenSource cts = new();
-            cts.CancelAfter(TimeSpan.FromSeconds(10));
-            UpdateTaskInfo = (Task.Run(() =>
-            {
-                if(SubcriptionUpdateHandle.Instance.UpdateSubcriptionItem(SubItem,cts.Token).Result)
-                {
-                    UpdateData();
-                }
-            }), cts);
+            UpdateTaskInfo = (Task.Run(SubcriptionUpdateHandle.Instance.UpdateSubcriptionItem(SubItem, cts).Wait), cts);
         }
         public async void DeleteSubItem()
         {

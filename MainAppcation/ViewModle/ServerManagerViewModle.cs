@@ -15,6 +15,8 @@ using System.Diagnostics;
 using HandyControl.Controls;
 using NetProxyController.Handler;
 using System.Windows;
+using System.Windows.Threading;
+using System.Collections.ObjectModel;
 
 namespace NetProxyController.ViewModle
 {
@@ -23,10 +25,7 @@ namespace NetProxyController.ViewModle
         public ServerManagerViewModle()
         {
             serverItems = GetDateItemFromDataBase();
-            serverItemList = new CollectionViewSource()
-            {
-                Source = serverItems
-            };
+            serverItemList = new(GetDateItemFromDataBase());
             createProxyServerCmd = new(CreateProxyServerExcute);
             selectionChangedCmd = new(SelectionChangedCmdExcute);
             editServerCmd = new(EditProxyServerExcute);
@@ -36,6 +35,10 @@ namespace NetProxyController.ViewModle
             setActivatedServersCmd = new(SetActivatedServersExcute);
             testNetRelayCmd = new(TestNetRelayExcute);
             subManagerCmd = new(SubManagerExcute);
+            SubcriptionUpdateHandle.Instance.UpdateEvent += e =>
+            {
+                if (e.IsCompeleteUpdate) RefreshListView();
+            };
         }
         private static List<ServerItemViewModle> GetDateItemFromDataBase()
         {
@@ -44,9 +47,9 @@ namespace NetProxyController.ViewModle
             return ret;
         }
         private List<ServerItemViewModle> serverItems;
-        private CollectionViewSource serverItemList;
+        private ObservableCollection<ServerItemViewModle> serverItemList;
         private int SelectedItemsConut;
-        public CollectionViewSource ServerItemList
+        public ObservableCollection<ServerItemViewModle> ServerItemList
         {
             get => serverItemList;
             set
@@ -159,8 +162,7 @@ namespace NetProxyController.ViewModle
             if(new ServerSettingWindow(NewServer.Server).ShowDialog() == true)
             {
                 NewServer.UpdateData();
-                serverItems.Add(NewServer);
-                ServerItemList.View.Refresh();
+                serverItemList.Add(NewServer);
             }
         }
         private void EditProxyServerExcute()
@@ -182,25 +184,19 @@ namespace NetProxyController.ViewModle
             if(HandyControl.Controls.MessageBox.Show(messageBoxText:$"是否删除选中项(共{serverItems.Where(item => item.IsSelected).Count()}项)？",button: System.Windows.MessageBoxButton.YesNo,
                 icon: System.Windows.MessageBoxImage.Question) == System.Windows.MessageBoxResult.Yes)
             {
-                for (int i = 0; i < serverItems.Count; i++)
+                for (int i = 0; i < serverItemList.Count; i++)
                 {
-                    if (serverItems[i].IsSelected)
+                    if (serverItemList[i].IsSelected)
                     {
-                        serverItems[i].Server.DeleteFromDataBase();
-                        serverItems.RemoveAt(i);
+                        serverItemList[i].Server.DeleteFromDataBase();
+                        serverItemList.RemoveAt(i);
                         i--;
                     }
                 }
+                SelectionChangedCmdExcute();
+                XrayHanler.Instance.ReloadConfig();
             }
-            else
-            {
-                serverItems.ForEach(i => i.IsSelected = false);
-                SelectedIndex = -1;
-                return;
-            }
-            serverItemList.View.Refresh();
-            SelectionChangedCmdExcute();
-            XrayHanler.Instance.ReloadConfig();
+            
         }
         private void SetDefalutRoutingExcute()
         {
@@ -209,7 +205,7 @@ namespace NetProxyController.ViewModle
             {
                 ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex = DefaultServerMenuItemChecked ? -1 : selectedItem.Server.Index;
                 ConfigObject.Instance.Save();
-                serverItemList.View.Refresh();
+                selectedItem.UpdateData();
                 XrayHanler.Instance.ReloadConfig();
             }
         }
@@ -257,12 +253,20 @@ namespace NetProxyController.ViewModle
                 XrayTestServerHandle.Instance.CoreStop();
             });
         }
+        private void RefreshListView()
+        {
+            lock (serverItems)
+            {
+                serverItems.Clear();
+                GetDateItemFromDataBase().ForEach(item => serverItems.Add(item));
+                serverItemList.View.Refresh();
+                serverItemList.Dispatcher.Invoke(serverItemList.View.Refresh);
+            }
+        }
         private void SubManagerExcute()
         {
             new SubcriptionManagerView().ShowDialog();
-            serverItems.Clear();
-            GetDateItemFromDataBase().ForEach(item => serverItems.Add(item));
-            serverItemList.View.Refresh();            
+            serverItems.ForEach(i => i.UpdateData());
         }
 
     }
