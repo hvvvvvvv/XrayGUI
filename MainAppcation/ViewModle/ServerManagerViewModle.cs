@@ -17,6 +17,7 @@ using NetProxyController.Handler;
 using System.Windows;
 using System.Windows.Threading;
 using System.Collections.ObjectModel;
+using System.Threading;
 
 namespace NetProxyController.ViewModle
 {
@@ -24,21 +25,18 @@ namespace NetProxyController.ViewModle
     {
         public ServerManagerViewModle()
         {
-            serverItems = GetDateItemFromDataBase();
             serverItemList = new(GetDateItemFromDataBase());
-            createProxyServerCmd = new(CreateProxyServerExcute);
-            selectionChangedCmd = new(SelectionChangedCmdExcute);
-            editServerCmd = new(EditProxyServerExcute);
-            deleteServerCmd = new(DeleteProxyServerItemExcute);
-            setDefalutRoutingCmd = new(SetDefalutRoutingExcute);
-            importServerFromClipboardCmd = new(ImportServerFromClipboardCmdExcute);
-            setActivatedServersCmd = new(SetActivatedServersExcute);
-            testNetRelayCmd = new(TestNetRelayExcute);
-            subManagerCmd = new(SubManagerExcute);
-            SubcriptionUpdateHandle.Instance.UpdateEvent += e =>
-            {
-                if (e.IsCompeleteUpdate) RefreshListView();
-            };
+            CreateProxyServerCmd = new(CreateProxyServerExcute);
+            SelectionChangedCmd = new(SelectionChangedCmdExcute);
+            EditServerCmd = new(EditProxyServerExcute, () => IsSingleSelectedItem);
+            DeleteServerCmd = new(DeleteProxyServerItemExcute, () => IsContainSelectedItems);
+            SetDefalutRoutingCmd = new(SetDefalutRoutingExcute, () => IsSingleSelectedItem);
+            ImportServerFromClipboardCmd = new(ImportServerFromClipboardCmdExcute);
+            SetActivatedServersCmd = new(SetActivatedServersExcute,(_) => IsContainSelectedItems);
+            TestNetRelayCmd = new(TestNetRelayExcute, () => !TestDelayExcuting);
+            SubManagerCmd = new(SubManagerExcute);
+            RefreshListViewCmd = new(RefreshListView, () => IsContainSelectedItems);
+            SubcriptionUpdateHandle.Instance.UpdateEvent += e => { if (e.IsCompeleteUpdate) RefreshListView(); };
         }
         private static List<ServerItemViewModle> GetDateItemFromDataBase()
         {
@@ -46,115 +44,51 @@ namespace NetProxyController.ViewModle
             ServerItem.ServerItemsDataList.ToList().ForEach(item => ret.Add(new(item)));
             return ret;
         }
-        private List<ServerItemViewModle> serverItems;
         private ObservableCollection<ServerItemViewModle> serverItemList;
         private int SelectedItemsConut;
+        private Task? TestDelayTask;
+        private bool TestDelayExcuting;
         public ObservableCollection<ServerItemViewModle> ServerItemList
         {
             get => serverItemList;
-            set
+            private set
             {
                 serverItemList = value;
                 OnPropertyChanged();                
             }
         }
-        private RelayCommand createProxyServerCmd;
-        public RelayCommand CreateProxyServerCmd
+        public RelayCommand CreateProxyServerCmd { get; private set; }
+        public RelayCommand SelectionChangedCmd { get; private set; }
+        public RelayCommand EditServerCmd { get; private set; }
+        public RelayCommand DeleteServerCmd { get; private set; }
+        public RelayCommand SetDefalutRoutingCmd { get; private set; }
+        public RelayCommand ImportServerFromClipboardCmd { get; private set; }
+        public RelayCommand<bool> SetActivatedServersCmd { get; private set; }
+        public RelayCommand TestNetRelayCmd { get; private set; }
+        public RelayCommand SubManagerCmd { get; private set; }
+        public RelayCommand RefreshListViewCmd { get; private set; }
+        public bool IsContainSelectedItems => SelectedItemsConut > 0;
+        public bool IsSingleSelectedItem => SelectedItemsConut == 1;
+        public int SelectedIndex { get; set; } = -1;
+        public bool DefaultServerMenuItemChecked => IsSingleSelectedItem && ServerItemList[SelectedIndex].Server.Index == ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex;
+        private void RefreshListView()
         {
-            get => createProxyServerCmd;
-            set => _ = value;
-        }
-        private RelayCommand selectionChangedCmd;
-        public RelayCommand SelectionChangedCmd
-        {
-            get => selectionChangedCmd;
-            set => _ = value;
-        }
-        private RelayCommand editServerCmd;
-        public RelayCommand EditServerCmd
-        {
-            get => editServerCmd;
-            set => _ = value;
-        }
-        private RelayCommand deleteServerCmd;
-        public RelayCommand DeleteServerCmd
-        {
-            get => deleteServerCmd;
-            set => _ = value;
-        }
-        private RelayCommand setDefalutRoutingCmd;
-        public RelayCommand SetDefalutRoutingCmd
-        {
-            get => setDefalutRoutingCmd;
-            set => _ = value;
-        }
-        private RelayCommand importServerFromClipboardCmd;
-        public RelayCommand ImportServerFromClipboardCmd
-        {
-            get => importServerFromClipboardCmd;
-            set => _ = value;
-        }
-        private RelayCommand<bool> setActivatedServersCmd;
-        public RelayCommand<bool> SetActivatedServersCmd
-        {
-            get => setActivatedServersCmd;
-            set => _ = value;
-        }
-        private RelayCommand testNetRelayCmd;
-        public RelayCommand TestNetRelayCmd
-        {
-            get => testNetRelayCmd;
-            set => _ = value;
-        }
-        private RelayCommand subManagerCmd;
-        public RelayCommand SubManagerCmd
-        {
-            get => subManagerCmd;
-            set => _ = value;
-        }
-        public bool SelectedItemsIsSingle
-        {
-            get => serverItems.Where(item => item.IsSelected).Count() == 1;
-            set => _ = value;
-        }
-        public bool SelectedItemsIsMultiple
-        {
-            get => serverItems.Where(item => item.IsSelected).Count() >= 1;
-            set => _ = value;
-        }
-        public bool IsContainSelectedItems
-        {
-            get => SelectedItemsConut > 0;
-            set => _ = value;
-        }
-        private int selectedIndex = -1;
-        public int SelectedIndex
-        {
-            get => selectedIndex;
-            set
+            lock(serverItemList)
             {
-                selectedIndex = value;
-                OnPropertyChanged();
+                ServerItemList = new(GetDateItemFromDataBase());
             }
-        }
-        public bool DefaultServerMenuItemChecked
-        {
-            get => DefaultServerMenuItemEnabled && serverItems[selectedIndex].Server.Index == ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex;
-            set => _ = value;
-        }
-        public bool DefaultServerMenuItemEnabled
-        {
-            get => SelectedItemsConut == 1;
-            set => _ = value;
         }
         private void SelectionChangedCmdExcute()
         {
-            SelectedItemsConut = serverItems.Where(item => item.IsSelected).Count();
-            OnPropertyChanged(nameof(SelectedItemsIsSingle));
-            OnPropertyChanged(nameof(SelectedItemsIsMultiple));
+            SelectedItemsConut = ServerItemList.Where(item => item.IsSelected).Count();
             OnPropertyChanged(nameof(IsContainSelectedItems));
             OnPropertyChanged(nameof(DefaultServerMenuItemChecked));
-            OnPropertyChanged(nameof(DefaultServerMenuItemEnabled));
+            EditServerCmd.NotifyCanExecuteChanged();
+            SetDefalutRoutingCmd.NotifyCanExecuteChanged();
+            SetActivatedServersCmd.NotifyCanExecuteChanged();
+            DeleteServerCmd.NotifyCanExecuteChanged();
+            RefreshListViewCmd.NotifyCanExecuteChanged();
+            TestNetRelayCmd.NotifyCanExecuteChanged();
         }
         private void CreateProxyServerExcute()
         {
@@ -167,46 +101,49 @@ namespace NetProxyController.ViewModle
         }
         private void EditProxyServerExcute()
         {
-            foreach(var item in serverItems)
+            foreach(var item in ServerItemList)
             {
                 if(item.IsSelected)
                 {
                     item.EditServerItem();
-                    serverItems.ForEach(i => i.IsSelected = false);
-                    SelectedIndex = -1;
-                    SelectionChangedCmdExcute();
                     return;
                 }
             }
         }
         private void DeleteProxyServerItemExcute()
         {
-            if(HandyControl.Controls.MessageBox.Show(messageBoxText:$"是否删除选中项(共{serverItems.Where(item => item.IsSelected).Count()}项)？",button: System.Windows.MessageBoxButton.YesNo,
-                icon: System.Windows.MessageBoxImage.Question) == System.Windows.MessageBoxResult.Yes)
+            if(HandyControl.Controls.MessageBox.Show(messageBoxText:$"是否删除选中项(共{SelectedItemsConut}项)？",button: System.Windows.MessageBoxButton.YesNo,
+                icon: MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                for (int i = 0; i < serverItemList.Count; i++)
+                foreach (var item in ServerItemList.Where(i => i.IsSelected).ToArray())
                 {
-                    if (serverItemList[i].IsSelected)
-                    {
-                        serverItemList[i].Server.DeleteFromDataBase();
-                        serverItemList.RemoveAt(i);
-                        i--;
-                    }
+                    item.Server.DeleteFromDataBase();
+                    ServerItemList.Remove(item);
                 }
-                SelectionChangedCmdExcute();
                 XrayHanler.Instance.ReloadConfig();
             }
             
         }
         private void SetDefalutRoutingExcute()
         {
-            var selectedItem = serverItems.Where(i => i.IsSelected).FirstOrDefault();
+            var selectedItem = ServerItemList.Where(i => i.IsSelected).FirstOrDefault();
             if (selectedItem != null)
             {
-                ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex = DefaultServerMenuItemChecked ? -1 : selectedItem.Server.Index;
+                if(ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex == selectedItem.Server.Index)
+                {
+                    ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex = -1;
+                }
+                else
+                {
+                    var oldDefServer = serverItemList.FirstOrDefault(i => i.Server.Index == ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex);
+                    ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex = selectedItem.Server.Index;
+                    oldDefServer?.UpdateData();
+                }
                 ConfigObject.Instance.Save();
                 selectedItem.UpdateData();
+                serverItemList.FirstOrDefault(i => i.Server.Index == ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex)?.UpdateData();
                 XrayHanler.Instance.ReloadConfig();
+                OnPropertyChanged(nameof(DefaultServerMenuItemChecked));
             }
         }
         private void ImportServerFromClipboardCmdExcute()
@@ -219,14 +156,13 @@ namespace NetProxyController.ViewModle
                 foreach (var item in inputServers)
                 {
                     item.SaveToDataBase();
-                    serverItems.Add(new(item));
+                    ServerItemList.Add(new(item));
                 }
-                ServerItemList.View.Refresh();
             }
         }
         private void SetActivatedServersExcute(bool isActive)
         {
-            foreach (var item in serverItems.Where(i => i.IsSelected))
+            foreach (var item in ServerItemList.Where(i => i.IsSelected))
             {
                 item.Server.IsActivated = isActive;
                 item.Server.SaveToDataBase();
@@ -234,39 +170,35 @@ namespace NetProxyController.ViewModle
             }
             XrayHanler.Instance.ReloadConfig();
         }
-        private void TestNetRelayExcute()
+        private async void TestNetRelayExcute()
         {
-            var selectedItems = serverItems.Where(i => i.IsSelected).ToList();
+            ThreadPool.SetMinThreads(1000, 1000);       
+            if (TestDelayExcuting) return;
+            TestDelayExcuting = true;
+            TestNetRelayCmd.NotifyCanExecuteChanged();
+            var selectedItems = ServerItemList.Where(i => i.IsSelected).ToList();
             var tasks = new List<Task>();
-            if (selectedItems.Count <= 0) return;
-            selectedItems.ForEach(i => { i.NetDelay = -2; i.ProxyTestPort = default; });
+            selectedItems.ForEach(i => i.ProxyTestPort = default);
             XrayTestServerHandle.Instance.SetTestServerItems(selectedItems);
             XrayTestServerHandle.Instance.ReloadConfig();
             XrayTestServerHandle.Instance.CoreStart();
-            Task.Run(() =>
+            foreach (var item in selectedItems)
             {
-                foreach(var item in selectedItems)
-                {
-                    tasks.Add(Task.Run(item.StartTestNetDelay));
-                }
-                Task.WaitAll(tasks.ToArray());
-                XrayTestServerHandle.Instance.CoreStop();
-            });
-        }
-        private void RefreshListView()
-        {
-            lock (serverItems)
-            {
-                serverItems.Clear();
-                GetDateItemFromDataBase().ForEach(item => serverItems.Add(item));
-                serverItemList.View.Refresh();
-                serverItemList.Dispatcher.Invoke(serverItemList.View.Refresh);
-            }
+                tasks.Add(Task.Run(item.StartTestNetDelay));
+            }           
+            await Task.WhenAll(tasks.ToArray());
+            XrayTestServerHandle.Instance.CoreStop();
+            TestDelayExcuting = false;
+            TestNetRelayCmd.NotifyCanExecuteChanged();
+                
         }
         private void SubManagerExcute()
         {
             new SubcriptionManagerView().ShowDialog();
-            serverItems.ForEach(i => i.UpdateData());
+            foreach(var item in ServerItemList)
+            {
+                item.UpdateData();
+            }
         }
 
     }

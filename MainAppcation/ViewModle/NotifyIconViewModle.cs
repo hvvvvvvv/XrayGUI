@@ -10,6 +10,7 @@ using ProxyNotifyWindow;
 using System.Windows.Media;
 using NetProxyController.Handler;
 using NetProxyController.View;
+using NetProxyController.Modle.Server;
 
 namespace NetProxyController.ViewModle
 {
@@ -56,6 +57,16 @@ namespace NetProxyController.ViewModle
             ShowServerManagerCmd = new(() => ServerManager.Instance.Show());
             XrayHanler.Instance.CoreStart();
             SystemProxyHanler.Instance.LoadConfig();
+            SubcriptionUpdateHandle.Instance.UpdateEvent += (e) =>
+            {
+                if(e.IsCompeleteUpdate)
+                {
+                    if(ServerItem.ServerItemsDataList.Any(i => i.SubGroupId == e.Subscription.SubcriptionId && (i.IsActivated || i.Index == ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex)))
+                    {
+                        XrayHanler.Instance.ReloadConfig();
+                    }
+                }
+            };
         }
         private void OnHotkeyEvenRaise()
         {

@@ -7,6 +7,8 @@
         xmlns:hc="https://handyorg.github.io/handycontrol"
         xmlns:local="clr-namespace:NetProxyController.View"
         mc:Ignorable="d"
+        ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen"
         Title="SubcriptionManagerView" Height="450" Width="500">
     <Window.DataContext>
         <vm:SubcriptionManagerViewModle/>

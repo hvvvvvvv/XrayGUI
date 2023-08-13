@@ -9,6 +9,8 @@
         xmlns:vm="clr-namespace:NetProxyController.ViewModle"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
+        ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen"
         Title="代理服务器管理" Height="700" Width="760">
     <Window.DataContext>
         <vm:ServerManagerViewModle/>
@@ -23,8 +25,7 @@
                 <MenuItem Header="编辑" Command="{Binding EditServerCmd}"/>
                 <MenuItem Header="删除" Command="{Binding DeleteServerCmd}"/>
                 <MenuItem Header="设为默认服务器" Command="{Binding SetDefalutRoutingCmd}"
-                          IsChecked ="{Binding DefaultServerMenuItemChecked}"
-                          IsEnabled="{Binding DefaultServerMenuItemEnabled}"/>
+                          IsChecked="{Binding DefaultServerMenuItemChecked, Mode=OneWay}"/>
                 <MenuItem Header="设为活动服务器" Command="{Binding SetActivatedServersCmd}">
                     <MenuItem.CommandParameter>
                         <sys:Boolean>True</sys:Boolean>
@@ -43,16 +44,13 @@
         <hc:ButtonGroup Margin="0,5,30,5" HorizontalContentAlignment="Left">
             <Button Content="新建服务器" Command="{Binding CreateProxyServerCmd}"/>
             <Button Content="剪切板导入" Command="{Binding ImportServerFromClipboardCmd}"/>
-            <!--<Button Content="编辑" IsEnabled="{Binding SelectedItemsIsSingle, Mode=OneWay}" Command="{Binding EditServerCmd}"/>
-            <Button Content="删除" IsEnabled="{Binding SelectedItemsIsMultiple, Mode=OneWay}" Command="{Binding DeleteServerCmd}"/>
-            <Button Content="设为默认路由出口" IsEnabled="{Binding SelectedItemsIsSingle, Mode=OneWay}" Command="{Binding SetDefalutRoutingCmd}"/>-->
             <Button Content="订阅管理" Command="{Binding SubManagerCmd}"/>
         </hc:ButtonGroup>
         <ListView x:Name="listView" Height="700" Width="auto" 
-                  ItemsSource="{Binding ServerItemList.View}" 
+                  ItemsSource="{Binding ServerItemList}" 
                   local:AttachProperties.SelectionChangedCommand="{Binding SelectionChangedCmd}"
                   SelectionChanged="listView_SelectionChanged"
-                  SelectedIndex="{Binding SelectedIndex}">
+                  SelectedIndex="{Binding SelectedIndex, Mode=OneWayToSource}">
             <ListView.Style>
                 <Style TargetType="ListView" BasedOn="{StaticResource ListViewBaseStyle}">
                     <Style.Triggers>
@@ -60,7 +58,9 @@
                             <Setter Property="ContextMenu" Value="{StaticResource ItemRightClickMenu}"/>
                         </DataTrigger>
                     </Style.Triggers>
+                    
                 </Style>
+                
             </ListView.Style>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemBaseStyle}">
@@ -89,7 +89,11 @@
                     </Style.Triggers>
                 </Style>
             </ListView.ItemContainerStyle>
-            
+            <ListView.InputBindings>
+                <KeyBinding Key="Delete" Command="{Binding DeleteServerCmd}"/>
+                <KeyBinding Key="F5" Command="{Binding RefreshListViewCmd}"/>
+                <KeyBinding Gesture="Enter" Command="{Binding SetDefalutRoutingCmd}"/>
+            </ListView.InputBindings>
             <ListView.View>
                 <GridView>
                     <GridViewColumn Width="30" DisplayMemberBinding="{Binding DefaultRoutingFlag}"/>

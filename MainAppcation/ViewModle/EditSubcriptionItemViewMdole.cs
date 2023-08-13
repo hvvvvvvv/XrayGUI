@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -37,6 +38,7 @@ namespace NetProxyController.ViewModle
         
         private string subUrl;
         [Required(ErrorMessage = "地址不能为空")]
+        [RegularExpression(@"^(http|https):\/\/([\w\-]+(\.[\w\-]+)*\/)*([\w\-\.]+[^#?\s]+)(.*)?(#[\w\-]+)?$", ErrorMessage = "请输入正确的Url地址")]
         public string SubUrl
         {
             get => subUrl;
@@ -87,6 +89,20 @@ namespace NetProxyController.ViewModle
             win.DialogResult = true;
             win.Close();
         }
+        protected override bool ValidationProperty([CallerMemberName] string? propertyName = null)
+        {
+            bool ret;
+            if ((ret = base.ValidationProperty(propertyName)) && propertyName == nameof(SubName))
+            {
+                ret = !SubscriptionItem.SubscriptionItemDataList.Any(i => i.SubcriptionName == SubName && i.SubcriptionId != subItem.SubcriptionId);
+                if (!ret)
+                {
+                    _Errors[propertyName!] = new() { new ValidationResult("名称有重复，请重新输入") };
+                    OnErrorsChanged(propertyName!);
+                }
+            }
+            return ret;
 
+        }
     }
 }

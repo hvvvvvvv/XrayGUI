@@ -114,6 +114,7 @@ namespace NetProxyController.Handler
                     if (serverItems.Count > 0)
                     {
                         subItem.LastUpdateTime = DateTime.Now;
+                        subItem.SaveToDataBase();
                         oldServerItems.ForEach(i => i.DeleteFromDataBase());
                         ret = true;
                     }

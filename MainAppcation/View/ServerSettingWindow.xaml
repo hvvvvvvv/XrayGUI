@@ -10,6 +10,8 @@
         mc:Ignorable="d"
         Background="#ebf3ff"
         Title="ServerSettingWindow" Height="700" Width="500"
+        ResizeMode="CanMinimize"
+        WindowStartupLocation="CenterScreen"
         x:Name="window">
 
     <StackPanel>
