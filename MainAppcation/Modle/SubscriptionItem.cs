@@ -15,6 +15,7 @@ namespace NetProxyController.Modle
         public string SubcriptionName { get; set; } = string.Empty;      
         public DateTime LastUpdateTime { get; set; }
         public string Url { get; set; } = string.Empty;
+        public bool IsProxyUpdate { get; set; }
         public bool IsAutoUpdate { get; set; }
         public int AutoUpdateInterval { get; set; }
         public void SaveToDataBase()

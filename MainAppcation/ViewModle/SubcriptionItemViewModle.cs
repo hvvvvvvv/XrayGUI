@@ -96,8 +96,9 @@ namespace NetProxyController.ViewModle
         {
             if (UpdateTaskInfo is not null && !UpdateTaskInfo.Value.task.IsCompleted)
             {
-                UpdateTaskInfo.Value.cts.Cancel();
-                await UpdateTaskInfo.Value.task;
+                UpdateTaskInfo?.cts.Cancel();
+                await UpdateTaskInfo?.task!;
+                SubcriptionUpdateHandle.Instance.RemoveAutoUpdateTask(SubItem);
             }
             ServerItem.ServerItemsDataList.Where(i => i.SubGroupId == SubItem.SubcriptionId).ToList().ForEach(i => i.DeleteFromDataBase());
             SubItem.DelateFormDataBase();

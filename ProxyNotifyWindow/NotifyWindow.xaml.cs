@@ -32,7 +32,7 @@ namespace ProxyNotifyWindow
         public static readonly ImageSource StatusEnableImage = ChangeBitmapToImageSource(ImageSourceLib.enable);
         public static readonly ImageSource StatusDisableImage = ChangeBitmapToImageSource(ImageSourceLib.disable);
         public NotifyWindow(ImageSource proxyStatus,double windowOpacity = 0.8)
-        {
+        {            
             InitializeComponent();
             WindowOpacity = windowOpacity;
             _Storyboard = new();
@@ -41,14 +41,14 @@ namespace ProxyNotifyWindow
                 From = WindowOpacity,
                 To = 0.3,
                 Duration = new Duration(TimeSpan.FromSeconds(1)),
-                FillBehavior = FillBehavior.Stop,                
+                FillBehavior = FillBehavior.Stop,
             };
             ami.Completed += (s, e) => Visibility = Visibility.Hidden;
             Storyboard.SetTargetProperty(ami, new PropertyPath("Opacity"));
             Storyboard.SetTarget(ami, this);
             _Storyboard.Children.Add(ami);
             Context = new(WindowOpacity,proxyStatus);
-            DataContext = Context;           
+            DataContext = Context;
         }
         public void ShowNotify()
         {

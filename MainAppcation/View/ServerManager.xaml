@@ -26,7 +26,7 @@
                 <MenuItem Header="删除" Command="{Binding DeleteServerCmd}"/>
                 <MenuItem Header="设为默认服务器" Command="{Binding SetDefalutRoutingCmd}"
                           IsChecked="{Binding DefaultServerMenuItemChecked, Mode=OneWay}"/>
-                <MenuItem Header="设为活动服务器" Command="{Binding SetActivatedServersCmd}">
+                <!--<MenuItem Header="设为活动服务器" Command="{Binding SetActivatedServersCmd}">
                     <MenuItem.CommandParameter>
                         <sys:Boolean>True</sys:Boolean>
                     </MenuItem.CommandParameter>
@@ -35,7 +35,7 @@
                     <MenuItem.CommandParameter>
                         <sys:Boolean>False</sys:Boolean>
                     </MenuItem.CommandParameter>
-                </MenuItem>
+                </MenuItem>-->
                 <MenuItem Header="测试延迟" Command="{Binding TestNetRelayCmd}"/>
             </ContextMenu>
         </ResourceDictionary>

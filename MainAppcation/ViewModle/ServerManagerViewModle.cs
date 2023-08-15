@@ -46,7 +46,6 @@ namespace NetProxyController.ViewModle
         }
         private ObservableCollection<ServerItemViewModle> serverItemList;
         private int SelectedItemsConut;
-        private Task? TestDelayTask;
         private bool TestDelayExcuting;
         public ObservableCollection<ServerItemViewModle> ServerItemList
         {
@@ -171,10 +170,9 @@ namespace NetProxyController.ViewModle
             XrayHanler.Instance.ReloadConfig();
         }
         private async void TestNetRelayExcute()
-        {
-            ThreadPool.SetMinThreads(1000, 1000);       
-            if (TestDelayExcuting) return;
-            TestDelayExcuting = true;
+        {                 
+            if (TestDelayExcuting) return;           
+            TestDelayExcuting = true;            
             TestNetRelayCmd.NotifyCanExecuteChanged();
             var selectedItems = ServerItemList.Where(i => i.IsSelected).ToList();
             var tasks = new List<Task>();
@@ -182,23 +180,22 @@ namespace NetProxyController.ViewModle
             XrayTestServerHandle.Instance.SetTestServerItems(selectedItems);
             XrayTestServerHandle.Instance.ReloadConfig();
             XrayTestServerHandle.Instance.CoreStart();
-            foreach (var item in selectedItems)
-            {
-                tasks.Add(Task.Run(item.StartTestNetDelay));
-            }           
+            ThreadPool.GetMinThreads(out int minThreads, out int minCompelationPortThreads);
+            ThreadPool.GetMaxThreads(out int maxThreads, out int maxCompelationPOrtThreads);
+            ThreadPool.SetMinThreads(selectedItems.Count + minThreads, selectedItems.Count + minCompelationPortThreads);
+            ThreadPool.SetMaxThreads(selectedItems.Count + maxThreads, selectedItems.Count + maxCompelationPOrtThreads);
+            selectedItems.ForEach(i => tasks.Add(Task.Run(i.StartTestNetDelay)));
             await Task.WhenAll(tasks.ToArray());
+            ThreadPool.SetMinThreads(minThreads, minCompelationPortThreads);
+            ThreadPool.SetMaxThreads(maxThreads, maxCompelationPOrtThreads);
             XrayTestServerHandle.Instance.CoreStop();
             TestDelayExcuting = false;
-            TestNetRelayCmd.NotifyCanExecuteChanged();
-                
+            TestNetRelayCmd.NotifyCanExecuteChanged();                
         }
         private void SubManagerExcute()
         {
             new SubcriptionManagerView().ShowDialog();
-            foreach(var item in ServerItemList)
-            {
-                item.UpdateData();
-            }
+            RefreshListView();
         }
 
     }

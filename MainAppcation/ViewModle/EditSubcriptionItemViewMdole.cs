@@ -20,6 +20,7 @@ namespace NetProxyController.ViewModle
             subName = subItem.SubcriptionName;
             subUrl = subItem.Url;
             isAutoUpdate = subItem.IsAutoUpdate;
+            IsProxyUpdate = subItem.IsProxyUpdate;
             autoUpdateInterval = subItem.AutoUpdateInterval;
             saveBtnCmd = new(SaveBtnExcute!);
         }
@@ -60,6 +61,16 @@ namespace NetProxyController.ViewModle
                 OnPropertyChanged();
             }
         }
+        private bool isProxyUpdate;
+        public bool IsProxyUpdate
+        {
+            get => isProxyUpdate;
+            set
+            {
+                isProxyUpdate = value;
+                OnPropertyChanged();
+            }
+        }
         private int autoUpdateInterval;
         [Range(0,int.MaxValue, ErrorMessage = "请输入正确的值")]
         public int AutoUpdateInterval
@@ -85,6 +96,7 @@ namespace NetProxyController.ViewModle
             subItem.Url = subUrl;
             subItem.IsAutoUpdate = isAutoUpdate;
             subItem.AutoUpdateInterval = autoUpdateInterval;
+            subItem.IsProxyUpdate = isProxyUpdate;
             subItem.SaveToDataBase();
             win.DialogResult = true;
             win.Close();

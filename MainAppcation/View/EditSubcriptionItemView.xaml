@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen"
-        Title="EditSubcriptionItemView" Height="310" Width="400">
+        Title="EditSubcriptionItemView" Height="360" Width="400">
     <StackPanel>
         <StackPanel.Resources>
             <Style TargetType="TextBox" BasedOn="{StaticResource TextBoxExtend}">
@@ -33,6 +33,24 @@
             </Grid.ColumnDefinitions>
             <TextBlock Text="启用自动更新：" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0"/>
             <ToggleButton IsChecked="{Binding IsAutoUpdate}" Style="{StaticResource ToggleButtonCustom}" hc:StatusSwitchElement.HideUncheckedElement="True"  Grid.Column="1" 
+                          HorizontalAlignment="Left" Height="20" Width="70">
+                <hc:StatusSwitchElement.CheckedElement>
+                    <Border Width="70" Height="20" CornerRadius="4" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                        <Ellipse Width="15" Height="15" Fill="{DynamicResource InfoBrush}" StrokeThickness="1" Stroke="{DynamicResource BorderBrush}"/>
+                    </Border>
+                </hc:StatusSwitchElement.CheckedElement>
+                <Border Width="70" Height="20" CornerRadius="4" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">
+                    <Ellipse Width="10" Height="10" Fill="{DynamicResource BorderBrush}" StrokeThickness="1" Stroke="{DynamicResource BorderBrush}"/>
+                </Border>
+            </ToggleButton>
+        </Grid>
+        <Grid Margin="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="更新使用代理：" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0"/>
+            <ToggleButton IsChecked="{Binding IsProxyUpdate}" Style="{StaticResource ToggleButtonCustom}" hc:StatusSwitchElement.HideUncheckedElement="True"  Grid.Column="1" 
                           HorizontalAlignment="Left" Height="20" Width="70">
                 <hc:StatusSwitchElement.CheckedElement>
                     <Border Width="70" Height="20" CornerRadius="4" BorderThickness="1" BorderBrush="{DynamicResource BorderBrush}">

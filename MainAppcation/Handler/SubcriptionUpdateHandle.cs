@@ -3,6 +3,7 @@ using NetProxyController.Modle.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -86,7 +87,7 @@ namespace NetProxyController.Handler
             var msg = string.Empty;
             var requestCts = CancellationTokenSource.CreateLinkedTokenSource(cts.Token);
             requestCts.CancelAfter(TimeSpan.FromSeconds(10));
-            using HttpClient http = new();
+            using HttpClient http = subItem.IsProxyUpdate ? new(new SocketsHttpHandler { UseProxy = true, Proxy = new WebProxy(IPAddress.Loopback.ToString(), ConfigObject.Instance.localPort.Http) }) : new();
             try
             {
                 lock (SubItemIsUpdating)
@@ -128,7 +129,7 @@ namespace NetProxyController.Handler
             {
                 if (cts.IsCancellationRequested)
                 {
-                    return false;                                       
+                    return false;     //当前线程被取消                           
                 }
                 msg = "请求订阅内容超时";
             }
@@ -138,7 +139,7 @@ namespace NetProxyController.Handler
             }
             catch (AvoidException)
             {
-                return false;
+                return false;   //当前订阅正在更新，避让返回
             }
             lock (SubItemIsUpdating) SubItemIsUpdating[subItem.SubcriptionId] = false;
             UpdateEvent?.Invoke(new SubItemUpdateEventArgs(subItem, ret, msg));
