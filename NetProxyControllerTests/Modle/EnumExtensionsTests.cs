@@ -14,9 +14,10 @@ namespace NetProxyController.Modle.Tests
         [TestMethod()]
         public void GetParseEunmExTest()
         {
-            Console.WriteLine(EnumExtensions.ParseEunmEx<TransportSecurity>("reality1"));
-           // Assert.Fail();
-            
+            var cancel = new CancellationTokenSource();
+            var token = cancel.Token;
+            cancel.Cancel();
+            Console.WriteLine(token.IsCancellationRequested);
         }
 
     }

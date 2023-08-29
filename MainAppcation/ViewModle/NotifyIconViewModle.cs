@@ -16,8 +16,8 @@ namespace NetProxyController.ViewModle
 {
     internal class NotifyIconViewModle : ViewModleBase
     {
-        private NotifyWindow _notifyWindow;
-        private ImageSource _notifyWndImage => ConfigObject.Instance.ProxyEnable ? NotifyWindow.StatusEnableImage : NotifyWindow.StatusDisableImage;      
+        private ProxyNotifyWindow.NotifyWindow _notifyWindow;
+        private ImageSource _notifyWndImage => ConfigObject.Instance.ProxyEnable ? ProxyNotifyWindow.NotifyWindow.StatusEnableImage : ProxyNotifyWindow.NotifyWindow.StatusDisableImage;      
    
         public bool ProxyEnableChecked
         {

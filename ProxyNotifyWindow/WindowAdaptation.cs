@@ -110,13 +110,13 @@ namespace ProxyNotifyWindow
             "TopBySreenRatio", typeof(double), typeof(WindowAdaptation), new PropertyMetadata(0.0, OnTopByScreenRatioPropretyChanged));
         public static void OnTopByScreenRatioPropretyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if(d is Window window && e.NewValue is double topByRatio)
+            if (d is Window window && e.NewValue is double topByRatio)
             {
                 window.Top = GetScreenSize(window).Height * topByRatio;
             }
         }
 
-        public static void SetTopBySreenRatio(DependencyObject element,double value)
+        public static void SetTopBySreenRatio(DependencyObject element, double value)
         {
             element.SetValue(TopByScreenRatioProprety, value);
         }
@@ -135,8 +135,8 @@ namespace ProxyNotifyWindow
                 window.Left = GetScreenSize(window).Width * LeftByRatio;
             }
         }
-        
-        public static void SetLeftBySreenRatio(DependencyObject element,double value)
+
+        public static void SetLeftBySreenRatio(DependencyObject element, double value)
         {
             element.SetValue(LeftByScreenRatioProprety, value);
         }
