@@ -7,14 +7,14 @@
         xmlns:vm="clr-namespace:NetProxyController.ViewModle"
         local:AttachProperties.HeightByScreenRatio="0.1"
         Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Height}"
-        Visibility="{Binding WindowVisiblity, Mode=OneWay}"
+        Visibility="{Binding WindowVisiblity, Mode=TwoWay}"
         Opacity="{Binding WindowOpacity, Mode=TwoWay}"
         local:AttachProperties.TopBySreenRatio="0.05"
         local:AttachProperties.LeftBySreenRatio="0.05"
         mc:Ignorable="d"
         Title="NotifyWindow" ShowInTaskbar="False" WindowStyle="None" AllowsTransparency="True" ShowActivated="False" Topmost="True">
     <Window.DataContext>
-        <vm:NotifyWindowViewModlecs/>
+        <vm:NotifyWindowViewModle/>
     </Window.DataContext>
     <Window.Style>
         <Style TargetType="Window">
@@ -27,20 +27,8 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-            <Style.Triggers>
-                <Trigger Property="Visibility" Value="Visible">
-                    <Trigger.EnterActions>
-                        <BeginStoryboard HandoffBehavior="SnapshotAndReplace">
-                            <Storyboard>
-                                <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0:1" BeginTime="0:0:0:2"/>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </Trigger.EnterActions>
-                </Trigger>
-            </Style.Triggers>
         </Style>
     </Window.Style>
-
     <Grid>
         <Viewbox HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Stretch="Fill">
             <Image Stretch="None" 

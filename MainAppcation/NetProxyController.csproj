@@ -17,12 +17,19 @@
     <None Remove="Icon\ProxyDisable.ico" />
     <None Remove="Icon\ProxyEnable.ico" />
     <None Remove="Icon\Setting.ico" />
+    <None Remove="Images\ProxyDisable.png" />
+    <None Remove="Images\ProxyEnable.png" />
     <None Remove="Resources\ProxyDisable.ico" />
     <None Remove="Resources\ProxyEnable.ico" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="ApplicationIcon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\ProxyDisable.png" />
+    <Resource Include="Images\ProxyEnable.png" />
   </ItemGroup>
 
   <ItemGroup>

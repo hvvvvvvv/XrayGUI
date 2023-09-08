@@ -11,14 +11,13 @@ using System.Windows.Media;
 using NetProxyController.Handler;
 using NetProxyController.View;
 using NetProxyController.Modle.Server;
+using System.Windows.Threading;
 
 namespace NetProxyController.ViewModle
 {
     internal class NotifyIconViewModle : ViewModleBase
     {
-        private ProxyNotifyWindow.NotifyWindow _notifyWindow;
-        private ImageSource _notifyWndImage => ConfigObject.Instance.ProxyEnable ? ProxyNotifyWindow.NotifyWindow.StatusEnableImage : ProxyNotifyWindow.NotifyWindow.StatusDisableImage;      
-   
+        private View.NotifyWindow _notifyWindowView;
         public bool ProxyEnableChecked
         {
             get => ConfigObject.Instance.ProxyEnable;
@@ -50,8 +49,8 @@ namespace NetProxyController.ViewModle
 
         public NotifyIconViewModle()
         {
+            _notifyWindowView = new();
             HotkeyHandler.Instance.HotkeyHappenedCallback += OnHotkeyEvenRaise;
-            _notifyWindow = new(_notifyWndImage);
             QuitCmd = new (() => Application.Current.Shutdown(0));
             ShowSettingWndCmd = new(() => SettingWindow.Instance.Show());
             ShowServerManagerCmd = new(() => ServerManager.Instance.Show());
@@ -71,7 +70,7 @@ namespace NetProxyController.ViewModle
         private void OnHotkeyEvenRaise()
         {
             ProxyEnableChecked = !ProxyEnableChecked;
-            _notifyWindow.ShowNotify(_notifyWndImage);
+            _notifyWindowView.Show();
         }
 
     }

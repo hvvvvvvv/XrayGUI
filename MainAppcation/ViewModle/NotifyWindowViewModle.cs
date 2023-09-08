@@ -5,13 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Animation;
 
 namespace NetProxyController.ViewModle
 {
-    internal class NotifyWindowViewModlecs : ViewModleBase
+    internal class NotifyWindowViewModle : ViewModleBase
     {
-        private const double MaxWindowOpacity = 1.0;
-        private const double MinWindowOpacity = 0.0;
+        public double MaxWindowOpacity => 0.8;
+        public double MinWindowOpacity => 0.3;
+        private Storyboard storyboard;
         public string ProxyStatusImagePath => ConfigObject.Instance.ProxyEnable ? "/Images/ProxyEnable.png" : "/Images/ProxyDisable.png";
         private Visibility windowVisiblity;
         public Visibility WindowVisiblity
@@ -19,11 +21,12 @@ namespace NetProxyController.ViewModle
             get => windowVisiblity;
             set
             {
-                windowVisiblity = value;
+                windowVisiblity = value;              
+                if(value == Visibility.Visible) ResetView();
                 OnPropertyChanged();
             }
         }
-        private double windowOpacity = MinWindowOpacity;
+        private double windowOpacity;
         public double WindowOpacity
         {
             get => windowOpacity;
@@ -31,13 +34,19 @@ namespace NetProxyController.ViewModle
             {
                 windowOpacity = value;
                 OnPropertyChanged();
-                WindowVisiblity = value <= MinWindowOpacity ? Visibility.Hidden : Visibility.Visible;
+                if (value <= MinWindowOpacity) WindowVisiblity = Visibility.Hidden;
             }
         }
-        public void ResetView()
+        private void ResetView()
         {
             OnPropertyChanged(nameof(ProxyStatusImagePath));
             WindowOpacity = MaxWindowOpacity;
+        }
+        public NotifyWindowViewModle()
+        {
+            windowOpacity = MinWindowOpacity;
+            windowVisiblity = Visibility.Collapsed;
+            
         }
     }
 }
