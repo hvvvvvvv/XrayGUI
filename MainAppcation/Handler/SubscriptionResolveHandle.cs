@@ -1,6 +1,6 @@
-﻿using NetProxyController.Modle.Server;
-using NetProxyController.Modle.Subscription;
-using NetProxyController.Modle;
+﻿using XrayGUI.Modle.Server;
+using XrayGUI.Modle.Subscription;
+using XrayGUI.Modle;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -13,7 +13,7 @@ using XrayCoreConfigModle;
 using System.Net.NetworkInformation;
 using static Vanara.PInvoke.User32;
 
-namespace NetProxyController.Handler
+namespace XrayGUI.Handler
 {
     public class SubscriptionResolveHandle
     {

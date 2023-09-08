@@ -10,7 +10,7 @@ using System.Windows;
 using System.Runtime.InteropServices;
 using System.Windows.Interop;
 
-namespace NetProxyController.Tools
+namespace XrayGUI.Tools
 {
     internal class ImageHelper
     {

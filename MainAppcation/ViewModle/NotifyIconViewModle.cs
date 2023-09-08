@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Drawing;
-using NetProxyController.Modle;
+using XrayGUI.Modle;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows;
 using System.Windows.Media;
-using NetProxyController.Handler;
-using NetProxyController.View;
-using NetProxyController.Modle.Server;
+using XrayGUI.Handler;
+using XrayGUI.View;
+using XrayGUI.Modle.Server;
 using System.Windows.Threading;
 
-namespace NetProxyController.ViewModle
+namespace XrayGUI.ViewModle
 {
     internal class NotifyIconViewModle : ViewModleBase
     {

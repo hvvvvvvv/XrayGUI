@@ -1,4 +1,4 @@
-﻿using NetProxyController.ViewModle;
+﻿using XrayGUI.ViewModle;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,7 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 
-namespace NetProxyController.View
+namespace XrayGUI.View
 {
     /// <summary>
     /// ServerManager.xaml 的交互逻辑

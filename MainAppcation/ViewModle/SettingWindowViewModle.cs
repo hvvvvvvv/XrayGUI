@@ -8,13 +8,13 @@ using System.Text;
 using System.Threading.Tasks;
 using GlobalHotkey;
 using CommunityToolkit.Mvvm.Input;
-using NetProxyController.Modle;
+using XrayGUI.Modle;
 using HandyControl.Controls;
-using NetProxyController.Handler;
+using XrayGUI.Handler;
 using System.ComponentModel.DataAnnotations;
 using System.Windows.Input;
 
-namespace NetProxyController.ViewModle
+namespace XrayGUI.ViewModle
 {
     internal class SettingWindowViewModle : ViewModleBase
     {

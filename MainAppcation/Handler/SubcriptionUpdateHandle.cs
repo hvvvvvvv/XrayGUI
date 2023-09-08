@@ -1,5 +1,5 @@
-﻿using NetProxyController.Modle;
-using NetProxyController.Modle.Server;
+﻿using XrayGUI.Modle;
+using XrayGUI.Modle.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Vanara.Extensions;
 
-namespace NetProxyController.Handler
+namespace XrayGUI.Handler
 {
     internal class SubcriptionUpdateHandle
     {

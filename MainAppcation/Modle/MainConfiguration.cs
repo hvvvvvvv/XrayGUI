@@ -18,7 +18,7 @@ using RunAtStartup;
 using XrayCoreConfigModle;
 using static System.Windows.Forms.Design.AxImporter;
 
-namespace NetProxyController.Modle
+namespace XrayGUI.Modle
 {
     internal class MainConfigration
     {

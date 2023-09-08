@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Security.EnterpriseData;
-using NetProxyController.Modle.Server;
-using NetProxyController.Modle;
+using XrayGUI.Modle.Server;
+using XrayGUI.Modle;
 
-namespace NetProxyController.ViewModle
+namespace XrayGUI.ViewModle
 {
     internal class TcpSettingViewModle : ViewModleBase
     {

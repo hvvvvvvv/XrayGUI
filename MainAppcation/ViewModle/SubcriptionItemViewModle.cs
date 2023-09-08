@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using NetProxyController.Handler;
-using NetProxyController.Modle.Server;
-using NetProxyController.View;
+using XrayGUI.Handler;
+using XrayGUI.Modle.Server;
+using XrayGUI.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NetProxyController.ViewModle
+namespace XrayGUI.ViewModle
 {
     internal class SubcriptionItemViewModle : ViewModleBase
     {

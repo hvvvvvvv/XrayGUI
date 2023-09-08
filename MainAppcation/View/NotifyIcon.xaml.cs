@@ -9,11 +9,11 @@ using System.Windows.Controls;
 using WindowsProxy;
 using System.Windows.Controls.Ribbon;
 using System.Security.Cryptography;
-using NetProxyController.ViewModle;
+using XrayGUI.ViewModle;
 using System.Drawing;
-using NetProxyController.Modle;
+using XrayGUI.Modle;
 
-namespace NetProxyController.View
+namespace XrayGUI.View
 {
     public partial class NotifyIcon : TaskbarIcon
     {

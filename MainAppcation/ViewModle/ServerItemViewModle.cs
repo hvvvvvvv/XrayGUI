@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using NetProxyController.Modle;
-using NetProxyController.Modle.Server;
-using NetProxyController.View;
+using XrayGUI.Modle;
+using XrayGUI.Modle.Server;
+using XrayGUI.View;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace NetProxyController.ViewModle
+namespace XrayGUI.ViewModle
 {
     internal class ServerItemViewModle : ViewModleBase
     {

@@ -1,4 +1,4 @@
-﻿using NetProxyController.Modle;
+﻿using XrayGUI.Modle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Networking.Connectivity;
 
-namespace NetProxyController.Handler
+namespace XrayGUI.Handler
 {
     internal class AutoStartHandler: RunAtStartup.StartupService
     {

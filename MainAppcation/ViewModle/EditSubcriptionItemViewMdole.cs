@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using NetProxyController.Modle;
+using XrayGUI.Modle;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace NetProxyController.ViewModle
+namespace XrayGUI.ViewModle
 {
     internal class EditSubcriptionItemViewMdole : ViewModleBase
     {

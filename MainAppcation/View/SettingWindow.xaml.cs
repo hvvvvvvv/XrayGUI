@@ -16,15 +16,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using GlobalHotkey;
-using NetProxyController.Tools;
+using XrayGUI.Tools;
 using HandyControl.Themes;
-using NetProxyController.Modle;
+using XrayGUI.Modle;
 using Windows.Services.Store;
 using XrayCoreConfigModle;
-using NetProxyController.ViewModle;
+using XrayGUI.ViewModle;
 using Windows.ApplicationModel.Store.LicenseManagement;
 
-namespace NetProxyController
+namespace XrayGUI
 {
     /// <summary>
     /// SettingWindow.xaml 的交互逻辑

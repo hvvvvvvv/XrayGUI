@@ -1,5 +1,5 @@
-﻿using NetProxyController.Modle;
-using NetProxyController.Modle.Server;
+﻿using XrayGUI.Modle;
+using XrayGUI.Modle.Server;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,7 +9,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetProxyController.ViewModle
+namespace XrayGUI.ViewModle
 {
     internal class KcpSettingViewModle : ViewModleBase
     {

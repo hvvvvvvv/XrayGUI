@@ -1,4 +1,4 @@
-﻿using NetProxyController.ViewModle;
+﻿using XrayGUI.ViewModle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace NetProxyController.View
+namespace XrayGUI.View
 {
     /// <summary>
     /// SubcriptionManagerView.xaml 的交互逻辑

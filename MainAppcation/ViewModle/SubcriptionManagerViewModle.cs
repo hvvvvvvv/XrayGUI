@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Forms;
 using CommunityToolkit.Mvvm.Input;
-using NetProxyController.Handler;
-using NetProxyController.Modle;
-using NetProxyController.Modle.Server;
-using NetProxyController.View;
+using XrayGUI.Handler;
+using XrayGUI.Modle;
+using XrayGUI.Modle.Server;
+using XrayGUI.View;
 
-namespace NetProxyController.ViewModle
+namespace XrayGUI.ViewModle
 {
     internal class SubcriptionManagerViewModle : ViewModleBase
     {

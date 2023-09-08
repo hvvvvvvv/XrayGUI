@@ -6,10 +6,10 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using XrayCoreConfigModle;
-using NetProxyController.Modle;
+using XrayGUI.Modle;
 using System.Collections.ObjectModel;
 
-namespace NetProxyController.Modle.Server
+namespace XrayGUI.Modle.Server
 {
     public class ServerItem
     {

@@ -1,4 +1,4 @@
-﻿using NetProxyController.Modle.Server;
+﻿using XrayGUI.Modle.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +12,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using NetProxyController.ViewModle;
+using XrayGUI.ViewModle;
 
-namespace NetProxyController.View
+namespace XrayGUI.View
 {
     /// <summary>
     /// ServerSettingWindow.xaml 的交互逻辑

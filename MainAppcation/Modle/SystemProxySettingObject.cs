@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetProxyController.Modle
+namespace XrayGUI.Modle
 {
     internal class SystemProxySettingObject
     {

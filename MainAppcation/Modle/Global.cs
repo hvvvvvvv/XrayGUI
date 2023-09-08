@@ -7,11 +7,11 @@ using Vanara.PInvoke;
 using SQLite;
 using System.Collections.ObjectModel;
 
-namespace NetProxyController.Modle
+namespace XrayGUI.Modle
 {
     public static class Global
     {
-        public const string AutoStartItemName = "NetProxyController";
+        public const string AutoStartItemName = "XrayGUI";
         public const string LoopBcakAddress = "127.0.0.1";
         public const string XrayDirectTag = "direct";
         public static readonly string AppConfigPath = AppContext.BaseDirectory + @"Config\AppCofing.json";

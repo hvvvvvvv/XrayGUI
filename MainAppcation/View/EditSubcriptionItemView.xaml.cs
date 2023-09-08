@@ -1,5 +1,5 @@
-﻿using NetProxyController.Modle;
-using NetProxyController.ViewModle;
+﻿using XrayGUI.Modle;
+using XrayGUI.ViewModle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace NetProxyController.View
+namespace XrayGUI.View
 {
     /// <summary>
     /// EditSubcriptionItemView.xaml 的交互逻辑

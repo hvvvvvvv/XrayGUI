@@ -6,16 +6,16 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows;
 using static Vanara.PInvoke.Kernel32;
-using NetProxyController.View;
-using NetProxyController.Modle;
+using XrayGUI.View;
+using XrayGUI.Modle;
 using System.Threading;
-using NetProxyController.Modle.Server;
-using NetProxyController.Tools;
+using XrayGUI.Modle.Server;
+using XrayGUI.Tools;
 using XrayCoreConfigModle;
 using XrayCoreConfigModle.Inbound;
 using SQLite;
 
-namespace NetProxyController
+namespace XrayGUI
 {
     public partial class App: Application
 	{

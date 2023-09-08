@@ -1,4 +1,4 @@
-﻿using NetProxyController.Modle;
+﻿using XrayGUI.Modle;
 using System;
 using System.Windows.Input;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetProxyController.Handler
+namespace XrayGUI.Handler
 {
     internal class HotkeyHandler
     {

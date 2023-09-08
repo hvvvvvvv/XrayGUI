@@ -4,11 +4,11 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using NetProxyController.Modle;
+using XrayGUI.Modle;
 using SQLite;
 using XrayCoreConfigModle.ProtocolSetting;
 
-namespace NetProxyController.Modle.Server
+namespace XrayGUI.Modle.Server
 {
     public class StreamInfo
     {

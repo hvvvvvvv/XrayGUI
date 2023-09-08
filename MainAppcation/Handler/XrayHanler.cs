@@ -8,20 +8,20 @@ using System.Text;
 using System.Threading.Tasks;
 using XrayCoreConfigModle;
 using Windows.Gaming.Preview.GamesEnumeration;
-using NetProxyController.Modle;
+using XrayGUI.Modle;
 using XrayCoreConfigModle.Inbound;
 using XrayCoreConfigModle.Routing;
 using Windows.System.Profile;
 using HandyControl.Controls;
 using HandyControl.Data;
-using NetProxyController.Modle.Server;
+using XrayGUI.Modle.Server;
 using XrayCoreConfigModle.OutBound;
-using NetProxyController.ViewModle;
+using XrayGUI.ViewModle;
 using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 
-namespace NetProxyController.Handler
+namespace XrayGUI.Handler
 {
     internal class XrayHanler
     {

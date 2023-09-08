@@ -11,7 +11,7 @@ using Vanara.PInvoke;
 using static System.Net.Mime.MediaTypeNames;
 using static Vanara.PInvoke.User32;
 
-namespace NetProxyController.Tools
+namespace XrayGUI.Tools
 {
     public static class EncodeHelper
     {

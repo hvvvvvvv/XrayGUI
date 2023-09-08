@@ -1,5 +1,5 @@
-﻿using NetProxyController.Modle;
-using NetProxyController.ViewModle;
+﻿using XrayGUI.Modle;
+using XrayGUI.ViewModle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using XrayCoreConfigModle.Routing;
 using XrayCoreConfigModle;
 
-namespace NetProxyController.Handler
+namespace XrayGUI.Handler
 {
     internal class XrayTestServerHandle : XrayHanler
     {

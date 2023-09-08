@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using SQLite;
 using XrayCoreConfigModle.OutBound;
 
-namespace NetProxyController.Modle.Server
+namespace XrayGUI.Modle.Server
 {
     internal class TrojanInfo: OutBoundConfiguration
     {

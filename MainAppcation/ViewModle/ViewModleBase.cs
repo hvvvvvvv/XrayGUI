@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Vanara.Extensions.Reflection;
 using Vanara.PInvoke;
 
-namespace NetProxyController.ViewModle
+namespace XrayGUI.ViewModle
 {
     internal abstract class ViewModleBase : INotifyPropertyChanged, INotifyDataErrorInfo
     {

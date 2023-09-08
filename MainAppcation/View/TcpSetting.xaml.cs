@@ -1,4 +1,4 @@
-﻿using NetProxyController.Modle.Server;
+﻿using XrayGUI.Modle.Server;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace NetProxyController.View
+namespace XrayGUI.View
 {
     /// <summary>
     /// TcpSetting.xaml 的交互逻辑

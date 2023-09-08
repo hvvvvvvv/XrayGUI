@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XrayCoreConfigModle.OutBound;
 
-namespace NetProxyController.Modle.Server
+namespace XrayGUI.Modle.Server
 {
     public abstract class OutBoundConfiguration
     {

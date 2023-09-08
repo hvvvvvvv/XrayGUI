@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Input;
-using NetProxyController.Modle;
-using NetProxyController.Modle.Server;
-using NetProxyController.View;
+using XrayGUI.Modle;
+using XrayGUI.Modle.Server;
+using XrayGUI.View;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,13 +13,13 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Diagnostics;
 using HandyControl.Controls;
-using NetProxyController.Handler;
+using XrayGUI.Handler;
 using System.Windows;
 using System.Windows.Threading;
 using System.Collections.ObjectModel;
 using System.Threading;
 
-namespace NetProxyController.ViewModle
+namespace XrayGUI.ViewModle
 {
     internal class ServerManagerViewModle: ViewModleBase
     {

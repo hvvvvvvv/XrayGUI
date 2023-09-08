@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using NetProxyController.View;
-using NetProxyController.Modle;
+using XrayGUI.View;
+using XrayGUI.Modle;
 using SQLite;
-using NetProxyController.Modle.Server;
+using XrayGUI.Modle.Server;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Windows.Networking.Sockets;
@@ -17,9 +17,9 @@ using System.Runtime.CompilerServices;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
-using NetProxyController.Handler;
+using XrayGUI.Handler;
 
-namespace NetProxyController.ViewModle
+namespace XrayGUI.ViewModle
 {
     internal class ServerSettingViewModle: ViewModleBase
     {

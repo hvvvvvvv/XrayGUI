@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using XrayCoreConfigModle;
 
-namespace NetProxyController.Modle
+namespace XrayGUI.Modle
 {
     internal class XrayCoreSettingObject
     {

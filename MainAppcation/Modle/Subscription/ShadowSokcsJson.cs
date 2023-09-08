@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetProxyController.Modle.Subscription
+namespace XrayGUI.Modle.Subscription
 {
     internal class ShadowSokcsJson
     {

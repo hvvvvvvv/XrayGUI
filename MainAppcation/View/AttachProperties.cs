@@ -12,7 +12,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Interop;
 
-namespace NetProxyController.View
+namespace XrayGUI.View
 {
     public class AttachProperties
     {

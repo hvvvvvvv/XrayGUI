@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace NetProxyController.View
+namespace XrayGUI.View
 {
     /// <summary>
     /// NotifyWindow.xaml 的交互逻辑

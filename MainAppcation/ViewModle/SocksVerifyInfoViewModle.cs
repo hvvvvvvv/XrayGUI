@@ -1,4 +1,4 @@
-﻿using NetProxyController.Modle.Server;
+﻿using XrayGUI.Modle.Server;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetProxyController.ViewModle
+namespace XrayGUI.ViewModle
 {
     internal class SocksVerifyInfoViewModle : ViewModleBase
     {

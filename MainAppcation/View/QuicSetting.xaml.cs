@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace NetProxyController.View
+namespace XrayGUI.View
 {
     /// <summary>
     /// QuicSetting.xaml 的交互逻辑
