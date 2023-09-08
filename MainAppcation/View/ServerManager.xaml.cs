@@ -28,10 +28,6 @@ namespace NetProxyController.View
         {
             InitializeComponent();
             Closing += (_, _) => IsClosed = true;
-            foreach(var i in listView.Items)
-            {
-                
-            }
         }
         private static ServerManager _instance = new ServerManager();
         public static ServerManager Instance

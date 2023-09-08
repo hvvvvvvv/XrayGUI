@@ -51,7 +51,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GlobalHotkey\GlobalHotkey.csproj" />
-    <ProjectReference Include="..\ProxyNotifyWindow\ProxyNotifyWindow.csproj" />
     <ProjectReference Include="..\XrayCoreConfigModle\XrayCoreConfigModle.csproj" />
   </ItemGroup>
 

@@ -18,7 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace ProxyNotifyWindow
+namespace test
 {
     /// <summary>
     /// NotifyWindow.xaml 的交互逻辑

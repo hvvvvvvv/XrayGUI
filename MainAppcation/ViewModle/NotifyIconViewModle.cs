@@ -6,7 +6,6 @@ using System.Text;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using System.Windows;
-using ProxyNotifyWindow;
 using System.Windows.Media;
 using NetProxyController.Handler;
 using NetProxyController.View;

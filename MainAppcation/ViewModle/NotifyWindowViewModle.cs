@@ -5,24 +5,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 
 namespace NetProxyController.ViewModle
 {
     internal class NotifyWindowViewModle : ViewModleBase
     {
-        public double MaxWindowOpacity => 0.8;
-        public double MinWindowOpacity => 0.3;
-        private Storyboard storyboard;
-        public string ProxyStatusImagePath => ConfigObject.Instance.ProxyEnable ? "/Images/ProxyEnable.png" : "/Images/ProxyDisable.png";
+        public const double MaxWindowOpacity = 0.8;
+        public const double MinWindowOpacity = 0.3;
+        public const int FadeOutTime = 1000;
+        public const int DelayTime = 2000;
+        private static BitmapImage ProxyEnabledImage = new(new Uri("pack://application:,,,/Images/ProxyEnable.png"));
+        private static BitmapImage ProxyDisabledImage = new(new Uri("pack://application:,,,/Images/ProxyDisable.png"));
+        public BitmapImage ProxyStatusImagePath => ConfigObject.Instance.ProxyEnable ? ProxyEnabledImage : ProxyDisabledImage;
+        public event Action? OnWindowIsVisible;
         private Visibility windowVisiblity;
         public Visibility WindowVisiblity
         {
             get => windowVisiblity;
             set
-            {
-                windowVisiblity = value;              
-                if(value == Visibility.Visible) ResetView();
+            {                           
+                if(value == Visibility.Visible)
+                {
+                    ResetView();
+                    OnWindowIsVisible?.Invoke();
+                }
+                windowVisiblity = value;
                 OnPropertyChanged();
             }
         }
@@ -34,7 +42,6 @@ namespace NetProxyController.ViewModle
             {
                 windowOpacity = value;
                 OnPropertyChanged();
-                if (value <= MinWindowOpacity) WindowVisiblity = Visibility.Hidden;
             }
         }
         private void ResetView()
@@ -46,7 +53,6 @@ namespace NetProxyController.ViewModle
         {
             windowOpacity = MinWindowOpacity;
             windowVisiblity = Visibility.Collapsed;
-            
         }
     }
 }

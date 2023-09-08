@@ -10,7 +10,7 @@ using System.Windows.Forms;
 using System.Windows.Interop;
 
 
-namespace ProxyNotifyWindow
+namespace test
 {
     public class WindowAdaptation
     {

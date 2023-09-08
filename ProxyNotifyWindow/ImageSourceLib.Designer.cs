@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ProxyNotifyWindow {
+namespace test {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace ProxyNotifyWindow {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ProxyNotifyWindow.ImageSourceLib", typeof(ImageSourceLib).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("test.ImageSourceLib", typeof(ImageSourceLib).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

@@ -8,7 +8,6 @@ using Hardcodet.Wpf.TaskbarNotification;
 using System.Windows.Controls;
 using WindowsProxy;
 using System.Windows.Controls.Ribbon;
-using ProxyNotifyWindow;
 using System.Security.Cryptography;
 using NetProxyController.ViewModle;
 using System.Drawing;

@@ -8,7 +8,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using Vanara.Extensions.Reflection;
-using ProxyNotifyWindow;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Interop;
@@ -245,7 +244,7 @@ namespace NetProxyController.View
         }
 
         public static readonly DependencyProperty LeftByScreenRatioProprety = DependencyProperty.RegisterAttached(
-            "LeftBySreenRatio", typeof(double), typeof(WindowAdaptation), new PropertyMetadata(0.0, OnLeftByScreenRatioPropretyChanged));
+            "LeftBySreenRatio", typeof(double), typeof(AttachProperties), new PropertyMetadata(0.0, OnLeftByScreenRatioPropretyChanged));
         public static void OnLeftByScreenRatioPropretyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is Window window && e.NewValue is double LeftByRatio)
