@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XrayGUI", "MainAppcation\XrayGUI.csproj", "{4A6335AD-FC15-4412-8552-61036298CFB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XrayGUI", "XrayGUI\XrayGUI.csproj", "{4A6335AD-FC15-4412-8552-61036298CFB8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GlobalHotkey", "GlobalHotkey\GlobalHotkey.csproj", "{4391F841-5D96-4E78-B744-1CB81E4DD122}"
 EndProject
