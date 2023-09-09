@@ -11,6 +11,7 @@ using XrayGUI.Handler;
 using XrayGUI.View;
 using XrayGUI.Modle.Server;
 using System.Windows.Threading;
+using System.Windows.Media.Imaging;
 
 namespace XrayGUI.ViewModle
 {
@@ -30,7 +31,9 @@ namespace XrayGUI.ViewModle
                 ConfigObject.Instance.Save();
             }
         }     
-        public string BarIconPath => ConfigObject.Instance.ProxyEnable ? "/Icon/ProxyEnable.ico" : "/Icon/ProxyDisable.ico";
+        public BitmapImage BarIconPath => ConfigObject.Instance.ProxyEnable ? proxyEnabled : proxyDisabled;
+        private static readonly BitmapImage proxyEnabled = new(new Uri("pack://application:,,,/Icon/ProxyEnable.ico"));
+        private static readonly BitmapImage proxyDisabled = new(new Uri("pack://application:,,,/Icon/ProxyDisable.ico"));
         public string ToolTipText => ConfigObject.Instance.ProxyEnable ? "代理已开启" : "代理已关闭";
         public bool AutoStartChecked
         {

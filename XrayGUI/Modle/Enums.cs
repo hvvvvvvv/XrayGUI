@@ -110,6 +110,17 @@ namespace XrayGUI.Modle
         randomized = 9
     }
 
+    [Flags]
+    public enum KeyModifier
+    {
+        None = 0x0000,
+        Alt = 0x0001,
+        Ctrl = 0x0002,
+        Shift = 0x0004,
+        Win = 0x0008,
+        NoRepeat = 0x4000
+    }
+
     public static class EnumExtensions
     {
         public static string GetStringValue(this FeignType value)

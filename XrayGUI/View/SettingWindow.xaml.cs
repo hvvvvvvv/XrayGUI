@@ -15,7 +15,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using GlobalHotkey;
 using XrayGUI.Tools;
 using HandyControl.Themes;
 using XrayGUI.Modle;

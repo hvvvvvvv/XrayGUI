@@ -6,7 +6,6 @@ using CommunityToolkit;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GlobalHotkey;
 using CommunityToolkit.Mvvm.Input;
 using XrayGUI.Modle;
 using HandyControl.Controls;

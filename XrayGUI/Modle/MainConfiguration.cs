@@ -8,7 +8,6 @@ using System.Text.Json.Nodes;
 using System.IO;
 using System.ComponentModel;
 using System.Text.Json;
-using GlobalHotkey;
 using System.Net.Sockets;
 using System.Windows.Input;
 using System.Drawing;

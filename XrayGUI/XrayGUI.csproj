@@ -40,6 +40,7 @@
     <PackageReference Include="RunAtStartup" Version="5.0.2" />
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
     <PackageReference Include="Vanara.PInvoke.Kernel32" Version="3.4.13" />
+    <PackageReference Include="Vanara.PInvoke.User32" Version="3.4.13" />
     <PackageReference Include="WindowsProxy" Version="6.0.0" />
   </ItemGroup>
 
@@ -50,7 +51,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GlobalHotkey\GlobalHotkey.csproj" />
     <ProjectReference Include="..\XrayCoreConfigModle\XrayCoreConfigModle.csproj" />
   </ItemGroup>
 
