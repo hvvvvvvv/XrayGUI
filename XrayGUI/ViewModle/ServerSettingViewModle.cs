@@ -18,14 +18,16 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 using XrayGUI.Handler;
+using Windows.Networking.NetworkOperators;
+using Windows.ApplicationModel.Search.Core;
 
 namespace XrayGUI.ViewModle
 {
     internal class ServerSettingViewModle: ViewModleBase
     {
-        private Dictionary<OutboundProtocol, UserControl> VerifyInfoView;
-        private Dictionary<OutboundProtocol, OutBoundConfiguration> ProtocolModles;
-        private Dictionary<TransportType, UserControl> transportSettingView;
+        private Dictionary<OutboundProtocol, UserControl?> VerifyInfoView;
+        private Dictionary<OutboundProtocol, OutBoundConfiguration?> ProtocolModles;
+        private Dictionary<TransportType, UserControl?> transportSettingView;
         private Dictionary<TransportSecurity, UserControl?> securitySettingView;
         private ServerItem Server;
         private StreamInfo StreaminfoObj;
@@ -63,6 +65,8 @@ namespace XrayGUI.ViewModle
             SocksInfo socks = Server.Protocol == OutboundProtocol.socks ? Server.GetProtocolInfoObj() as SocksInfo ?? new() : new();
             VerifyInfoView.Add(OutboundProtocol.socks, new SocksVerifyInfo() { DataContext = new SocksVerifyInfoViewModle(socks) });
             ProtocolModles.Add(OutboundProtocol.socks, socks);
+            VerifyInfoView.Add(OutboundProtocol.freedom, null);
+            ProtocolModles.Add(OutboundProtocol.freedom, null);
             #endregion
 
             #region 传输协议
@@ -72,6 +76,7 @@ namespace XrayGUI.ViewModle
             transportSettingView.Add(TransportType.http, new H2Setting() { DataContext = new H2SettingViewModle(StreaminfoObj.H2Transport) });
             transportSettingView.Add(TransportType.grpc, new GrpcSetting() { DataContext = new GrpcSettingViewModle(StreaminfoObj.GrpcTranport) });
             transportSettingView.Add(TransportType.ws, new WebSocketSetting() { DataContext = new WebSocksSettingViewModle(StreaminfoObj.WsTransport) });
+            transportSettingView.Add(TransportType.none, null);
             #endregion
             #region 加密方案
             securitySettingView.Add(TransportSecurity.tls, new TlsSetting() { DataContext = new TlsSettingViewModle(StreaminfoObj.TlsPolicy) });
@@ -115,7 +120,19 @@ namespace XrayGUI.ViewModle
             win.Close();
         }
         public IEnumerable<OutboundProtocol> ProxyProtocolValues { get; private set; } = Enum.GetValues(typeof(OutboundProtocol)).Cast<OutboundProtocol>();
-        public IEnumerable<TransportType> TransportProtocolValues {get; private set; } = Enum.GetValues<TransportType>().Cast<TransportType>();
+        public IEnumerable<TransportType> TransportProtocolValues
+        {
+            get
+            {
+                var ret = SelectedProtocol switch
+                {
+                    OutboundProtocol.freedom => Enum.GetValues<TransportType>().Cast<TransportType>().Where(i => i == TransportType.none),
+                    _ => Enum.GetValues<TransportType>().Cast<TransportType>().Where(i => i != TransportType.none)
+                };
+                TransportProtocolSelectedValue = ret.Contains(TransportProtocolSelectedValue) ? TransportProtocolSelectedValue : ret.FirstOrDefault();
+                return ret;
+            }
+        }
         public TransportType TransportProtocolSelectedValue
         {
             get => StreaminfoObj.Transport;
@@ -127,7 +144,20 @@ namespace XrayGUI.ViewModle
             }
         }
 
-        public IEnumerable<TransportSecurity> SecurityValues { get; private set; } = Enum.GetValues<TransportSecurity>().Cast<TransportSecurity>();
+        public IEnumerable<TransportSecurity> SecurityValues
+        {
+            get
+            {
+                var ret = Server.Protocol switch
+                {
+                    OutboundProtocol.freedom => Enum.GetValues<TransportSecurity>().Cast<TransportSecurity>().Where(i => i == TransportSecurity.none),
+                    _ => Enum.GetValues<TransportSecurity>().Cast<TransportSecurity>()
+                };
+                SecuritySelectedValue = ret.Contains(SecuritySelectedValue) ? SecuritySelectedValue : ret.FirstOrDefault();
+                return ret;                   
+            }
+        }
+            
         public TransportSecurity SecuritySelectedValue
         {
             get => StreaminfoObj.Security;
@@ -158,6 +188,14 @@ namespace XrayGUI.ViewModle
                 Server.Protocol = value;
                 OnPropertyChanged(nameof(SelectedProtocol));
                 OnPropertyChanged(nameof(ProxyUserSettingView));
+                OnPropertyChanged(nameof(IsNotCheckedFreedom));
+                OnPropertyChanged(nameof(SecurityValues));
+                OnPropertyChanged(nameof(TransportProtocolValues));
+                if(value == OutboundProtocol.freedom)
+                {
+                    ClearErrors(nameof(PortStr));
+                    ClearErrors(nameof(Addr));
+                }
             }
         }
         public RelayCommand<Window> SaveBtnCmd { get; set; }
@@ -199,6 +237,16 @@ namespace XrayGUI.ViewModle
                     Server.Port = Convert.ToInt32(PortStr);
                 }
             }
-        } 
+        }
+        public bool IsNotCheckedFreedom => SelectedProtocol != OutboundProtocol.freedom;
+
+        protected override bool ValidationProperty([CallerMemberName] string? propertyName = null)
+        {
+            if(Server.Protocol == OutboundProtocol.freedom && (propertyName == nameof(PortStr) || propertyName == nameof(Addr)))
+            {
+                return true;
+            }
+            return base.ValidationProperty(propertyName);
+        }
     }
 }

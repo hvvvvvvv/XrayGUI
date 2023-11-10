@@ -79,5 +79,11 @@ namespace XrayGUI.ViewModle
             }
             return res;
         }
+
+        protected void ClearErrors(string propertyName)
+        {
+            _Errors.Remove(propertyName);
+            OnErrorsChanged(propertyName);
+        }
     }
 }

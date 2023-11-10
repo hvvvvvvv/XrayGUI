@@ -25,7 +25,8 @@ namespace XrayGUI.Modle
         vmess = 1,
         trojan = 2,
         socks = 3,
-        shadowsocks = 4
+        shadowsocks = 4,
+        freedom = 5,
     }
     public enum XtlsFlow
     {
@@ -66,6 +67,7 @@ namespace XrayGUI.Modle
         http = 3,
         quic = 4,
         grpc = 5,
+        none = 6
     }
     public enum TransportSecurity
     {

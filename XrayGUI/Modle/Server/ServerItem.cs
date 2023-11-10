@@ -48,7 +48,7 @@ namespace XrayGUI.Modle.Server
             }
         }
         public OutBoundConfiguration? GetProtocolInfoObj() => protocolInfoObj;
-        public void SetProtocolInfoObj(OutBoundConfiguration obj) => protocolInfoObj = obj;
+        public void SetProtocolInfoObj(OutBoundConfiguration? obj) => protocolInfoObj = obj;
         private OutBoundConfiguration? protocolInfoObj;
 
         private StreamInfo? streamInfoObj;
@@ -78,7 +78,7 @@ namespace XrayGUI.Modle.Server
                 protocol = Protocol.ToString(),
                 tag = Index.ToString(),
                 settings = protocolInfoObj?.ToOutboundConfigurationObject(Address, Port),
-                streamSettings = streamInfoObj?.ToStreamSettingsObject(),
+                streamSettings = Protocol == OutboundProtocol.freedom ? null : streamInfoObj?.ToStreamSettingsObject(),
             };
         }
         public void SaveToDataBase()

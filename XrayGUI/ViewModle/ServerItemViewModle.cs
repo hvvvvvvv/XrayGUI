@@ -37,7 +37,7 @@ namespace XrayGUI.ViewModle
         {
             ServerName = Server.Remarks;
             Address = Server.Address;
-            Port = Server.Port;
+            Port = Server.Port.ToString();
             ProxyProtocol = Server.Protocol;
             TransportProtocol = Server.GetStreamInfo().Transport;
             SecurityPolicy = Server.GetStreamInfo().Security;
@@ -93,10 +93,10 @@ namespace XrayGUI.ViewModle
             set => SetProperty(ref address, value);
         }
         private int port = default!;
-        public int Port
+        public string Port
         {
-            get => port;
-            set => SetProperty(ref port, value);
+            get => port.ToString();
+            set => SetProperty(ref port, Convert.ToInt32(value));
         }
         public string SubGroupName
         {
