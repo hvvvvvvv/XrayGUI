@@ -14,6 +14,7 @@ namespace XrayGUI.Modle
         public const string AutoStartItemName = "XrayGUI";
         public const string LoopBcakAddress = "127.0.0.1";
         public const string XrayDirectTag = "direct";
+        public const string MatchItemUndefined = "/";
         public static readonly string AppConfigPath = AppContext.BaseDirectory + @"Config\AppCofing.json";
         public static readonly string XrayCoreConfigPath = AppContext.BaseDirectory + @"Config\XrayCoreConfig.json";
         public static readonly string XrayCoreTestConfigPath = AppContext.BaseDirectory + @"Config\XrayCoreTestConfig.json";

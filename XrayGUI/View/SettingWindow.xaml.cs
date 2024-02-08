@@ -22,6 +22,7 @@ using Windows.Services.Store;
 using XrayCoreConfigModle;
 using XrayGUI.ViewModle;
 using Windows.ApplicationModel.Store.LicenseManagement;
+using HandyControl.Data;
 
 namespace XrayGUI
 {
@@ -34,7 +35,12 @@ namespace XrayGUI
         internal SettingWindow()
         {
             InitializeComponent();
-            Closing += (_,_) => IsClosed = true;            
+            Closing += (_,_) => IsClosed = true;
+        }
+        public new void Show()
+        {
+            base.Show();
+            Activate();
         }
         private static SettingWindow _instance = new SettingWindow();
         public static SettingWindow Instance

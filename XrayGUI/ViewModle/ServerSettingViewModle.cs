@@ -26,7 +26,6 @@ namespace XrayGUI.ViewModle
     internal class ServerSettingViewModle: ViewModleBase
     {
         private Dictionary<OutboundProtocol, UserControl?> VerifyInfoView;
-        private Dictionary<OutboundProtocol, OutBoundConfiguration?> ProtocolModles;
         private Dictionary<TransportType, UserControl?> transportSettingView;
         private Dictionary<TransportSecurity, UserControl?> securitySettingView;
         private ServerItem Server;
@@ -36,11 +35,13 @@ namespace XrayGUI.ViewModle
             Server = server;
             StreaminfoObj = Server.GetStreamInfo();
             VerifyInfoView = new();
-            ProtocolModles = new();
             transportSettingView = new();
             securitySettingView = new();
             SaveBtnCmd = new(SaveBtn!);
             portStr = Server.Port.ToString();
+            addr = Server.Address;
+            remarks = Server.Remarks;
+            selectedProtocol = Server.Protocol;
             InitData();
         }
         public ServerSettingViewModle() : this(new ServerItem())
@@ -52,21 +53,15 @@ namespace XrayGUI.ViewModle
             #region 代理协议验证信息
             VlessInfo vless = Server.Protocol == OutboundProtocol.vless ? Server.GetProtocolInfoObj() as VlessInfo ?? new() : new();
             VerifyInfoView.Add(OutboundProtocol.vless, new VlessVerifyInfo() { DataContext = new VlessVerifyInfoViewModle(vless) });
-            ProtocolModles.Add(OutboundProtocol.vless, vless);
             VmessInfo vmess = Server.Protocol == OutboundProtocol.vmess ? Server.GetProtocolInfoObj() as VmessInfo ?? new() : new();
             VerifyInfoView.Add(OutboundProtocol.vmess, new VmessVerifyInfo() { DataContext = new VmessVeridyInfoViewModle(vmess) });
-            ProtocolModles.Add(OutboundProtocol.vmess, vmess);
             ShadowSocksInfo shadowSocks = Server.Protocol == OutboundProtocol.shadowsocks ? Server.GetProtocolInfoObj() as ShadowSocksInfo ?? new() : new();
             VerifyInfoView.Add(OutboundProtocol.shadowsocks, new ShadowScoksVerifyInfo() { DataContext = new ShadowSocksVerifyInfoViewModle(shadowSocks) });
-            ProtocolModles.Add(OutboundProtocol.shadowsocks, shadowSocks);
             TrojanInfo trojan = Server.Protocol == OutboundProtocol.trojan ? Server.GetProtocolInfoObj() as TrojanInfo ?? new() : new();
             VerifyInfoView.Add(OutboundProtocol.trojan, new TrojanVerifyInfo() { DataContext = new TrojanVerifyInfoViewModle(trojan) });
-            ProtocolModles.Add(OutboundProtocol.trojan, trojan);
             SocksInfo socks = Server.Protocol == OutboundProtocol.socks ? Server.GetProtocolInfoObj() as SocksInfo ?? new() : new();
             VerifyInfoView.Add(OutboundProtocol.socks, new SocksVerifyInfo() { DataContext = new SocksVerifyInfoViewModle(socks) });
-            ProtocolModles.Add(OutboundProtocol.socks, socks);
             VerifyInfoView.Add(OutboundProtocol.freedom, null);
-            ProtocolModles.Add(OutboundProtocol.freedom, null);
             #endregion
 
             #region 传输协议
@@ -112,7 +107,11 @@ namespace XrayGUI.ViewModle
             {
                 return;
             }
-            Server.SetProtocolInfoObj(ProtocolModles[Server.Protocol]);
+            Server.Address = Addr;
+            Server.Remarks = remarks;
+            Server.Port = IsNotCheckedFreedom ? int.Parse(PortStr) : 0;
+            Server.Protocol = selectedProtocol;
+            Server.SetProtocolInfoObj(VerifyInfoView[Server.Protocol]?.DataContext as OutBoundConfiguration);
             Server.SetStreamInfo(StreaminfoObj);
             Server.SaveToDataBase();
             XrayHanler.Instance.ReloadConfig();
@@ -168,10 +167,7 @@ namespace XrayGUI.ViewModle
                 OnPropertyChanged(nameof(SecuritySettingView));
             }
         }
-        public UserControl? ProxyUserSettingView
-        {
-            get => VerifyInfoView[SelectedProtocol];
-        }
+        public UserControl? ProxyUserSettingView => VerifyInfoView[SelectedProtocol];
         public UserControl? TransportSettingView
         {
             get => transportSettingView[TransportProtocolSelectedValue];
@@ -180,12 +176,13 @@ namespace XrayGUI.ViewModle
         {
             get => securitySettingView[SecuritySelectedValue];
         }
+        private OutboundProtocol selectedProtocol;
         public OutboundProtocol SelectedProtocol
         {
-            get => Server.Protocol;
+            get => selectedProtocol;
             set
             {
-                Server.Protocol = value;
+                selectedProtocol = value;
                 OnPropertyChanged(nameof(SelectedProtocol));
                 OnPropertyChanged(nameof(ProxyUserSettingView));
                 OnPropertyChanged(nameof(IsNotCheckedFreedom));
@@ -200,23 +197,25 @@ namespace XrayGUI.ViewModle
         }
         public RelayCommand<Window> SaveBtnCmd { get; set; }
         [Required(ErrorMessage = "服务器地址不能为空")]
+        private string addr;
         public string Addr
         {
-            get => Server.Address;
+            get => addr;
             set
             {
-                Server.Address = value;
+                addr = value;
                 OnPropertyChanged(nameof(Addr));
                 ValidationProperty();
             }
         }
        [Required(ErrorMessage = "名称不能为空")]
+       private string remarks;
         public string Remarks
         {
-            get => Server.Remarks;
+            get => remarks;
             set
             {
-                Server.Remarks = value;
+                remarks = value;
                 OnPropertyChanged();
                 ValidationProperty();
             }
@@ -232,10 +231,7 @@ namespace XrayGUI.ViewModle
             {
                 portStr = value;
                 OnPropertyChanged(nameof(PortStr));
-                if(ValidationProperty())
-                {
-                    Server.Port = Convert.ToInt32(PortStr);
-                }
+                ValidationProperty();
             }
         }
         public bool IsNotCheckedFreedom => SelectedProtocol != OutboundProtocol.freedom;

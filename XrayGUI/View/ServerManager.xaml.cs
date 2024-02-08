@@ -29,6 +29,11 @@ namespace XrayGUI.View
             InitializeComponent();
             Closing += (_, _) => IsClosed = true;
         }
+        public new void Show()
+        {
+            base.Show();
+            Activate();
+        }
         private static ServerManager _instance = new ServerManager();
         public static ServerManager Instance
         {

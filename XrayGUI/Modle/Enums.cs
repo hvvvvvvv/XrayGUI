@@ -69,6 +69,21 @@ namespace XrayGUI.Modle
         grpc = 5,
         none = 6
     }
+    [Flags]
+    public enum  TransportProtocol
+    {
+        none = 0x0,
+        tcp = 0x1,
+        udp = 0x2
+    }
+    [Flags]
+    public enum ApplicationProtocol
+    {
+        none = 0x0,
+        http = 0x1,
+        tls = 0x2,
+        bittorrent = 0x4
+    }
     public enum TransportSecurity
     {
         none = 0,
@@ -110,6 +125,17 @@ namespace XrayGUI.Modle
         qq = 7,
         random = 8,
         randomized = 9
+    }
+    public enum DomainStrategy
+    {
+        AsIs = 0,
+        IPIfNonMatch = 1,
+        IPOnDemand = 2
+    }
+    public enum DomainMacher
+    {
+        hybrid = 0,
+        linear = 1
     }
 
     [Flags]

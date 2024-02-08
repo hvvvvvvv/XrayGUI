@@ -109,7 +109,7 @@ namespace XrayGUI.Modle.Server
         {
             var ret = new StreamSettingsObject()
             {
-                network = Transport.ToString(),
+                network = Transport != TransportType.none ? Transport.ToString() : null,
                 security = Security.ToString()
             };
             switch(Transport)

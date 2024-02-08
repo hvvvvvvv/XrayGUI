@@ -16,6 +16,7 @@
         <ContextMenu Width="150">
             <MenuItem Header="开启代理" IsCheckable="True" IsChecked="{Binding ProxyEnableChecked, Mode=TwoWay}"/>
             <MenuItem Header="参数设置" Command="{Binding ShowSettingWndCmd}"/>
+            <MenuItem Header="路由规则" Command="{Binding ShowRouteRulesManagerCmd}"/>
             <MenuItem Header="服务器管理" Command="{Binding ShowServerManagerCmd}"/>
             <MenuItem Header="开机启动" IsCheckable="True" IsChecked="{Binding AutoStartChecked}"/>
             <MenuItem Header="退出" Command="{Binding QuitCmd}"/>

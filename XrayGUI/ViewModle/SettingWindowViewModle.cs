@@ -147,7 +147,7 @@ namespace XrayGUI.ViewModle
         }
         private void NumberInputPreviewKeyDownExcute(KeyEventArgs e)
         {
-            if (Keyboard.Modifiers == ModifierKeys.None && bumberKeys.Contains(e.Key))
+            if (Keyboard.Modifiers == ModifierKeys.None && numberKeys.Contains(e.Key))
             {
                 return;
             }
@@ -170,7 +170,7 @@ namespace XrayGUI.ViewModle
                 Hotkey = new Hotkey((KeyModifier)Keyboard.Modifiers, _key);
             }
         }
-        private static readonly List<Key> bumberKeys = new()
+        private static readonly List<Key> numberKeys = new()
         {
             Key.D0, Key.D1, Key.D2, Key.D3, Key.D4,
             Key.D5, Key.D6, Key.D7, Key.D8, Key.D9,

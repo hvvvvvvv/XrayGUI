@@ -55,6 +55,7 @@ namespace XrayGUI
         {
             Global.DBService.CreateTable<ServerItem>();
             Global.DBService.CreateTable<SubscriptionItem>(CreateFlags.AutoIncPK);
+            Global.DBService.CreateTable<RouteRuleItem>(CreateFlags.AutoIncPK);
         }
 	}
 }

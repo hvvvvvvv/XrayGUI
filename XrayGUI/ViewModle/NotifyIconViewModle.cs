@@ -48,6 +48,7 @@ namespace XrayGUI.ViewModle
         public RelayCommand QuitCmd { get; set; }
         public RelayCommand ShowSettingWndCmd { get; set; }
         public RelayCommand ShowServerManagerCmd { get; set; }
+        public RelayCommand ShowRouteRulesManagerCmd { get; set; }
 
         public NotifyIconViewModle()
         {
@@ -56,6 +57,7 @@ namespace XrayGUI.ViewModle
             QuitCmd = new (() => Application.Current.Shutdown(0));
             ShowSettingWndCmd = new(() => SettingWindow.Instance.Show());
             ShowServerManagerCmd = new(() => ServerManager.Instance.Show());
+            ShowRouteRulesManagerCmd = new(() => RouteRulesManager.Instance.Show());
             XrayHanler.Instance.CoreStart();
             SystemProxyHanler.Instance.LoadConfig();
             SubcriptionUpdateHandle.Instance.UpdateEvent += (e) =>

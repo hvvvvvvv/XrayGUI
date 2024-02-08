@@ -32,7 +32,6 @@ namespace XrayGUI.Handler
         private Process _coreProcess;
         private LocalPortObect _LocalPort;
         private bool _ExitedEventPause = false;
-        private ServerItemViewModle? testServeItems;
         protected string coreConfigPath;
         private ProcessStartInfo _CoreProcessStartInfo
         {

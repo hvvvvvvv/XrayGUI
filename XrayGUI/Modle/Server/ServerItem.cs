@@ -22,69 +22,54 @@ namespace XrayGUI.Modle.Server
         public bool IsActivated { get; set; }
         public Guid? SubGroupId { get; set; }
         public string Remarks { get; set; } = string.Empty;
-        private string protocolInfoContent = string.Empty;
-        public string ProtocolInfoContent
+        public string ProtocolInfoContent { get; set; } = string.Empty;
+        public OutBoundConfiguration? GetProtocolInfoObj()
         {
-            get => protocolInfoContent;
-            set
+            if (!string.IsNullOrEmpty(ProtocolInfoContent))
             {
-                if(string.IsNullOrEmpty(protocolInfoContent))
+                try
                 {
-                    protocolInfoContent = value;
-                    try
+                    return Protocol switch
                     {
-                        protocolInfoObj = Protocol switch
-                        {
-                            OutboundProtocol.socks => JsonSerializer.Deserialize<SocksInfo>(protocolInfoContent),
-                            OutboundProtocol.vless => JsonSerializer.Deserialize<VlessInfo>(protocolInfoContent),
-                            OutboundProtocol.vmess => JsonSerializer.Deserialize<VmessInfo>(protocolInfoContent),
-                            OutboundProtocol.trojan => JsonSerializer.Deserialize<TrojanInfo>(protocolInfoContent),
-                            OutboundProtocol.shadowsocks => JsonSerializer.Deserialize<ShadowSocksInfo>(protocolInfoContent),
-                            _ => null
-                        };
-                    }
-                    catch { }
+                        OutboundProtocol.socks => JsonSerializer.Deserialize<SocksInfo>(ProtocolInfoContent),
+                        OutboundProtocol.vless => JsonSerializer.Deserialize<VlessInfo>(ProtocolInfoContent),
+                        OutboundProtocol.vmess => JsonSerializer.Deserialize<VmessInfo>(ProtocolInfoContent),
+                        OutboundProtocol.trojan => JsonSerializer.Deserialize<TrojanInfo>(ProtocolInfoContent),
+                        OutboundProtocol.shadowsocks => JsonSerializer.Deserialize<ShadowSocksInfo>(ProtocolInfoContent),
+                        _ => null
+                    };
                 }
+                catch { }
             }
+            return null;
         }
-        public OutBoundConfiguration? GetProtocolInfoObj() => protocolInfoObj;
-        public void SetProtocolInfoObj(OutBoundConfiguration? obj) => protocolInfoObj = obj;
-        private OutBoundConfiguration? protocolInfoObj;
-
-        private StreamInfo? streamInfoObj;
-        private string streamInfoContent = string.Empty;
-        public string StreamInfoContent
+        public void SetProtocolInfoObj(OutBoundConfiguration? obj) => ProtocolInfoContent =  obj is null ? string.Empty : JsonSerializer.Serialize(obj, obj.GetType());
+        public string StreamInfoContent { get; set; } = string.Empty;
+        public StreamInfo GetStreamInfo()
         {
-            get => streamInfoContent;
-            set
-            { 
-                if(string.IsNullOrEmpty(streamInfoContent))
+            if (!string.IsNullOrEmpty(StreamInfoContent))
+            {
+                try
                 {
-                    streamInfoContent = value;
-                    try
-                    {
-                        streamInfoObj = JsonSerializer.Deserialize<StreamInfo>(streamInfoContent);
-                    }
-                    catch { }
+                    return JsonSerializer.Deserialize<StreamInfo>(StreamInfoContent) ?? new();
                 }
+                catch { }
             }
+            return new();
         }
-        public StreamInfo GetStreamInfo() => streamInfoObj ?? new();
-        public void SetStreamInfo(StreamInfo obj) => streamInfoObj = obj;
+        public void SetStreamInfo(StreamInfo obj) => StreamInfoContent = JsonSerializer.Serialize(obj);
         public OutboundServerItemObject ToOutboundServerItemObject()
         {
             return new()
             {
                 protocol = Protocol.ToString(),
                 tag = Index.ToString(),
-                settings = protocolInfoObj?.ToOutboundConfigurationObject(Address, Port),
-                streamSettings = Protocol == OutboundProtocol.freedom ? null : streamInfoObj?.ToStreamSettingsObject(),
+                settings = GetProtocolInfoObj()?.ToOutboundConfigurationObject(Address, Port),
+                streamSettings = GetStreamInfo().ToStreamSettingsObject()
             };
         }
         public void SaveToDataBase()
         {
-            protocolInfoContent = protocolInfoObj is null ? string.Empty : JsonSerializer.Serialize(protocolInfoObj,protocolInfoObj.GetType());
-            streamInfoContent = streamInfoObj is null ? string.Empty : JsonSerializer.Serialize(streamInfoObj);
             lock (serverItemsDataList)
             {
                 if (serverItemsDataList.Any(i => i.Index == Index))
