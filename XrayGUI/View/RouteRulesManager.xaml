@@ -17,7 +17,16 @@
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml"/>
                 <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <ContextMenu x:Key ="ItemRightClickMenu" Width="150">
+                <MenuItem Header="添加规则"/>
+                <MenuItem Header="编辑"/>
+                <MenuItem Header="上移"/>
+                <MenuItem Header="上移至顶"/>
+                <MenuItem Header="下移"/>
+                <MenuItem Header="下移至底"/>
+            </ContextMenu>
         </ResourceDictionary>
+        
     </Window.Resources>
     <Window.DataContext>
         <vm:RouteRulesManagerViewModle/>
@@ -103,7 +112,9 @@
                 </hc:UniformSpacingPanel>
             </ToolBar>
         </hc:UniformSpacingPanel>
-        <ListView Height="300" Width="auto" Background=" #fafafa" ItemsSource="{Binding RouteLIstRuleItemsList}">
+        <ListView Height="300" Width="auto" Background=" #fafafa" ItemsSource="{Binding RouteLIstRuleItemsList}" 
+                  ContextMenu="{StaticResource ItemRightClickMenu}"
+                  SelectionChanged="ListView_SelectionChanged">
             <ListView.Style>
                 <Style TargetType="ListView" BasedOn="{StaticResource ListView.Small}">
                 </Style>

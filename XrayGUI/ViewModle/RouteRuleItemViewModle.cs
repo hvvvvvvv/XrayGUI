@@ -16,6 +16,7 @@ namespace XrayGUI.ViewModle
         {
             DataItem = dataItem;
         }
+        public bool IsSelected { get; set; }
         public string Remarks => DataItem.Remarks;
         public string Dommmain => DataItem.MatchDoamin ?? Global.MatchItemUndefined;
         public string IP => DataItem.MatchIP ?? Global.MatchItemUndefined;

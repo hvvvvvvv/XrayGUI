@@ -42,5 +42,10 @@ namespace XrayGUI.View
                 return _instance;
             }
         }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }
