@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:XrayGUI.View"
         xmlns:hc="https://handyorg.github.io/handycontrol"
         mc:Ignorable="d"
-        Title="规则设置" Height="550" Width="800">
+        Title="规则设置" Height="570" Width="800">
     <hc:UniformSpacingPanel Orientation="Vertical" Margin="20">
         <hc:ScrollViewer Height="420">
             <hc:UniformSpacingPanel Spacing="30" Orientation="Vertical">
@@ -69,6 +69,11 @@
                 </hc:UniformSpacingPanel>
             </hc:UniformSpacingPanel>
         </hc:ScrollViewer>
-        
+        <hc:UniformSpacingPanel Orientation="Vertical" ItemHorizontalAlignment="Right" Margin="0,30,0,0">
+            <hc:UniformSpacingPanel Orientation="Horizontal" Spacing="50">
+                <Button Content="保存" Width="150" Style="{StaticResource ButtonInfo}"/>
+                <Button Content="取消" Width="150" Style="{StaticResource ButtonInfo}"/>
+            </hc:UniformSpacingPanel>
+        </hc:UniformSpacingPanel>
     </hc:UniformSpacingPanel>
 </Window>

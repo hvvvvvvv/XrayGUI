@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,8 +16,8 @@ namespace XrayGUI.Modle
     }
     internal class RouteMatchSettingObject
     {
-        public string domainStrategy { get; set; } = "AsIs";
+        public DomainStrategy domainStrategy { get; set; } = DomainStrategy.AsIs;
 
-        public string domainMatcher { get; set; } = "hybrid";
+        public DomainMacher domainMatcher { get; set; } = DomainMacher.hybrid;
     }
 }

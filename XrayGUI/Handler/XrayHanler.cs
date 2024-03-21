@@ -128,8 +128,8 @@ namespace XrayGUI.Handler
             }
             var routing = new RoutingObject()
             {
-                domainMatcher = XrayConfig.RouteMatchSetting.domainMatcher,
-                domainStrategy = XrayConfig.RouteMatchSetting.domainStrategy,
+                domainMatcher = XrayConfig.RouteMatchSetting.domainMatcher.ToString(),
+                domainStrategy = XrayConfig.RouteMatchSetting.domainStrategy.ToString(),
             };
 
             var mainConfig = new MainConfiguration()

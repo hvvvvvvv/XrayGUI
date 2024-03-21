@@ -15,13 +15,13 @@ namespace XrayGUI.Modle
         [PrimaryKey]
         public Guid Index { get; set; }
         public int Priority { get; set; }
-        public DomainMacher DomainMatcher { get; set; }
+        public DomainMacher? DomainMatcher { get; set; }
         public string? MatchDoamin { get; set; }
         public string? MatchIP { get; set; }
         public string? MatchPort { get; set; }
         public TransportProtocol TransportProtocol { get; set; }
         public ApplicationProtocol ApplicationProtocol { get; set; }
-        public int OutboundServerIndex { get; set; }
+        public int OutboundServerIndex { get; set; } = -1;
         public bool IsActivated { get; set; }
         public string Remarks { get; set; } = string.Empty;
         public void SaveToDataBase()
@@ -72,7 +72,7 @@ namespace XrayGUI.Modle
             }            
             return new()
             {
-                domainMatcher = DomainMatcher.ToString(),
+                domainMatcher = DomainMatcher?.ToString(),
                 domain = string.IsNullOrEmpty(MatchDoamin) ? null : MatchDoamin.Split(',').ToList(),
                 ip = string.IsNullOrEmpty(MatchIP) ? null : MatchIP.Split(',').ToList(),
                 port = MatchPort,
