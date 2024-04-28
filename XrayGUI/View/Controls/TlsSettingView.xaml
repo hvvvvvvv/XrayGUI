@@ -30,7 +30,7 @@
                 <TextBox Text="{Binding Alpn}" Width="200" m:HintAssist.HelperText="多项使用逗号分割"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Utls"/>
+                <TextBlock Text="Utls："/>
                 <RadioButton Content="启用" IsChecked="{Binding UtlsPrintEnabled, ValidatesOnNotifyDataErrors=False}" Margin="0 0 20 0"/>
                 <RadioButton Content="禁用" IsChecked="{Binding UtlsPrintEnabled, Converter={StaticResource InvertBooleanConverter}}"/>
             </StackPanel>

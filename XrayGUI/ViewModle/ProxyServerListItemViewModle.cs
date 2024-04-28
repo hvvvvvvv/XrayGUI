@@ -14,7 +14,7 @@ namespace XrayGUI.ViewModle
 {
     public class ProxyServerListItemViewModle : ViewModleBase
     {
-        private OutboundServerItem serverData;
+        private readonly OutboundServerItem serverData;
         private bool isPropertyChanged = false;
         public ProxyServerListItemViewModle(OutboundServerItem serverData)
         {
@@ -32,6 +32,7 @@ namespace XrayGUI.ViewModle
             groupId = serverData.GroupId;
             address = serverData.Address ?? string.Empty;
             port = serverData.Port == 0 ? string.Empty : serverData.Port.ToString();
+            updatedTime = serverData.UpdatedTime;
             protocol = ProxyProtocols.FirstOrDefault(x => x == serverData.Protocol) ?? ProxyProtocols[0];
             tlsEnbled = serverData.TlsEnbled ?? false;
             uotEnbled = serverData.UdpOuverTcpEnbled ?? false;
@@ -81,10 +82,15 @@ namespace XrayGUI.ViewModle
             if (isPropertyChanged)
             {
                 serverData.UpdatedTime = DateTimeOffset.Now.Ticks;
+                UpdatedTime = serverData.UpdatedTime;
                 serverData.Save();
                 isPropertyChanged = false;
             }
         }      
+        public void DelateData()
+        {
+            serverData.Delate();
+        }
         public bool IsChanged() => isPropertyChanged || serverData.Identity == Guid.Empty;
         private bool ValidateData()
         {
@@ -287,6 +293,18 @@ namespace XrayGUI.ViewModle
             get => groupId;
             set => SetProerty(ref groupId, value);
         }
+        private long updatedTime;
+        public long UpdatedTime
+        {
+            get => updatedTime;
+            set => SetProerty(ref updatedTime, value);
+        }
+        private int? connectionDelay;
+        public int? ConnectionDelay
+        {
+            get => connectionDelay;
+            set => SetProerty(ref connectionDelay, value);
+        }
         public string GroupName { get; set; } = "默认分组";
         private string address = string.Empty;
         public string Address
@@ -478,8 +496,18 @@ namespace XrayGUI.ViewModle
             get => vlessFlow;
             set => SetProerty(ref vlessFlow, value);
         }
-
         public SnackbarMessageQueue SnackBarMsg { get;private set; } = new();
+
+        public static ProxyServerListItemViewModle CreateCopy(ProxyServerListItemViewModle source)
+        {
+            var copy = new ProxyServerListItemViewModle(source.serverData)
+            {
+                isPropertyChanged = source.isPropertyChanged,
+                _Errors = source._Errors
+            };
+            return copy;
+            
+        }
         public static readonly ReadOnlyCollection<string> ProxyProtocols = new(new List<string>
         {
             Modle.SingboxOptions.OutboundTypes.Shadowsocks,

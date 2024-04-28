@@ -5,13 +5,20 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:XrayGUI.View.Converter"
              xmlns:vm ="clr-namespace:XrayGUI.ViewModle"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:converter="clr-namespace:XrayGUI.View.Converter"
              xmlns:m="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
              mc:Ignorable="d" 
-             d:DesignHeight="800" d:DesignWidth="850"
+             d:DesignHeight="800" d:DesignWidth="800"
              d:Background="White">
     <UserControl.DataContext>
         <vm:ProxyServerMenuViewModle/>
     </UserControl.DataContext>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converter:TicksToDateTimeFormatString x:Key="TicksToDateTimeFormatString"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -25,74 +32,61 @@
                 <Separator/>
                 <Button Content="{m:PackIcon Kind=Add}" ToolTip="新建" Command="{Binding AddProxyServerCmd}"/>
                 <Button Content="{m:PackIcon Kind=Edit}" ToolTip="编辑" Command="{Binding EditeProxyServerCmd}"/>
-                <Button Content="{m:PackIcon Kind=Delete}" ToolTip="删除"/>
+                <Button Content="{m:PackIcon Kind=Delete}" ToolTip="删除" Command="{Binding DelateProxyServerCmd}"/>
                 <Separator/>
                 <Button Content="{m:PackIcon Kind=ContentCopy}" ToolTip="复制到"/>
                 <Button Content="{m:PackIcon Kind=BookArrowRight}" ToolTip="移动到"/>
                 <Separator/>
                 <Button Content="{m:PackIcon Kind=RefreshCircle}" ToolTip="刷新列表" Command="{Binding RefreshProxyServerListCmd}"/>
                 <Separator/>
-                <Grid Margin="30 0 0 0 ">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBox
-                        MinWidth="100"
-                        VerticalAlignment="Center"
-                        m:HintAssist.Hint="关键字搜索"                    
-                        BorderThickness=".3">
-                    </TextBox>
-                    <Button Style="{StaticResource MaterialDesignToolButton}" Grid.Column="1">
-                        <m:PackIcon Kind="Search" Opacity=".56"/>
-                    </Button>
-                </Grid>
+                <Button Content="{m:PackIcon Kind=WebCheck}" ToolTip="连通性测试"/>
             </ToolBar>
         </ToolBarTray>
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
             <ListView Style="{StaticResource MaterialDesignListView}" 
                       ItemsSource="{Binding ProxyServerList}" 
                       SelectedItem="{Binding SelectedProxyServer, Mode=OneWayToSource}"
+                      SelectionChanged="ListView_SelectionChanged"
                       FontFamily="微软雅黑">
                 <ListView.ItemContainerStyle>
                     <Style  TargetType="ListViewItem" BasedOn="{StaticResource MaterialDesignGridViewItem}">
-                        <Setter Property="Margin" Value="20 0 0 0"/>
+                        
                     </Style>
                 </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="协议" DisplayMemberBinding="{Binding Protocol}">
-                            <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding Protocol}" HorizontalAlignment="Center"/>
-                                </DataTemplate>
-                            </GridViewColumn.CellTemplate>
-                        </GridViewColumn>
+                        <GridViewColumn Header="协议" DisplayMemberBinding="{Binding Protocol}"/>
                         <GridViewColumn Header="别名" DisplayMemberBinding="{Binding Remarks}"/>
                         <GridViewColumn Header="分组名称" DisplayMemberBinding="{Binding GroupName}"/>
                         <GridViewColumn Header="地址" DisplayMemberBinding="{Binding Address}"/>
                         <GridViewColumn Header="端口号" DisplayMemberBinding="{Binding Port}"/>
-                        <GridViewColumn Header="V2ray传输">
+                        <GridViewColumn Header="最近更新" DisplayMemberBinding="{Binding UpdatedTime, Converter={StaticResource TicksToDateTimeFormatString}}"/>
+                        <GridViewColumn Header="连接延迟">
                             <GridViewColumn.CellTemplate>
-                                <DataTemplate>
-                                    <TextBlock>
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding V2RayTransportEnbled}" Value="False">
-                                                        <Setter Property="Text" Value="未启用"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding V2RayTransportEnbled}" Value="True">
-                                                        <Setter Property="Text" Value="{Binding TransportType}"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
+                                <DataTemplate DataType="{x:Type vm:ProxyServerListItemViewModle}">
+                                    <StackPanel Margin="20 0 0 0 ">
+                                        <TextBlock Name="NormalDisplay" Text="{Binding Path=ConnectionDelay, StringFormat={}{0}ms}"/>
+                                        <TextBlock Name="ExceptionDisplay" HorizontalAlignment="Center" Visibility="Collapsed"/>
+                                    </StackPanel>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding ConnectionDelay}" Value="-1">
+                                            <Setter TargetName="NormalDisplay" Property="Visibility" Value="Collapsed"/>
+                                            <Setter TargetName="ExceptionDisplay" Property="Visibility" Value="Visible"/>
+                                            <Setter TargetName="ExceptionDisplay" Property="TextBlock.Text" Value="超时"/>
+                                            <Setter TargetName="ExceptionDisplay" Property="TextBlock.Foreground" Value="Red"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ConnectionDelay}" Value="{x:Null}">
+                                            <Setter TargetName="NormalDisplay" Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding ConnectionDelay}" Value="0">
+                                            <Setter TargetName="NormalDisplay" Property="Visibility" Value="Collapsed"/>
+                                            <Setter TargetName="ExceptionDisplay" Property="Visibility" Value="Visible"/>
+                                            <Setter TargetName="ExceptionDisplay" Property="TextBlock.Text" Value="测试中..."/>
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
-                        <GridViewColumn Header="TLS" DisplayMemberBinding="{Binding TlsEnbled}"/>
                     </GridView>
                 </ListView.View>
             </ListView>

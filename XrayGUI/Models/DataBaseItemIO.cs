@@ -88,7 +88,7 @@ namespace XrayGUI.Modle
             lst.ForEach(i => (i as IDataBaseItem)?.LoadDBItemProperty());
             return lst;
         }
-        public static void CreateTable()
+        static DataBaseItem()
         {
             _DBService.CreateTable<T>();
         }

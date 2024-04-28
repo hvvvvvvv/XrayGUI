@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using XrayGUI.ViewModle;
 
 namespace XrayGUI.View
 {
@@ -20,9 +23,28 @@ namespace XrayGUI.View
     /// </summary>
     public partial class ProxyServerView : UserControl
     {
+
         public ProxyServerView()
         {
             InitializeComponent();
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if(DataContext is ProxyServerMenuViewModle viewModle)
+            {
+                foreach (ProxyServerListItemViewModle item in e.RemovedItems)
+                {
+                    viewModle.SelectedProxyServers.Remove(item);
+                }
+                foreach (ProxyServerListItemViewModle item in e.AddedItems)
+                {
+                    if(viewModle.ProxyServerList.Contains(item) && !viewModle.SelectedProxyServers.Contains(item))
+                    {
+                        viewModle.SelectedProxyServers.Add(item);
+                    }
+                }
+            }
         }
     }
 }

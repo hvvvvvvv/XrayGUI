@@ -10,7 +10,6 @@ namespace XrayGUI.Modle
     [Table("OutboundServers")]
     public class OutboundServerItem : DataBaseItem<OutboundServerItem>
     {
-        static OutboundServerItem() => CreateTable();
         public string? Remarks { get; set; }
         public string? Address { get; set; }
         public uint Port { get; set; }
