@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Media;
 using XrayGUI.Handler;
 using XrayGUI.View;
+using HandyControl.Controls;
 using XrayGUI.Modle.Server;
 using System.Windows.Threading;
 using System.Windows.Media.Imaging;
@@ -17,38 +18,36 @@ namespace XrayGUI.ViewModle
 {
     internal class NotifyIconViewModle : ViewModleBase
     {
-        private View.NotifyWindow _notifyWindowView;
+        private NotifyWindow _notifyWindowView;
         public bool ProxyEnableChecked
         {
             get => ConfigObject.Instance.ProxyEnable;
             set
             {
                 ConfigObject.Instance.ProxyEnable = value;
-                SystemProxyHanler.Instance.LoadConfig();
-                OnPropertyChanged(nameof(ProxyEnableChecked));
-                OnPropertyChanged(nameof(BarIconPath));
-                OnPropertyChanged(nameof(ToolTipText));
+                SystemProxyHanler.Instance.LoadConfig();                
                 ConfigObject.Instance.Save();
+                OnPropertyChanged(nameof(ProxyEnableChecked));
             }
-        }     
-        public BitmapImage BarIconPath => ConfigObject.Instance.ProxyEnable ? proxyEnabled : proxyDisabled;
-        private static readonly BitmapImage proxyEnabled = new(new Uri("pack://application:,,,/Icon/ProxyEnable.ico"));
-        private static readonly BitmapImage proxyDisabled = new(new Uri("pack://application:,,,/Icon/ProxyDisable.ico"));
-        public string ToolTipText => ConfigObject.Instance.ProxyEnable ? "代理已开启" : "代理已关闭";
+        }
         public bool AutoStartChecked
         {
             get => ConfigObject.Instance.EnableAutostart;
             set
-            {
+            {              
                 ConfigObject.Instance.EnableAutostart = value;
                 AutoStartHandler.Instance.LoadConfig();
                 ConfigObject.Instance.Save();
+                OnPropertyChanged(nameof(AutoStartChecked));
             }                
         }
         public RelayCommand QuitCmd { get; set; }
         public RelayCommand ShowSettingWndCmd { get; set; }
         public RelayCommand ShowServerManagerCmd { get; set; }
         public RelayCommand ShowRouteRulesManagerCmd { get; set; }
+        public RelayCommand SetAutoStartCmd { get; set; }
+        public RelayCommand ProxySwitchCmd { get; set; }
+        public RelayCommand MainWindowShowCmd { get; set; }
 
         public NotifyIconViewModle()
         {
@@ -58,17 +57,23 @@ namespace XrayGUI.ViewModle
             ShowSettingWndCmd = new(() => SettingWindow.Instance.Show());
             ShowServerManagerCmd = new(() => ServerManager.Instance.Show());
             ShowRouteRulesManagerCmd = new(() => RouteRulesManager.Instance.Show());
+            ProxySwitchCmd = new(() => ProxyEnableChecked = !ProxyEnableChecked);
+            SetAutoStartCmd = new(() => AutoStartChecked = !AutoStartChecked);
+            MainWindowShowCmd = new(() => new MainWindow().Show());
             XrayHanler.Instance.CoreStart();
             SystemProxyHanler.Instance.LoadConfig();
             SubcriptionUpdateHandle.Instance.UpdateEvent += (e) =>
             {
                 if(e.IsCompeleteUpdate)
                 {
-                    if(ServerItem.ServerItemsDataList.Any(i => i.SubGroupId == e.Subscription.SubcriptionId && (i.IsActivated || i.Index == ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex)))
-                    {
-                        XrayHanler.Instance.ReloadConfig();
-                    }
+                    XrayHanler.Instance.ReloadConfig();
+                    Growl.InfoGlobal("订阅更新完成");
                 }
+                else
+                {
+                    Growl.WarningGlobal($"订阅更新失败\n{e.ErrMsg}");
+                }
+                
             };
         }
         private void OnHotkeyEvenRaise()

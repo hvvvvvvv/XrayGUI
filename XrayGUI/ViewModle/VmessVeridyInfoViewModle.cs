@@ -11,7 +11,7 @@ namespace XrayGUI.ViewModle
 {
     internal class VmessVeridyInfoViewModle: ViewModleBase
     {
-        private readonly VmessInfo Info;
+        public VmessInfo Info;
         public VmessVeridyInfoViewModle(VmessInfo vmessInfo)
         {
             Info = vmessInfo;

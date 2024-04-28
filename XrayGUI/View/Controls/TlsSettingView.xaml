@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="XrayGUI.View.Controls.TlsSettingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:XrayGUI.ViewModle"
+             xmlns:m="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:local="clr-namespace:XrayGUI.View.Controls"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type={x:Type vm:ProxyServerListItemViewModle}}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <StackPanel Margin="0">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="TLS协议："/>
+            <RadioButton Content="启用" IsChecked="{Binding TlsEnbled}" Margin="0 0 20 0"/>
+            <RadioButton Content="禁用" IsChecked="{Binding TlsEnbled, Converter={StaticResource InvertBooleanConverter}}"/>
+        </StackPanel>
+        <StackPanel Margin="0" Visibility="{Binding TlsEnbled, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Server Name："/>
+                <TextBox Text="{Binding ServerName}" Width="200"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="跳过证书验证："/>
+                <RadioButton Content="启用" IsChecked="{Binding AllowInsecure}" Margin="0 0 20 0"/>
+                <RadioButton Content="禁用" IsChecked="{Binding AllowInsecure, Converter={StaticResource InvertBooleanConverter}}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="ALPN："/>
+                <TextBox Text="{Binding Alpn}" Width="200" m:HintAssist.HelperText="多项使用逗号分割"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Utls"/>
+                <RadioButton Content="启用" IsChecked="{Binding UtlsPrintEnabled, ValidatesOnNotifyDataErrors=False}" Margin="0 0 20 0"/>
+                <RadioButton Content="禁用" IsChecked="{Binding UtlsPrintEnabled, Converter={StaticResource InvertBooleanConverter}}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Visibility="{Binding UtlsPrintEnabled, Converter={StaticResource BooleanToVisibilityConverter}, ValidatesOnNotifyDataErrors=False}">
+                <TextBlock Text="指纹内容："/>
+                <ComboBox ItemsSource="{x:Static vm:ProxyServerListItemViewModle.FingerPrinters}"
+                          SelectedItem="{Binding UtlsFingerPrint}" Width="200"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Reality："/>
+                <RadioButton Content="启用" IsChecked="{Binding RealityEnbled}" Margin="0 0 20 0"/>
+                <RadioButton Content="禁用" IsChecked="{Binding RealityEnbled, Converter={StaticResource InvertBooleanConverter}}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" 
+                        Visibility="{Binding RealityEnbled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Text="Public Key："/>
+                <TextBox Text="{Binding PublicKey}" Width="200"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        Visibility="{Binding RealityEnbled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Text="Short ID："/>
+                <TextBox Text="{Binding ShortId}" Width="200"/>
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

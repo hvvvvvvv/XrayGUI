@@ -32,6 +32,7 @@ namespace XrayGUI.Handler
         private Process _coreProcess;
         private LocalPortObect _LocalPort;
         private bool _ExitedEventPause = false;
+        private bool _NeedReloadConfig;
         protected string coreConfigPath;
         private ProcessStartInfo _CoreProcessStartInfo
         {
@@ -58,9 +59,9 @@ namespace XrayGUI.Handler
                 EnableRaisingEvents = true               
             };
             _coreProcess.Exited += OnCoreProcessAccidentExted;
-            _coreProcess.OutputDataReceived += (_, e) => Debug.WriteLine(e.Data);            
+            _coreProcess.OutputDataReceived += (_, e) => Debug.WriteLine(e.Data);
+            ServerItem.ServerItemChange += ServerItem_ServerItemChange;
             LoadConfig();
-
             if (!File.Exists(Global.XrayCoreApplictionPath))
             {
                 if (!Directory.Exists(Path.GetDirectoryName(Global.XrayCoreApplictionPath)))
@@ -68,8 +69,25 @@ namespace XrayGUI.Handler
                     Directory.CreateDirectory(Path.GetDirectoryName(Global.XrayCoreApplictionPath)!);
                 }
                 throw new Exception($"未找到XrayCore程序，请将{Path.GetFileName(Global.XrayCoreApplictionPath)}文件放在{Path.GetDirectoryName(Global.XrayCoreApplictionPath)}目录下");
+            }          
+        }
+
+        private void ServerItem_ServerItemChange(ServerItem? before, ServerItem? later, ServersChangeType type)
+        {
+            if(before != later)
+            {
+                var existedDefaultServer = before?.Index == XrayConfig.DefaultOutboundServerIndex || later?.Index == XrayConfig.DefaultOutboundServerIndex;
+                var existedActivatedServer = before?.IsActivated == true || later?.IsActivated == true;
+                if(existedDefaultServer || existedActivatedServer)
+                {
+                    lock (this)
+                    {
+                        _NeedReloadConfig = true;
+                    }
+                }
             }
         }
+
         protected virtual void LoadConfig()
         {
             LoadConfig(ServerItem.ServerItemsDataList);   
@@ -230,16 +248,22 @@ namespace XrayGUI.Handler
             Isrunning = true;
             Kernel32.AssignProcessToJobObject(Global.ProcessJobs, _coreProcess);
         }
-        public void ReloadConfig()
+        public void ReloadConfig(bool isForce = false)
         {
-            var _isRunning = Isrunning;
-            CoreStop();
-            LoadConfig();
-            if (_isRunning)
+            lock (this)
             {
-                CoreStart();
+                if (!isForce && !_NeedReloadConfig) return;
+                var _isRunning = Isrunning;
+                CoreStop();
+                LoadConfig();
+                if (_isRunning)
+                {
+                    CoreStart();
+                }
+                _NeedReloadConfig = false;
             }
         }
+        public async void ReloadConfigAsync(bool isForce = false) => await Task.Run(() => ReloadConfig(isForce));
 
         public void CoreStop()
         {

@@ -14,7 +14,7 @@ namespace XrayGUI.Handler
 {
     internal class XrayTestServerHandle : XrayHanler
     {
-        private static XrayTestServerHandle? _instance;
+        private static XrayTestServerHandle? _instance = new();
         public static new XrayTestServerHandle Instance => _instance ??= new();
         private List<ServerItemViewModle>? testServerItems;
         public XrayTestServerHandle() : base()

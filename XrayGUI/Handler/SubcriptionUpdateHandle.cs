@@ -31,7 +31,7 @@ namespace XrayGUI.Handler
         }
         private void StartAutoUpdateTasks()
         {
-            foreach(var item in SubscriptionItem.SubscriptionItemDataList)
+            foreach(var item in Global.DBService.Table<SubscriptionItem>().Where(i => i.IsAutoUpdate && i.AutoUpdateInterval > 0))
             {
                 AddAutoUpdateTask(item);
             }
@@ -99,24 +99,13 @@ namespace XrayGUI.Handler
                 if (!string.IsNullOrEmpty(subContent))
                 {
                     var serverItems = SubscriptionResolveHandle.ResolveSubFromSubContent(subContent);
-                    var oldServerItems = ServerItem.ServerItemsDataList.Where(i => i.SubGroupId == subItem.SubcriptionId).ToList();
-                    foreach (var serverItem in serverItems)
-                    {
-                        serverItem.IsActivated = oldServerItems.FirstOrDefault(i => i.Remarks == serverItem.Remarks)?.IsActivated ?? default;
-                        serverItem.SubGroupId = subItem.SubcriptionId;
-                        serverItem.SaveToDataBase();
-                    }
-                    var defaultServerName = oldServerItems.FirstOrDefault(i => i.Index == ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex)?.Remarks;
-                    if (!string.IsNullOrEmpty(defaultServerName))
-                    {
-                        var defaultIndex = serverItems.FirstOrDefault(i => i.Remarks == defaultServerName)?.Index ?? ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex;
-                        ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex = defaultIndex;
-                    }
                     if (serverItems.Count > 0)
                     {
-                        subItem.LastUpdateTime = DateTime.Now;
-                        subItem.SaveToDataBase();
-                        oldServerItems.ForEach(i => i.DeleteFromDataBase());
+                        serverItems.ForEach(i => i.SubGroupId = subItem.SubcriptionId);
+                        var updatetime = UpdateServerItems(serverItems);
+                        subItem.LastUpdateTime = updatetime;
+                        subItem.Save();
+                        serverItems.Where(i => i.SubGroupId == subItem.SubcriptionId && i.UpdatedTime != updatetime.Ticks).ToList().ForEach(i => i.DeleteFromDataBase());
                         ret = true;
                     }
                     else
@@ -144,6 +133,26 @@ namespace XrayGUI.Handler
             lock (SubItemIsUpdating) SubItemIsUpdating[subItem.SubcriptionId] = false;
             UpdateEvent?.Invoke(new SubItemUpdateEventArgs(subItem, ret, msg));
             return ret;
+        }
+        private DateTime UpdateServerItems(List<ServerItem> serverItems)
+        {
+            var updatedtime = DateTime.Now;
+            foreach (var item in serverItems)
+            {
+                var targetItem = ServerItem.ServerItemsDataList.FirstOrDefault(i => i.SubGroupId == item.SubGroupId && i.Remarks == item.Remarks);
+                item.UpdatedTime = updatedtime.Ticks;
+                if (targetItem != null)
+                {                   
+                    targetItem.UpdateFrom(item);
+                    targetItem.SaveToDataBase();
+                }
+                else
+                {
+                    item.SaveToDataBase();
+                }
+            }
+            return updatedtime;
+
         }
         private class AvoidException : Exception { }
         public class SubItemUpdateEventArgs : EventArgs

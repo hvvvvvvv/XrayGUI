@@ -97,7 +97,7 @@ namespace XrayGUI.ViewModle
             subItem.IsAutoUpdate = isAutoUpdate;
             subItem.AutoUpdateInterval = autoUpdateInterval;
             subItem.IsProxyUpdate = isProxyUpdate;
-            subItem.SaveToDataBase();
+            subItem.Save();
             win.DialogResult = true;
             win.Close();
         }
@@ -106,7 +106,7 @@ namespace XrayGUI.ViewModle
             bool ret;
             if ((ret = base.ValidationProperty(propertyName)) && propertyName == nameof(SubName))
             {
-                ret = !SubscriptionItem.SubscriptionItemDataList.Any(i => i.SubcriptionName == SubName && i.SubcriptionId != subItem.SubcriptionId);
+                ret = !Global.DBService.Table<SubscriptionItem>().Any(i => i.SubcriptionName == SubName && i.SubcriptionId != subItem.SubcriptionId);
                 if (!ret)
                 {
                     _Errors[propertyName!] = new() { new ValidationResult("名称有重复，请重新输入") };

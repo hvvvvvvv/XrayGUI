@@ -19,6 +19,12 @@ namespace XrayGUI.Modle
         System = 0,
         Tun = 1
     }
+    public enum  ServersChangeType
+    {
+        Add,
+        Update,
+        Remove
+    }
     public enum OutboundProtocol
     {
         vless = 0,

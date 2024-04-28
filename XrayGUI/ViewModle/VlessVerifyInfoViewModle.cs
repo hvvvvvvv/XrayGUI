@@ -12,7 +12,7 @@ namespace XrayGUI.ViewModle
 {
     internal class VlessVerifyInfoViewModle: ViewModleBase
     {
-        private VlessInfo info;
+        public VlessInfo info;
         public VlessVerifyInfoViewModle(VlessInfo vlessInfo)
         {
             info = vlessInfo;

@@ -101,7 +101,7 @@ namespace XrayGUI.ViewModle
                 SubcriptionUpdateHandle.Instance.RemoveAutoUpdateTask(SubItem);
             }
             ServerItem.ServerItemsDataList.Where(i => i.SubGroupId == SubItem.SubcriptionId).ToList().ForEach(i => i.DeleteFromDataBase());
-            SubItem.DelateFormDataBase();
+            SubItem.Delate();
         }
         public bool EditSubItem()
         {

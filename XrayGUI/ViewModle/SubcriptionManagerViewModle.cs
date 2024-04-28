@@ -25,7 +25,7 @@ namespace XrayGUI.ViewModle
         }
         public SubcriptionManagerViewModle()
         {
-            ListViewItems = (from SubscriptionItem item in SubscriptionItem.SubscriptionItemDataList select new SubcriptionItemViewModle(item)).ToList();
+            ListViewItems = (from SubscriptionItem item in Global.DBService.Table<SubscriptionItem>() select new SubcriptionItemViewModle(item)).ToList();
             listViewDataSource = new() { Source = ListViewItems };
             SelectedItems = new();
             editSubcriptionItemCmd = new(EditSubcriptionItemExcute);

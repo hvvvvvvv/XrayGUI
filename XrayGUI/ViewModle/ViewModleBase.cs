@@ -12,7 +12,7 @@ using Vanara.PInvoke;
 
 namespace XrayGUI.ViewModle
 {
-    internal abstract class ViewModleBase : INotifyPropertyChanged, INotifyDataErrorInfo
+    public abstract class ViewModleBase : INotifyPropertyChanged, INotifyDataErrorInfo
     {
         public bool HasErrors => _Errors.Count > 0;
 
@@ -31,20 +31,20 @@ namespace XrayGUI.ViewModle
             }
             return null!;
         }
-        protected void OnPropertyChanged( [CallerMemberName] string? propertyName = null)
+        protected virtual void OnPropertyChanged( [CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        protected void OnErrorsChanged(string propertyName) => ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-        //protected void SetProerty<T>(ref T property,T value, [CallerMemberName] string? propertyName = null)
-        //{
-        //    property = value;
-        //    if(propertyName is not null)
-        //    {
-        //        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        //    }
-        //}
-        public bool ValidationAllProperty()
+        protected virtual void OnErrorsChanged(string propertyName) => ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+        protected virtual void SetProerty<T>(ref T property, T value, [CallerMemberName] string? propertyName = null)
+        {
+            property = value;
+            if (propertyName is not null)
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+        public virtual bool ValidationAllProperty()
         {
             var res = true;
             foreach(var property in  this.GetType().GetProperties())
@@ -79,11 +79,30 @@ namespace XrayGUI.ViewModle
             }
             return res;
         }
-
-        protected void ClearErrors(string propertyName)
+        protected virtual void PropertyError(string error, [CallerMemberName] string? propertyName = null)
         {
-            _Errors.Remove(propertyName);
-            OnErrorsChanged(propertyName);
+            if(propertyName is not null)
+            {
+                _Errors[propertyName] = new List<ValidationResult> { new(error) };
+                OnErrorsChanged(propertyName);
+            }
+        }
+
+        protected virtual void ClearErrors([CallerMemberName] string? propertyName = null)
+        {
+            if (propertyName is not null)
+            {
+                _Errors.Remove(propertyName);
+                OnErrorsChanged(propertyName);
+            }
+        }
+        protected virtual void ClearAllErrors()
+        {
+            foreach(var propertyName in _Errors.Keys)
+            {
+                _Errors[propertyName].Clear();
+                OnErrorsChanged(propertyName);
+            }
         }
     }
 }

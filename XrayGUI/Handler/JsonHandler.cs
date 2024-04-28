@@ -13,7 +13,7 @@ namespace XrayCoreConfigModle
         {
             WriteIndented = true,
             DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
-            ReadCommentHandling = JsonCommentHandling.Skip            
+            ReadCommentHandling = JsonCommentHandling.Skip
         };
         public static T? JsonDeserializeFromText<T>(string text)
         {

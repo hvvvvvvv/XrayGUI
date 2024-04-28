@@ -7,20 +7,15 @@ using System.Collections.ObjectModel;
 using XrayGUI.Modle;
 using Windows.Globalization.NumberFormatting;
 using CommunityToolkit.Mvvm.Input;
+using System.Collections.Immutable;
 
 namespace XrayGUI.ViewModle
 {
     internal class RouteRulesManagerViewModle : ViewModleBase
-    {
-        private static List<RouteRuleItemViewModle> GetDateItemFromDataBase()
-        {
-            var ret = new List<RouteRuleItemViewModle>();
-            RouteRuleItem.RouteRuleItemDataList.ToList().ForEach(item => ret.Add(new(item)));
-            return ret;
-        }                           
+    {                         
         public RouteRulesManagerViewModle()
         {
-            routeListRuleItemsList = new(GetDateItemFromDataBase());
+            routeListRuleItemsList = new(Global.DBService.Table<RouteRuleItem>().Select(i => new RouteRuleItemViewModle(i)));
             EditRouteRuleCmd = new(EditRouteRuleExcute);
         }
         private ObservableCollection<RouteRuleItemViewModle> routeListRuleItemsList;
@@ -57,7 +52,7 @@ namespace XrayGUI.ViewModle
         }
         public IEnumerable<DomainStrategy> DomainStrategyItems => Enum.GetValues(typeof(DomainStrategy)).Cast<DomainStrategy>();
         public void EditRouteRuleExcute()
-        {
+        {           
             View.RouteRuleEditView.Instance.ShowDialog();
         }
 

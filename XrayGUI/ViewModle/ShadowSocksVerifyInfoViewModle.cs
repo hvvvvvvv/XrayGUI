@@ -13,7 +13,7 @@ namespace XrayGUI.ViewModle
 {
     internal class ShadowSocksVerifyInfoViewModle : ViewModleBase
     {
-        private ShadowSocksInfo info;
+        public ShadowSocksInfo info;
         public ShadowSocksVerifyInfoViewModle(ShadowSocksInfo info)
         {
             this.info = info;

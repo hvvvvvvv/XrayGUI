@@ -1,0 +1,28 @@
+﻿<UserControl x:Class="XrayGUI.View.Controls.SocksSettingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:XrayGUI.View.Controls"
+             xmlns:vm="clr-namespace:XrayGUI.ViewModle"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type={x:Type vm:ProxyServerListItemViewModle}}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <StackPanel Margin="0,10">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="用户名："/>
+            <TextBox Text="{Binding SocksUsername}" Width="150"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="密码："/>
+            <TextBox Text="{Binding SocksPassword}" Width="150"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="Vision："/>
+            <ComboBox ItemsSource="{x:Static vm:ProxyServerListItemViewModle.SocksVisions}" 
+                  SelectedItem="{Binding SocksVision}"
+                  Width="80"/>
+        </StackPanel>
+        <local:UotSettingView/>
+    </StackPanel>
+</UserControl>

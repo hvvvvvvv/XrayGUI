@@ -4,22 +4,53 @@
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
                 xmlns:n="clr-namespace:Hardcodet.Wpf.TaskbarNotification;assembly=Hardcodet.NotifyIcon.Wpf"
-                xmlns:hc="https://handyorg.github.io/handycontrol"
+                xmlns:converter="clr-namespace:XrayGUI.View.Converter"
                 xmlns:vm="clr-namespace:XrayGUI.ViewModle"
-                IconSource="{Binding BarIconPath}"
-                ToolTipText="{Binding ToolTipText}"
-                LeftClickCommand="{Binding ShowServerManagerCmd}">
+                xmlns:local="clr-namespace:XrayGUI.View"
+                xmlns:c="clr-namespace:XrayGUI.View.Controls"
+                xmlns:mater="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+                LeftClickCommand="{Binding ShowServerManagerCmd}"
+                x:Name="TaskBar">
+    <n:TaskbarIcon.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Menu.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <converter:RadioIconConverter x:Key="RadioIconConverter"/>
+            <mater:PackIcon x:Key="ProxyStatus" Kind="NetworkOutline"/>
+        </ResourceDictionary>
+    </n:TaskbarIcon.Resources>
     <n:TaskbarIcon.DataContext>
         <vm:NotifyIconViewModle/>
     </n:TaskbarIcon.DataContext>
+    <n:TaskbarIcon.Style>
+        <Style TargetType="{x:Type local:NotifyIcon}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding ProxyEnableChecked}" Value="true">
+                    <Setter Property="ToolTipText" Value="代理已开启"/>
+                    <Setter Property="IconSource" Value="/Icon/ProxyEnable.ico"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ProxyEnableChecked}" Value="false">
+                    <Setter Property="ToolTipText" Value="代理已关闭"/>
+                    <Setter Property="IconSource" Value="/Icon/ProxyDisable.ico"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </n:TaskbarIcon.Style>
     <n:TaskbarIcon.ContextMenu>
-        <ContextMenu Width="150">
-            <MenuItem Header="开启代理" IsCheckable="True" IsChecked="{Binding ProxyEnableChecked, Mode=TwoWay}"/>
-            <MenuItem Header="参数设置" Command="{Binding ShowSettingWndCmd}"/>
-            <MenuItem Header="路由规则" Command="{Binding ShowRouteRulesManagerCmd}"/>
-            <MenuItem Header="服务器管理" Command="{Binding ShowServerManagerCmd}"/>
-            <MenuItem Header="开机启动" IsCheckable="True" IsChecked="{Binding AutoStartChecked}"/>
-            <MenuItem Header="退出" Command="{Binding QuitCmd}"/>
+        <ContextMenu Style="{StaticResource ResourceKey=MaterialDesignContextMenu}">
+            <c:MenuItem Header="开启代理" Command="{Binding ProxySwitchCmd}" IconKind="{Binding ProxyEnableChecked, Converter={StaticResource RadioIconConverter}}"/>
+            <c:MenuItem Header="代理模式" IconKind="AlignVerticalDistribute">
+                <c:MenuItem Header="系统代理" IconKind="RadioboxMarked"/>
+                <c:MenuItem Header="Tun模式" IconKind="RadioboxBlank"/>
+            </c:MenuItem>
+            <c:MenuItem Header="路由策略" IconKind="Router"/>
+            <Separator Margin="-30 0 0 0"/>
+            <c:MenuItem Header="进入主界面" IconKind="HomeOutline" Command="{Binding MainWindowShowCmd}"/>
+            <Separator Margin="-30 0 0 0"/>
+            <c:MenuItem Header="开机启动" IconKind="{Binding AutoStartChecked, Converter={StaticResource RadioIconConverter}}" Command="{Binding SetAutoStartCmd}"/>
+            <Separator Margin="-30 0 0 0"/>
+            <c:MenuItem Header="退出" IconKind="ExitToApp" Command="{Binding QuitCmd}"/>
         </ContextMenu>
     </n:TaskbarIcon.ContextMenu>
- </n:TaskbarIcon>
+</n:TaskbarIcon>

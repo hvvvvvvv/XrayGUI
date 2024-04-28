@@ -100,7 +100,7 @@ namespace XrayGUI.ViewModle
         }
         public string SubGroupName
         {
-            get => SubscriptionItem.SubscriptionItemDataList.FirstOrDefault(i => i.SubcriptionId == Server.SubGroupId)?.SubcriptionName ?? "--";
+            get => Global.DBService.Find<SubscriptionItem>(Server.SubGroupId)?.SubcriptionName ?? "--";
         }
         private OutboundProtocol proxyProtocol;
         public OutboundProtocol ProxyProtocol
@@ -151,6 +151,7 @@ namespace XrayGUI.ViewModle
         public void StartTestNetDelay()
         {
             NetDelay = -2;
+            UpdateData();
             try
             {
                 if (ProxyTestPort <= 0) throw new Exception();

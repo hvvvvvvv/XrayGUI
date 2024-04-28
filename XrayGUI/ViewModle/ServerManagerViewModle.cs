@@ -141,7 +141,7 @@ namespace XrayGUI.ViewModle
                 ConfigObject.Instance.Save();
                 selectedItem.UpdateData();
                 serverItemList.FirstOrDefault(i => i.Server.Index == ConfigObject.Instance.XrayCoreSetting.DefaultOutboundServerIndex)?.UpdateData();
-                XrayHanler.Instance.ReloadConfig();
+                XrayHanler.Instance.ReloadConfig(true);
                 OnPropertyChanged(nameof(DefaultServerMenuItemChecked));
             }
         }
@@ -178,7 +178,7 @@ namespace XrayGUI.ViewModle
             var tasks = new List<Task>();
             selectedItems.ForEach(i => i.ProxyTestPort = default);
             XrayTestServerHandle.Instance.SetTestServerItems(selectedItems);
-            XrayTestServerHandle.Instance.ReloadConfig();
+            XrayTestServerHandle.Instance.ReloadConfig(true);
             XrayTestServerHandle.Instance.CoreStart();
             ThreadPool.GetMinThreads(out int minThreads, out int minCompelationPortThreads);
             ThreadPool.GetMaxThreads(out int maxThreads, out int maxCompelationPOrtThreads);

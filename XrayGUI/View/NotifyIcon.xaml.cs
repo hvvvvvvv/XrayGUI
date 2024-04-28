@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Hardcodet.Wpf.TaskbarNotification;
+using MaterialDesignThemes.Wpf;
 using System.Windows.Controls;
 using WindowsProxy;
 using System.Windows.Controls.Ribbon;
@@ -21,6 +22,6 @@ namespace XrayGUI.View
         {
             InitializeComponent();
         }
-        public void Show() => Visibility = Visibility.Visible;
+        public void Show() => Visibility = Visibility.Visible;        
     }
 }

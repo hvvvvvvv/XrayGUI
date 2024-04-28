@@ -111,8 +111,18 @@ namespace XrayGUI.ViewModle
             Server.Remarks = remarks;
             Server.Port = IsNotCheckedFreedom ? int.Parse(PortStr) : 0;
             Server.Protocol = selectedProtocol;
-            Server.SetProtocolInfoObj(VerifyInfoView[Server.Protocol]?.DataContext as OutBoundConfiguration);
             Server.SetStreamInfo(StreaminfoObj);
+            OutBoundConfiguration? ProtocolInfoObj = selectedProtocol switch
+            {
+                OutboundProtocol.vless => (VerifyInfoView[OutboundProtocol.vless]!.DataContext as VlessVerifyInfoViewModle)!.info,
+                OutboundProtocol.vmess => (VerifyInfoView[OutboundProtocol.vmess]!.DataContext as VmessVeridyInfoViewModle)!.Info,
+                OutboundProtocol.shadowsocks => (VerifyInfoView[OutboundProtocol.shadowsocks]!.DataContext as ShadowSocksVerifyInfoViewModle)!.info,
+                OutboundProtocol.trojan => (VerifyInfoView[OutboundProtocol.trojan]!.DataContext as TrojanVerifyInfoViewModle)!.info,
+                OutboundProtocol.socks => (VerifyInfoView[OutboundProtocol.socks]!.DataContext as SocksVerifyInfoViewModle)!.info,
+                _ => null
+            };
+            Server.SetProtocolInfoObj(ProtocolInfoObj);
+            
             Server.SaveToDataBase();
             XrayHanler.Instance.ReloadConfig();
             win.DialogResult = true;

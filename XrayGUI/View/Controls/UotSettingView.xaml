@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="XrayGUI.View.Controls.UotSettingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:XrayGUI.View.Controls"
+             xmlns:vm="clr-namespace:XrayGUI.ViewModle"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type={x:Type vm:ProxyServerListItemViewModle}}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <StackPanel Margin="0">
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="UDP Over TCP："/>
+            <RadioButton Content="启用" IsChecked="{Binding UotEnbled}" Margin="0 0 20 0"/>
+            <RadioButton Content="禁用" IsChecked="{Binding UotEnbled, Converter={StaticResource InvertBooleanConverter}}"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Visibility="{Binding UotEnbled, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Text="UotVision："/>
+            <ComboBox ItemsSource="{x:Static vm:ProxyServerListItemViewModle.UotVisions}" 
+                   SelectedItem="{Binding UotVision}"
+                   Width="100"/>
+        </StackPanel>
+    </StackPanel>
+</UserControl>

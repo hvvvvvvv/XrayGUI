@@ -23,6 +23,7 @@ namespace XrayGUI.Modle.Server
         public Guid? SubGroupId { get; set; }
         public string Remarks { get; set; } = string.Empty;
         public string ProtocolInfoContent { get; set; } = string.Empty;
+        public long UpdatedTime { get; set; }
         public OutBoundConfiguration? GetProtocolInfoObj()
         {
             if (!string.IsNullOrEmpty(ProtocolInfoContent))
@@ -68,21 +69,52 @@ namespace XrayGUI.Modle.Server
                 streamSettings = GetStreamInfo().ToStreamSettingsObject()
             };
         }
+        public delegate void ServerItemChangeHandler(ServerItem? before, ServerItem? later, ServersChangeType type);
+        public static event ServerItemChangeHandler? ServerItemChange;
+        public ServerItem Copy()
+        {
+            return new()
+            {
+                Protocol = Protocol,
+                Address = Address,
+                Port = Port,
+                IsActivated = IsActivated,
+                SubGroupId = SubGroupId,
+                Remarks = Remarks,
+                ProtocolInfoContent = ProtocolInfoContent,
+                StreamInfoContent = StreamInfoContent,
+                UpdatedTime = UpdatedTime
+            };
+        }
         public void SaveToDataBase()
         {
             lock (serverItemsDataList)
             {
-                if (serverItemsDataList.Any(i => i.Index == Index))
+                var before = GetItemsFromDataBase().FirstOrDefault(i => i.Index == Index);
+                if (before != null)
                 {
                     Global.DBService.Update(this);
+                    ServerItemChange?.Invoke(before, this, ServersChangeType.Update);
                 }
                 else
                 {
                     Global.DBService.Insert(this);
                     serverItemsDataList.Add(this);
+                    ServerItemChange?.Invoke(null, this, ServersChangeType.Add);
                 }
             }
-                
+        }
+        public void UpdateFrom(ServerItem source)
+        {
+            Protocol = source.Protocol;
+            Address = source.Address;
+            Port = source.Port;
+            IsActivated = source.IsActivated;
+            SubGroupId = source.SubGroupId;
+            Remarks = source.Remarks;
+            UpdatedTime = source.UpdatedTime;
+            ProtocolInfoContent = source.ProtocolInfoContent;
+            StreamInfoContent = source.StreamInfoContent;
         }
         public void DeleteFromDataBase()
         {
@@ -91,10 +123,24 @@ namespace XrayGUI.Modle.Server
             {
                 Global.DBService.Delete<ServerItem>(Index);
                 serverItemsDataList.Remove(this);
+                ServerItemChange?.Invoke(this, null, ServersChangeType.Remove);
             }
         }
         private static List<ServerItem> serverItemsDataList = GetItemsFromDataBase();
         public static ReadOnlyCollection<ServerItem> ServerItemsDataList { get; } = new ReadOnlyCollection<ServerItem>(serverItemsDataList);
+        public static bool operator == (ServerItem? left, ServerItem? right)
+        {
+            if (left is null) return right is null;
+            return left.Protocol == right?.Protocol && 
+                left.Address == right.Address && 
+                left.Port == right.Port && 
+                left.IsActivated == right.IsActivated && 
+                left.SubGroupId == right.SubGroupId && 
+                left.Remarks == right.Remarks && 
+                left.ProtocolInfoContent == right.ProtocolInfoContent && 
+                left.StreamInfoContent == right.StreamInfoContent;
+        }
+        public static bool operator != (ServerItem? left, ServerItem? right) => !(left == right);
         private static List<ServerItem> GetItemsFromDataBase()
         {
             return Global.DBService.Table<ServerItem>().ToList();

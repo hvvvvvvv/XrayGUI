@@ -7,6 +7,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>True</UseWPF>
     <ApplicationIcon>ApplicationIcon.ico</ApplicationIcon>
+    <UseWindowsForms>False</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -36,6 +37,8 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
     <PackageReference Include="HandyControl" Version="3.4.0" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.1.0" />
+    <PackageReference Include="log4net" Version="2.0.16" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.0.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     <PackageReference Include="RunAtStartup" Version="5.0.2" />
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />

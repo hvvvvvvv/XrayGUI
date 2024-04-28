@@ -45,7 +45,7 @@ namespace XrayGUI.ViewModle
                 {
                     return Global.MatchItemUndefined;
                 }
-                var groupName = SubscriptionItem.SubscriptionItemDataList.Where(x => x.SubcriptionId == server.SubGroupId).FirstOrDefault()?.SubcriptionName ?? string.Empty;
+                var groupName = Global.DBService.Find<SubscriptionItem>(server.SubGroupId)?.SubcriptionName ?? string.Empty;
                 return $"{groupName}/{server.Remarks}";
             }
         }
